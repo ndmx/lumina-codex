@@ -12,6 +12,17 @@ export type Principle = {
   className: string;
 };
 
+export type PrincipleExhibit = {
+  principleKey: Principle["key"];
+  title: string;
+  lede: string;
+  body: string;
+  sceneCue: string;
+  narrativeCue: string;
+  recommendedEra: EraKey;
+  recommendedEraLabel: string;
+};
+
 export const eras: {
   key: EraKey;
   name: string;
@@ -82,6 +93,49 @@ export const principles: Principle[] = [
     status: "Scene-wide cohesion response and shared palette logic are in place.",
     accent: "#f2d8b4",
     className: "left-[4%] bottom-[22%] md:left-[12%] md:bottom-[20%]",
+  },
+];
+
+export const principleExhibits: PrincipleExhibit[] = [
+  {
+    principleKey: "balance",
+    title: "The chamber holds its breath before it fractures.",
+    lede: "Balance should feel alive, not static. The codex starts in perfect alignment, then slips into controlled tension before returning to poise.",
+    body: "This exhibit is about restraint under pressure. The orb brightens, the satellites tighten their spacing, and the whole system demonstrates that symmetry is most interesting at the moment it nearly breaks.",
+    sceneCue: "Lock the chamber, trigger the fracture pulse, and let the aura restore the centerline.",
+    narrativeCue: "Use this chapter when the homepage needs to feel ceremonial and exact.",
+    recommendedEra: "atelier",
+    recommendedEraLabel: "Atelier",
+  },
+  {
+    principleKey: "contrast",
+    title: "Hierarchy becomes physical when light starts arguing with shadow.",
+    lede: "Contrast is not decoration here. It is a directional force that pushes one object forward and casts everything else into sharper relief.",
+    body: "In this exhibit the chamber behaves more like a stage set than a sculpture. The lighting splits harder, the backdrop carries warmer opposition, and the active satellite becomes an unmistakable focal point.",
+    sceneCue: "Drive the secondary glow harder, advance the active satellite, and sharpen the luminous split in the chamber.",
+    narrativeCue: "Use this chapter when the page should feel decisive, graphic, and unmistakably intentional.",
+    recommendedEra: "brutalist",
+    recommendedEraLabel: "Cyber-Brutalist",
+  },
+  {
+    principleKey: "rhythm",
+    title: "Motion becomes structure once repetition finds its cadence.",
+    lede: "Rhythm is the chapter where the codex stops posing and starts breathing. Timing, recurrence, and suspension become the composition.",
+    body: "The scene leans into oscillation here: orbital trails feel more musical, the chamber rise becomes more noticeable, and the page itself should feel like it is moving in measured phrases instead of isolated interactions.",
+    sceneCue: "Increase orbital cadence, pulse the field in waves, and let the chapter feel like a visual metronome.",
+    narrativeCue: "Use this chapter when you want the experience to feel kinetic without becoming chaotic.",
+    recommendedEra: "memphis",
+    recommendedEraLabel: "Memphis",
+  },
+  {
+    principleKey: "unity",
+    title: "The system resolves when every part agrees to speak as one organism.",
+    lede: "Unity is where the portfolio stops reading as an arrangement of features and starts reading as a single living point of view.",
+    body: "This exhibit draws the codex inward. Materials, orbit paths, and copy all reinforce the same idea: variation matters most when it still feels authored by one mind and one atmosphere.",
+    sceneCue: "Pull the chamber inward, soften the separation between parts, and make the field feel collectively tuned.",
+    narrativeCue: "Use this chapter when the page should feel mature, coherent, and fully composed.",
+    recommendedEra: "atelier",
+    recommendedEraLabel: "Atelier",
   },
 ];
 

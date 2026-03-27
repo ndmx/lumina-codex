@@ -59,3 +59,23 @@
 
 ### Next recommended move
 - Build richer chapter exhibits for each principle so the lower page sections introduce distinct scene states, copy, and interaction behaviors instead of only summary cards.
+
+## 2026-03-27 — Principle Theater Pass
+
+### What changed
+- Expanded the principles section from summary cards into a true exhibit layer.
+- Added long-form exhibit copy, scene cues, narrative cues, and recommended eras for each principle.
+- Introduced a sticky exhibit panel that stays in view while the visitor explores the principle grid.
+- Threaded the active principle accent through the shell so rail, cards, and exhibit panel visually respond to the current focus.
+
+### Experience-specific upgrades
+- `src/components/codex-content.ts` now includes structured exhibit content for each principle.
+- `src/components/lumina-home.tsx` now coordinates the principle theater and supports one-click era + principle handoff back into the chamber.
+- `src/app/globals.css` now styles the exhibit panel, two-column principle theater layout, and active accent propagation.
+
+### Verification
+- `npm run lint` — passing
+- `npm run build` — passing
+
+### Next recommended move
+- Introduce principle-specific scene variants or micro-routes so each exhibit can change more than the active principle state and begin to feel like its own authored chapter.
