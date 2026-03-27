@@ -1,19 +1,79 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { startTransition, useEffect, useMemo, useState } from "react";
+import type { CSSProperties } from "react";
 import { CodexChamber } from "@/components/codex-chamber";
-import { CodexScrollRail } from "@/components/codex-scroll-rail";
+import {
+  CodexScrollRail,
+  codexChapters,
+  type CodexChapterId,
+} from "@/components/codex-scroll-rail";
 import { milestones, principles, type EraKey } from "@/components/codex-content";
 
 export function LuminaHome() {
   const [selectedEra, setSelectedEra] = useState<EraKey>("atelier");
   const [activePrincipleKey, setActivePrincipleKey] = useState("balance");
   const [balanceCycle, setBalanceCycle] = useState(1);
+  const [activeChapterId, setActiveChapterId] = useState<CodexChapterId>("entry");
+  const [pageProgress, setPageProgress] = useState(0);
 
   const activePrinciple = useMemo(
     () => principles.find((principle) => principle.key === activePrincipleKey) ?? principles[0],
     [activePrincipleKey],
   );
+
+  const pageStyle = useMemo(
+    () =>
+      ({
+        ["--page-progress" as string]: String(pageProgress),
+      }) as CSSProperties,
+    [pageProgress],
+  );
+
+  useEffect(() => {
+    const observedSections = codexChapters
+      .map((chapter) => document.getElementById(chapter.id))
+      .filter((element): element is HTMLElement => Boolean(element));
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visibleEntries = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((entryA, entryB) => entryB.intersectionRatio - entryA.intersectionRatio);
+
+        if (visibleEntries[0]?.target.id) {
+          const nextId = visibleEntries[0].target.id as CodexChapterId;
+          startTransition(() => {
+            setActiveChapterId(nextId);
+          });
+        }
+      },
+      {
+        rootMargin: "-20% 0px -45% 0px",
+        threshold: [0.2, 0.35, 0.5, 0.65],
+      },
+    );
+
+    function updateProgress() {
+      const scrollableHeight = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+      const nextProgress = Math.min(window.scrollY / scrollableHeight, 1);
+
+      startTransition(() => {
+        setPageProgress(nextProgress);
+      });
+    }
+
+    observedSections.forEach((section) => observer.observe(section));
+    updateProgress();
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    window.addEventListener("resize", updateProgress);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", updateProgress);
+      window.removeEventListener("resize", updateProgress);
+    };
+  }, []);
 
   function activatePrinciple(principleKey: string, options?: { scrollToEntry?: boolean }) {
     setActivePrincipleKey(principleKey);
@@ -28,7 +88,7 @@ export function LuminaHome() {
   }
 
   return (
-    <main className="lumina-page">
+    <main className="lumina-page" data-active-chapter={activeChapterId} style={pageStyle}>
       <div className="lumina-page__veil" />
       <div className="lumina-page__noise" />
 
@@ -46,9 +106,9 @@ export function LuminaHome() {
           </nav>
         </header>
 
-        <CodexScrollRail />
+        <CodexScrollRail activeChapterId={activeChapterId} progress={pageProgress} />
 
-        <section id="entry" className="lumina-hero">
+        <section id="entry" className={["lumina-hero", activeChapterId === "entry" ? "is-active" : ""].join(" ")}>
           <div className="lumina-hero__copy">
             <p className="lumina-pill">Milestone 3 in motion</p>
             <h1>Design should feel like entering a chamber of light, pressure, and intention.</h1>
@@ -78,7 +138,7 @@ export function LuminaHome() {
               </div>
               <div>
                 <dt>Next upgrade</dt>
-                <dd>Connected chapter exhibits</dd>
+                <dd>Chapter-linked transitions</dd>
               </div>
             </dl>
           </div>
@@ -92,7 +152,7 @@ export function LuminaHome() {
           />
         </section>
 
-        <section id="manifesto" className="lumina-editorial">
+        <section id="manifesto" className={["lumina-editorial", activeChapterId === "manifesto" ? "is-active" : ""].join(" ")}>
           <article className="lumina-editorial__panel">
             <p className="lumina-kicker">Design ethos</p>
             <h2>The site itself is already behaving like the case study.</h2>
@@ -107,14 +167,13 @@ export function LuminaHome() {
             <p className="lumina-kicker">Narrative strategy</p>
             <h2>Every section should deepen the same spell instead of resetting it.</h2>
             <p>
-              The chamber now responds to era, principle, and scroll depth. The editorial shell is being tuned to the
-              same cadence so the homepage reads like one continuous composition rather than a spectacular hero sitting
-              on top of generic content blocks.
+              The chamber now responds to era, principle, and scroll depth. The homepage is shifting into a real chapter
+              sequence so scroll becomes a form of direction, not just movement down the page.
             </p>
           </article>
         </section>
 
-        <section id="principles" className="lumina-principles">
+        <section id="principles" className={["lumina-principles", activeChapterId === "principles" ? "is-active" : ""].join(" ")}>
           {principles.map((principle) => {
             const isActive = principle.key === activePrincipleKey;
 
@@ -140,7 +199,7 @@ export function LuminaHome() {
           })}
         </section>
 
-        <section id="roadmap" className="lumina-roadmap">
+        <section id="roadmap" className={["lumina-roadmap", activeChapterId === "roadmap" ? "is-active" : ""].join(" ")}>
           <div className="lumina-roadmap__intro">
             <p className="lumina-kicker">Execution path</p>
             <h2>We are building toward the fully immersive codex without losing production discipline.</h2>

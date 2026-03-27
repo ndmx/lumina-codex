@@ -35,3 +35,27 @@
 
 ### Next recommended move
 - Turn each principle section into a deeper chapter exhibit that pushes richer state into the live chamber.
+
+## 2026-03-27 — Narrative Depth Pass
+
+### What changed
+- Added a second shader-driven energy layer with a narrative backdrop behind the orb.
+- Lifted scroll progress and active chapter tracking into the homepage shell.
+- Converted the narrative rail into a controlled component that reflects global page state.
+- Added chapter-aware transitions so the hero, editorial panels, principles, and roadmap move as one sequence.
+
+### Scene-specific upgrades
+- New custom shader backdrop in `src/components/codex-scene.tsx` that reacts to active principle and scroll depth.
+- Camera drift, fog, bloom, and chamber energy now intensify more intentionally as the visitor moves down the page.
+
+### Experience-specific upgrades
+- `src/components/lumina-home.tsx` now coordinates chapter focus and page progress.
+- `src/components/codex-scroll-rail.tsx` now renders from shared state instead of maintaining its own observer.
+- `src/app/globals.css` now includes chapter-aware transitions and mood shifts across major sections.
+
+### Verification
+- `npm run lint` — passing
+- `npm run build` — passing
+
+### Next recommended move
+- Build richer chapter exhibits for each principle so the lower page sections introduce distinct scene states, copy, and interaction behaviors instead of only summary cards.

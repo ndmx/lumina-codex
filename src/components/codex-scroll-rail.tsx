@@ -1,8 +1,6 @@
 "use client";
 
-import { startTransition, useDeferredValue, useEffect, useMemo, useState } from "react";
-
-const chapters = [
+export const codexChapters = [
   {
     id: "entry",
     label: "Entry",
@@ -25,60 +23,15 @@ const chapters = [
   },
 ] as const;
 
-export function CodexScrollRail() {
-  const [activeChapterId, setActiveChapterId] = useState<(typeof chapters)[number]["id"]>("entry");
-  const [progress, setProgress] = useState(0);
-  const deferredActiveChapterId = useDeferredValue(activeChapterId);
+export type CodexChapterId = (typeof codexChapters)[number]["id"];
 
-  useEffect(() => {
-    const observed = chapters
-      .map((chapter) => document.getElementById(chapter.id))
-      .filter((element): element is HTMLElement => Boolean(element));
+type CodexScrollRailProps = {
+  activeChapterId: CodexChapterId;
+  progress: number;
+};
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleEntries = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((entryA, entryB) => entryB.intersectionRatio - entryA.intersectionRatio);
-
-        if (visibleEntries[0]?.target.id) {
-          const nextId = visibleEntries[0].target.id as (typeof chapters)[number]["id"];
-          startTransition(() => {
-            setActiveChapterId(nextId);
-          });
-        }
-      },
-      {
-        rootMargin: "-20% 0px -45% 0px",
-        threshold: [0.2, 0.35, 0.5, 0.65],
-      },
-    );
-
-    function updateProgress() {
-      const scrollableHeight = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
-      const nextProgress = Math.min(window.scrollY / scrollableHeight, 1);
-
-      startTransition(() => {
-        setProgress(nextProgress);
-      });
-    }
-
-    observed.forEach((element) => observer.observe(element));
-    updateProgress();
-    window.addEventListener("scroll", updateProgress, { passive: true });
-    window.addEventListener("resize", updateProgress);
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("scroll", updateProgress);
-      window.removeEventListener("resize", updateProgress);
-    };
-  }, []);
-
-  const activeChapter = useMemo(
-    () => chapters.find((chapter) => chapter.id === deferredActiveChapterId) ?? chapters[0],
-    [deferredActiveChapterId],
-  );
+export function CodexScrollRail({ activeChapterId, progress }: CodexScrollRailProps) {
+  const activeChapter = codexChapters.find((chapter) => chapter.id === activeChapterId) ?? codexChapters[0];
 
   return (
     <aside className="lumina-rail" aria-label="Narrative progress">
@@ -98,8 +51,8 @@ export function CodexScrollRail() {
       </div>
 
       <nav className="lumina-rail__chapters" aria-label="Jump to a chapter">
-        {chapters.map((chapter) => {
-          const isActive = chapter.id === deferredActiveChapterId;
+        {codexChapters.map((chapter) => {
+          const isActive = chapter.id === activeChapterId;
 
           return (
             <a

@@ -1032,3 +1032,86 @@ button {
   background: rgba(255, 255, 255, 0.08);
   outline: none;
 }
+
+.lumina-page {
+  --page-progress: 0;
+}
+
+.lumina-hero,
+.lumina-editorial,
+.lumina-principles,
+.lumina-roadmap {
+  transition:
+    transform 420ms ease,
+    opacity 420ms ease,
+    filter 420ms ease,
+    border-color 420ms ease,
+    box-shadow 420ms ease;
+}
+
+.lumina-hero {
+  transform: translateY(calc(var(--page-progress) * -22px));
+}
+
+.lumina-hero__copy,
+.lumina-chamber {
+  transition:
+    transform 420ms ease,
+    opacity 420ms ease,
+    box-shadow 420ms ease,
+    border-color 420ms ease;
+}
+
+.lumina-hero__copy {
+  transform: translateY(calc(var(--page-progress) * -14px));
+}
+
+.lumina-editorial,
+.lumina-principles,
+.lumina-roadmap {
+  opacity: 0.74;
+  transform: translateY(22px);
+  filter: saturate(0.84);
+}
+
+.lumina-hero.is-active,
+.lumina-editorial.is-active,
+.lumina-principles.is-active,
+.lumina-roadmap.is-active {
+  opacity: 1;
+  transform: translateY(0);
+  filter: none;
+}
+
+.lumina-page[data-active-chapter="entry"] .lumina-chamber {
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow:
+    var(--shadow-atmosphere),
+    0 24px 80px rgba(115, 242, 223, 0.1);
+}
+
+.lumina-page[data-active-chapter="manifesto"] .lumina-editorial__panel {
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 18px 48px rgba(255, 248, 236, 0.05);
+}
+
+.lumina-page[data-active-chapter="principles"] .lumina-principle-card {
+  border-color: rgba(255, 255, 255, 0.14);
+  transform: translateY(-2px);
+}
+
+.lumina-page[data-active-chapter="roadmap"] .lumina-roadmap__item {
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 16px 44px rgba(115, 242, 223, 0.05);
+}
+
+.lumina-page[data-active-chapter="manifesto"] .lumina-chamber__hud,
+.lumina-page[data-active-chapter="principles"] .lumina-chamber__hud,
+.lumina-page[data-active-chapter="roadmap"] .lumina-chamber__hud {
+  background: rgba(9, 11, 14, 0.52);
+  border-color: rgba(255, 255, 255, 0.16);
+}

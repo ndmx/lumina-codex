@@ -10,7 +10,13 @@ import {
 } from "@react-three/drei";
 import { Bloom, EffectComposer, Noise, Vignette } from "@react-three/postprocessing";
 import { memo, useEffect, useMemo, useRef } from "react";
-import type { Group, Mesh, PerspectiveCamera as PerspectiveCameraType, ShaderMaterialParameters, Vector3Tuple } from "three";
+import type {
+  Group,
+  Mesh,
+  PerspectiveCamera as PerspectiveCameraType,
+  ShaderMaterialParameters,
+  Vector3Tuple,
+} from "three";
 import * as THREE from "three";
 import type { EraKey } from "@/components/codex-content";
 
@@ -48,6 +54,17 @@ type AuraMaterialImpl = THREE.ShaderMaterial & {
   };
 };
 
+type BackdropMaterialImpl = THREE.ShaderMaterial & {
+  uniforms: {
+    uTime: { value: number };
+    uPrimary: { value: THREE.Color };
+    uSecondary: { value: THREE.Color };
+    uTertiary: { value: THREE.Color };
+    uScroll: { value: number };
+    uFocus: { value: number };
+  };
+};
+
 const auraVertexShader = [
   "varying vec3 vNormal;",
   "varying vec3 vWorldPosition;",
@@ -75,6 +92,37 @@ const auraFragmentShader = [
   "  float alpha = fresnel * (0.28 + uScroll * 0.35 + uPulse * 0.3);",
   "  alpha += wave * 0.08;",
   "  gl_FragColor = vec4(color, alpha);",
+  "}",
+].join("\n");
+
+const backdropVertexShader = [
+  "varying vec2 vUv;",
+  "void main() {",
+  "  vUv = uv;",
+  "  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);",
+  "}",
+].join("\n");
+
+const backdropFragmentShader = [
+  "uniform float uTime;",
+  "uniform vec3 uPrimary;",
+  "uniform vec3 uSecondary;",
+  "uniform vec3 uTertiary;",
+  "uniform float uScroll;",
+  "uniform float uFocus;",
+  "varying vec2 vUv;",
+  "void main() {",
+  "  vec2 uv = vUv * 2.0 - 1.0;",
+  "  uv.y *= 0.86;",
+  "  float radial = 1.0 - smoothstep(0.0, 1.2, length(uv));",
+  "  float waves = sin((uv.x + uTime * 0.08) * 8.0) * cos((uv.y - uTime * 0.06) * 10.0);",
+  "  float ribbons = sin(uv.y * 13.0 - uTime * 1.4 + uv.x * 5.5) * 0.5 + 0.5;",
+  "  float diagonal = sin((uv.x + uv.y) * 8.0 + uTime * 0.9) * 0.5 + 0.5;",
+  "  vec3 base = mix(uSecondary, uPrimary, ribbons);",
+  "  vec3 color = mix(base, uTertiary, diagonal * 0.22 + uFocus * 0.3);",
+  "  float glow = radial * (0.26 + uScroll * 0.38 + uFocus * 0.22);",
+  "  glow += waves * 0.06 * radial;",
+  "  gl_FragColor = vec4(color, max(glow, 0.0));",
   "}",
 ].join("\n");
 
@@ -113,6 +161,13 @@ const activeOffsets: Record<string, number> = {
   contrast: 0.35,
   rhythm: 0.7,
   unity: 1.05,
+};
+
+const focusStrengths: Record<string, number> = {
+  balance: 0.95,
+  contrast: 1.2,
+  rhythm: 1.05,
+  unity: 0.88,
 };
 
 const satellites: {
@@ -171,16 +226,106 @@ function CameraRig({
     const influence = activeOffsets[activePrincipleKey] ?? 0;
     const targetX = (pointer.x - 0.5) * (liteMode ? 0.9 : 1.6) + Math.sin(influence) * 0.18;
     const targetY = (0.5 - pointer.y) * (liteMode ? 0.7 : 1.3) + Math.cos(influence) * 0.12;
-    const narrativeDrift = scrollProgress * (liteMode ? 0.2 : 0.45);
-    const targetZ = activePrincipleKey === "contrast" ? (liteMode ? 8 : 7.6) : liteMode ? 8.5 : 8.2;
+    const narrativeDrift = scrollProgress * (liteMode ? 0.24 : 0.52);
+    const targetZ =
+      activePrincipleKey === "contrast" ? (liteMode ? 8 : 7.55) : liteMode ? 8.45 : 8.15;
 
     rigCamera.position.x = THREE.MathUtils.lerp(rigCamera.position.x, targetX, 0.05);
-    rigCamera.position.y = THREE.MathUtils.lerp(rigCamera.position.y, targetY + narrativeDrift, 0.05);
-    rigCamera.position.z = THREE.MathUtils.lerp(rigCamera.position.z, targetZ - scrollProgress * 0.18, 0.04);
-    rigCamera.lookAt(0, scrollProgress * 0.35, 0);
+    rigCamera.position.y = THREE.MathUtils.lerp(
+      rigCamera.position.y,
+      targetY + narrativeDrift,
+      0.05,
+    );
+    rigCamera.position.z = THREE.MathUtils.lerp(
+      rigCamera.position.z,
+      targetZ - scrollProgress * 0.28,
+      0.04,
+    );
+    rigCamera.rotation.z = THREE.MathUtils.lerp(
+      rigCamera.rotation.z,
+      (scrollProgress - 0.35) * 0.05,
+      0.035,
+    );
+    rigCamera.lookAt(0, scrollProgress * 0.45, 0);
   });
 
   return null;
+}
+
+function NarrativeBackdrop({
+  activePrincipleKey,
+  liteMode,
+  palette,
+  scrollProgress,
+}: {
+  activePrincipleKey: string;
+  liteMode: boolean;
+  palette: Palette;
+  scrollProgress: number;
+}) {
+  const meshRef = useRef<Mesh>(null);
+  const material = useMemo(() => {
+    const config: ShaderMaterialParameters = {
+      transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+      blending: THREE.AdditiveBlending,
+      uniforms: {
+        uTime: { value: 0 },
+        uPrimary: { value: new THREE.Color(palette.primary) },
+        uSecondary: { value: new THREE.Color(palette.secondary) },
+        uTertiary: { value: new THREE.Color(palette.tertiary) },
+        uScroll: { value: 0 },
+        uFocus: { value: 0 },
+      },
+      vertexShader: backdropVertexShader,
+      fragmentShader: backdropFragmentShader,
+    };
+
+    return new THREE.ShaderMaterial(config) as BackdropMaterialImpl;
+  }, [palette.primary, palette.secondary, palette.tertiary]);
+  const materialRef = useRef<BackdropMaterialImpl | null>(null);
+
+  useEffect(() => {
+    materialRef.current = material;
+
+    return () => {
+      material.dispose();
+    };
+  }, [material]);
+
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime();
+    const focus = (focusStrengths[activePrincipleKey] ?? 1) + scrollProgress * 0.24;
+
+    if (meshRef.current) {
+      meshRef.current.position.y = scrollProgress * 0.85;
+      meshRef.current.position.z = -5.6 + scrollProgress * 0.2;
+      meshRef.current.rotation.z = Math.sin(t * 0.14) * 0.09;
+      meshRef.current.scale.x = 1 + scrollProgress * 0.12;
+      meshRef.current.scale.y = 1 + scrollProgress * 0.18;
+    }
+
+    const backdropMaterial = materialRef.current;
+
+    if (!backdropMaterial) {
+      return;
+    }
+
+    backdropMaterial.uniforms.uTime.value = t;
+    backdropMaterial.uniforms.uScroll.value = scrollProgress;
+    backdropMaterial.uniforms.uFocus.value = focus;
+    backdropMaterial.uniforms.uPrimary.value.set(palette.primary);
+    backdropMaterial.uniforms.uSecondary.value.set(palette.secondary);
+    backdropMaterial.uniforms.uTertiary.value.set(palette.tertiary);
+  });
+
+  return (
+    <mesh ref={meshRef} position={[0, 0.15, -5.6]}>
+      <planeGeometry args={[liteMode ? 10 : 14, liteMode ? 8 : 11]} />
+      <primitive object={material} attach="material" />
+    </mesh>
+  );
 }
 
 function AuraShell({
@@ -290,28 +435,49 @@ function Orb({
     const narrativeLift = scrollProgress * 0.18;
 
     if (groupRef.current) {
-      groupRef.current.rotation.y = t * (0.18 + rhythmBeat * 0.05 + contrastBoost * 0.04) * motionFactor;
-      groupRef.current.rotation.x = Math.sin(t * 0.22) * (0.12 + balanceEnvelope * 0.08) * motionFactor;
-      groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, narrativeLift, 0.06);
-      const scale = 1 + balanceEnvelope * 0.08 - unityPull * 0.05 + rhythmBeat * 0.03 + scrollProgress * 0.04;
+      groupRef.current.rotation.y =
+        t * (0.18 + rhythmBeat * 0.05 + contrastBoost * 0.04) * motionFactor;
+      groupRef.current.rotation.x =
+        Math.sin(t * 0.22) * (0.12 + balanceEnvelope * 0.08) * motionFactor;
+      groupRef.current.position.y = THREE.MathUtils.lerp(
+        groupRef.current.position.y,
+        narrativeLift,
+        0.06,
+      );
+      const scale =
+        1 +
+        balanceEnvelope * 0.08 -
+        unityPull * 0.05 +
+        rhythmBeat * 0.03 +
+        scrollProgress * 0.04;
       groupRef.current.scale.setScalar(scale);
     }
 
     if (shellRef.current) {
-      const shellScale = 1 + Math.sin(t * 1.1) * 0.03 + balanceEnvelope * 0.1 + contrastBoost * 0.04 + scrollProgress * 0.06;
+      const shellScale =
+        1 +
+        Math.sin(t * 1.1) * 0.03 +
+        balanceEnvelope * 0.1 +
+        contrastBoost * 0.04 +
+        scrollProgress * 0.06;
       shellRef.current.scale.setScalar(shellScale);
     }
 
     if (prismRef.current) {
       prismRef.current.rotation.z = t * (0.32 + contrastBoost * 0.12) * motionFactor;
-      prismRef.current.rotation.x = Math.sin(t * 0.7) * (0.16 + balanceEnvelope * 0.12) * motionFactor;
+      prismRef.current.rotation.x =
+        Math.sin(t * 0.7) * (0.16 + balanceEnvelope * 0.12) * motionFactor;
       prismRef.current.rotation.y = rhythmBeat * 0.35 * motionFactor;
       const prismScale = 1 + unityPull * 0.08 - balanceEnvelope * 0.16 + scrollProgress * 0.05;
       prismRef.current.scale.setScalar(prismScale);
     }
 
     if (accentRef.current) {
-      const pulse = 1.1 + Math.sin(t * (1.4 + rhythmBeat * 1.2)) * 0.06 + balanceEnvelope * 0.18 + scrollProgress * 0.08;
+      const pulse =
+        1.1 +
+        Math.sin(t * (1.4 + rhythmBeat * 1.2)) * 0.06 +
+        balanceEnvelope * 0.18 +
+        scrollProgress * 0.08;
       accentRef.current.scale.setScalar(pulse);
     }
   });
@@ -460,16 +626,26 @@ function SatelliteInstance({
     const t = state.clock.getElapsedTime();
     const balanceEnvelope =
       activePrincipleKey === "balance" ? getBalanceEnvelope(t, balanceStartRef.current) : 0;
-    const rhythmBeat = activePrincipleKey === "rhythm" ? Math.sin(t * 3.2 + index * 0.8) * 0.34 : 0;
+    const rhythmBeat =
+      activePrincipleKey === "rhythm" ? Math.sin(t * 3.2 + index * 0.8) * 0.34 : 0;
     const unityPull = activePrincipleKey === "unity" ? 0.28 : 0;
     const contrastBoost = activePrincipleKey === "contrast" && isActive ? 1 : 0;
     const motionFactor = liteMode ? 0.72 : 1;
 
     const targetX =
-      basePosition[0] * (1 - unityPull + balanceEnvelope * 0.14) + (contrastBoost ? Math.sign(basePosition[0]) * 0.28 : 0);
-    const targetY = basePosition[1] * (1 - unityPull * 0.7) + rhythmBeat - balanceEnvelope * 0.12 + scrollProgress * 0.06;
-    const targetZ = basePosition[2] + balanceEnvelope * 0.55 + (contrastBoost ? 0.55 : 0) + scrollProgress * 0.2;
-    const targetScale = scale * (isActive ? 1.18 : 1) * (1 + balanceEnvelope * 0.16 + contrastBoost * 0.08 + scrollProgress * 0.05);
+      basePosition[0] * (1 - unityPull + balanceEnvelope * 0.14) +
+      (contrastBoost ? Math.sign(basePosition[0]) * 0.28 : 0);
+    const targetY =
+      basePosition[1] * (1 - unityPull * 0.7) +
+      rhythmBeat -
+      balanceEnvelope * 0.12 +
+      scrollProgress * 0.06;
+    const targetZ =
+      basePosition[2] + balanceEnvelope * 0.55 + (contrastBoost ? 0.55 : 0) + scrollProgress * 0.2;
+    const targetScale =
+      scale *
+      (isActive ? 1.18 : 1) *
+      (1 + balanceEnvelope * 0.16 + contrastBoost * 0.08 + scrollProgress * 0.05);
 
     if (groupRef.current) {
       groupRef.current.position.x = THREE.MathUtils.lerp(groupRef.current.position.x, targetX, 0.08);
@@ -477,7 +653,9 @@ function SatelliteInstance({
       groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, targetZ, 0.08);
       groupRef.current.rotation.x += (0.01 + index * 0.0008) * motionFactor;
       groupRef.current.rotation.y += (0.012 + contrastBoost * 0.01) * motionFactor;
-      groupRef.current.scale.setScalar(THREE.MathUtils.lerp(groupRef.current.scale.x, targetScale, 0.09));
+      groupRef.current.scale.setScalar(
+        THREE.MathUtils.lerp(groupRef.current.scale.x, targetScale, 0.09),
+      );
     }
   });
 
@@ -565,8 +743,19 @@ function EnergyTrails({
         ];
 
     return definitions.map((definition, index) => {
-      const curve = new THREE.EllipseCurve(0, 0, definition.radius, definition.radius * (0.48 + index * 0.08), 0, Math.PI * 2, false, index * 0.6);
-      const points = curve.getPoints(liteMode ? 72 : 120).map((point) => [point.x, point.y, 0] as Vector3Tuple);
+      const curve = new THREE.EllipseCurve(
+        0,
+        0,
+        definition.radius,
+        definition.radius * (0.48 + index * 0.08),
+        0,
+        Math.PI * 2,
+        false,
+        index * 0.6,
+      );
+      const points = curve
+        .getPoints(liteMode ? 72 : 120)
+        .map((point) => [point.x, point.y, 0] as Vector3Tuple);
       return { ...definition, points };
     });
   }, [liteMode, palette.primary, palette.secondary, palette.tertiary]);
@@ -583,7 +772,12 @@ function EnergyTrails({
   return (
     <group ref={groupRef}>
       {trails.map((trail, index) => {
-        const emphasis = activePrincipleKey === "balance" ? 0.9 : activePrincipleKey === "contrast" ? 1.15 : 1;
+        const emphasis =
+          activePrincipleKey === "balance"
+            ? 0.9
+            : activePrincipleKey === "contrast"
+              ? 1.15
+              : 1;
         return (
           <Line
             key={trail.color + String(index)}
@@ -610,7 +804,8 @@ function PostEffects({
   liteMode: boolean;
   scrollProgress: number;
 }) {
-  const bloomIntensity = activePrincipleKey === "contrast" ? 1.1 : activePrincipleKey === "balance" ? 0.92 : 0.82;
+  const bloomIntensity =
+    activePrincipleKey === "contrast" ? 1.1 : activePrincipleKey === "balance" ? 0.92 : 0.82;
 
   return (
     <EffectComposer multisampling={liteMode ? 0 : 4} enableNormalPass={false}>
@@ -618,7 +813,11 @@ function PostEffects({
         mipmapBlur
         luminanceThreshold={0.28}
         luminanceSmoothing={0.48}
-        intensity={liteMode ? bloomIntensity * 0.6 + scrollProgress * 0.08 : bloomIntensity + scrollProgress * 0.18}
+        intensity={
+          liteMode
+            ? bloomIntensity * 0.6 + scrollProgress * 0.08
+            : bloomIntensity + scrollProgress * 0.2
+        }
       />
       <Noise opacity={liteMode ? 0.01 : 0.022} />
       <Vignette eskil={false} offset={0.18} darkness={liteMode ? 0.46 : 0.58} />
@@ -643,10 +842,35 @@ const SceneContent = memo(function SceneContent({
       <color attach="background" args={[palette.background]} />
       <fog attach="fog" args={[palette.fog, liteMode ? 8 : 7, liteMode ? 13 : 15 + scrollProgress * 2]} />
       <ambientLight intensity={(liteMode ? 0.78 : 0.9) * narrativeBoost} color={palette.ambient} />
-      <directionalLight position={[3.5, 5, 4.5]} intensity={(liteMode ? 2.2 : 2.8) * lightBoost * narrativeBoost} color={palette.tertiary} />
-      <pointLight position={[-4, -1.5, 2]} intensity={(liteMode ? 16 : 22) * lightBoost * narrativeBoost} distance={12} color={palette.primary} />
-      <pointLight position={[4, 2.5, -2]} intensity={(liteMode ? 8 : 12) * lightBoost * narrativeBoost} distance={10} color={palette.secondary} />
-      <CameraRig pointer={pointer} activePrincipleKey={activePrincipleKey} liteMode={liteMode} scrollProgress={scrollProgress} />
+      <directionalLight
+        position={[3.5, 5, 4.5]}
+        intensity={(liteMode ? 2.2 : 2.8) * lightBoost * narrativeBoost}
+        color={palette.tertiary}
+      />
+      <pointLight
+        position={[-4, -1.5, 2]}
+        intensity={(liteMode ? 16 : 22) * lightBoost * narrativeBoost}
+        distance={12}
+        color={palette.primary}
+      />
+      <pointLight
+        position={[4, 2.5, -2]}
+        intensity={(liteMode ? 8 : 12) * lightBoost * narrativeBoost}
+        distance={10}
+        color={palette.secondary}
+      />
+      <CameraRig
+        pointer={pointer}
+        activePrincipleKey={activePrincipleKey}
+        liteMode={liteMode}
+        scrollProgress={scrollProgress}
+      />
+      <NarrativeBackdrop
+        activePrincipleKey={activePrincipleKey}
+        liteMode={liteMode}
+        palette={palette}
+        scrollProgress={scrollProgress}
+      />
       {liteMode ? null : <Environment preset="sunset" />}
       <Sparkles
         count={liteMode ? 64 : 140}
@@ -655,9 +879,26 @@ const SceneContent = memo(function SceneContent({
         speed={liteMode ? 0.28 : 0.45 + scrollProgress * 0.1}
         color={palette.sparkles}
       />
-      <EnergyTrails activePrincipleKey={activePrincipleKey} liteMode={liteMode} palette={palette} scrollProgress={scrollProgress} />
-      <Orb activePrincipleKey={activePrincipleKey} balanceCycle={balanceCycle} liteMode={liteMode} palette={palette} scrollProgress={scrollProgress} />
-      <SatelliteField activePrincipleKey={activePrincipleKey} balanceCycle={balanceCycle} liteMode={liteMode} palette={palette} scrollProgress={scrollProgress} />
+      <EnergyTrails
+        activePrincipleKey={activePrincipleKey}
+        liteMode={liteMode}
+        palette={palette}
+        scrollProgress={scrollProgress}
+      />
+      <Orb
+        activePrincipleKey={activePrincipleKey}
+        balanceCycle={balanceCycle}
+        liteMode={liteMode}
+        palette={palette}
+        scrollProgress={scrollProgress}
+      />
+      <SatelliteField
+        activePrincipleKey={activePrincipleKey}
+        balanceCycle={balanceCycle}
+        liteMode={liteMode}
+        palette={palette}
+        scrollProgress={scrollProgress}
+      />
       <PostEffects activePrincipleKey={activePrincipleKey} liteMode={liteMode} scrollProgress={scrollProgress} />
     </>
   );
