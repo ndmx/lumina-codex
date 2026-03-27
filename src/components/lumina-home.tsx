@@ -3,6 +3,7 @@
 import { startTransition, useEffect, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
 import { CodexChamber } from "@/components/codex-chamber";
+import { PrincipleChapterStage } from "@/components/principle-chapter-stage";
 import {
   CodexScrollRail,
   codexChapters,
@@ -289,6 +290,20 @@ export function LuminaHome() {
               </button>
             </div>
           </aside>
+
+          <PrincipleChapterStage
+            activeEra={selectedEra}
+            activeExhibit={activeExhibit}
+            activePrinciple={activePrinciple}
+            sceneMode={sceneMode}
+            onSetPreview={() => focusCodex(activePrinciple.key, { sceneMode: "preview" })}
+            onSetTheater={(era) =>
+              focusCodex(activePrinciple.key, {
+                era,
+                sceneMode: "theater",
+              })
+            }
+          />
         </section>
 
         <section id="roadmap" className={["lumina-roadmap", activeChapterId === "roadmap" ? "is-active" : ""].join(" ")}>

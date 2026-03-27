@@ -101,3 +101,22 @@
 
 ### Next recommended move
 - Split the principle theater into deeper authored chapter states so each exhibit can drive unique layouts, copy density, or route-like transitions beyond the shared homepage shell.
+
+## 2026-03-27 — Authored Chapter Stage Pass
+
+### What changed
+- Added a dedicated chapter stage beneath the principle theater so each principle now gets a more distinct authored sub-layout.
+- Introduced principle-specific beats, metrics, and conduct controls that make the lower page feel more like a chapter sequence than a generic information panel.
+- Kept the entire experience within the existing homepage narrative while increasing the feeling of route-like state changes.
+
+### Experience-specific upgrades
+- New component: `src/components/principle-chapter-stage.tsx`.
+- `src/components/lumina-home.tsx` now renders the chapter stage as part of the principles chapter.
+- `src/app/globals.css` now includes stage-specific grid layouts and principle-aware variations for balance, contrast, rhythm, and unity.
+
+### Verification
+- `npm run lint` — passing
+- `npm run build` — passing
+
+### Next recommended move
+- Add true route-level or modal chapter transitions so entering a principle can feel like stepping into a dedicated exhibit rather than staying entirely on the homepage canvas.
