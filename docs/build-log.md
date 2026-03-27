@@ -120,3 +120,24 @@
 
 ### Next recommended move
 - Add true route-level or modal chapter transitions so entering a principle can feel like stepping into a dedicated exhibit rather than staying entirely on the homepage canvas.
+
+## 2026-03-27 — Chapter Overlay Pass
+
+### What changed
+- Added a dedicated full-screen chapter overlay so each principle can be entered as its own exhibit instead of living only inside the shared homepage layout.
+- Expanded the content model with principle dossiers covering atmosphere, conduct notes, scene behaviors, copy notes, and impact guidance.
+- Wired the homepage and chapter stage so the overlay opens in theater mode and stays connected to the live chamber state.
+
+### Experience-specific upgrades
+- New component: `src/components/principle-chapter-overlay.tsx`.
+- `src/components/lumina-home.tsx` now manages chapter overlay state and exposes a new route-like entry into each principle.
+- `src/components/principle-chapter-stage.tsx` now includes an `Enter full chapter` action.
+- `src/components/codex-content.ts` now holds principle dossier content used by the new exhibit overlay.
+- `src/app/globals.css` now includes the overlay system, backdrop treatment, and page-state styling for entered chapter mode.
+
+### Verification
+- `npm run lint` — passing
+- `npm run build` — passing
+
+### Next recommended move
+- Give the live chamber a chapter-specific scene layer so opening a full chapter changes more than the shell and copy treatment; it should trigger deeper geometry, lighting, or particle behaviors per principle.

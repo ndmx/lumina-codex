@@ -3,6 +3,7 @@
 import { startTransition, useEffect, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
 import { CodexChamber } from "@/components/codex-chamber";
+import { PrincipleChapterOverlay } from "@/components/principle-chapter-overlay";
 import { PrincipleChapterStage } from "@/components/principle-chapter-stage";
 import {
   CodexScrollRail,
@@ -26,6 +27,7 @@ export function LuminaHome() {
   const [activeChapterId, setActiveChapterId] = useState<CodexChapterId>("entry");
   const [pageProgress, setPageProgress] = useState(0);
   const [sceneMode, setSceneMode] = useState<SceneMode>("preview");
+  const [chapterOverlayOpen, setChapterOverlayOpen] = useState(false);
 
   const activePrinciple = useMemo(
     () => principles.find((principle) => principle.key === activePrincipleKey) ?? principles[0],
@@ -119,8 +121,27 @@ export function LuminaHome() {
     }
   }
 
+  function enterChapter(principleKey: string, options?: { era?: EraKey }) {
+    focusCodex(principleKey, {
+      era: options?.era,
+      sceneMode: "theater",
+      scrollToEntry: false,
+    });
+    setChapterOverlayOpen(true);
+  }
+
+  function closeChapter() {
+    setChapterOverlayOpen(false);
+  }
+
   return (
-    <main className="lumina-page" data-active-chapter={activeChapterId} data-scene-mode={sceneMode} style={pageStyle}>
+    <main
+      className="lumina-page"
+      data-active-chapter={activeChapterId}
+      data-scene-mode={sceneMode}
+      data-overlay-open={chapterOverlayOpen ? "true" : "false"}
+      style={pageStyle}
+    >
       <div className="lumina-page__veil" />
       <div className="lumina-page__noise" />
 
@@ -128,7 +149,9 @@ export function LuminaHome() {
         <header className="lumina-nav">
           <div>
             <p className="lumina-brand">Lumina Codex</p>
-            <p className="lumina-subbrand">A living atelier for design systems, motion, atmosphere, and narrative control.</p>
+            <p className="lumina-subbrand">
+              A living atelier for design systems, motion, atmosphere, and narrative control.
+            </p>
           </div>
 
           <nav className="lumina-nav__links" aria-label="Primary">
@@ -166,7 +189,9 @@ export function LuminaHome() {
               </div>
               <div>
                 <dt>Current move</dt>
-                <dd>{activeEra.name} {sceneMode === "theater" ? "theater" : "preview"}</dd>
+                <dd>
+                  {activeEra.name} {sceneMode === "theater" ? "theater" : "preview"}
+                </dd>
               </div>
               <div>
                 <dt>Next upgrade</dt>
@@ -186,7 +211,10 @@ export function LuminaHome() {
           />
         </section>
 
-        <section id="manifesto" className={["lumina-editorial", activeChapterId === "manifesto" ? "is-active" : ""].join(" ")}>
+        <section
+          id="manifesto"
+          className={["lumina-editorial", activeChapterId === "manifesto" ? "is-active" : ""].join(" ")}
+        >
           <article className="lumina-editorial__panel">
             <p className="lumina-kicker">Design ethos</p>
             <h2>The site itself is already behaving like the case study.</h2>
@@ -207,13 +235,19 @@ export function LuminaHome() {
           </article>
         </section>
 
-        <section id="principles" className={["lumina-principles", activeChapterId === "principles" ? "is-active" : ""].join(" ")}>
+        <section
+          id="principles"
+          className={["lumina-principles", activeChapterId === "principles" ? "is-active" : ""].join(" ")}
+        >
           <div className="lumina-principles__grid">
             {principles.map((principle) => {
               const isActive = principle.key === activePrincipleKey;
 
               return (
-                <article key={principle.key} className={["lumina-principle-card", isActive ? "is-active" : ""].join(" ")}>
+                <article
+                  key={principle.key}
+                  className={["lumina-principle-card", isActive ? "is-active" : ""].join(" ")}
+                >
                   <p className="lumina-kicker">{principle.eyebrow}</p>
                   <h2>{principle.name}</h2>
                   <p>{principle.blurb}</p>
@@ -288,6 +322,13 @@ export function LuminaHome() {
               >
                 Keep this principle live
               </button>
+              <button
+                type="button"
+                className="lumina-button lumina-button--secondary"
+                onClick={() => enterChapter(activeExhibit.principleKey, { era: activeExhibit.recommendedEra })}
+              >
+                Open full chapter
+              </button>
             </div>
           </aside>
 
@@ -303,6 +344,7 @@ export function LuminaHome() {
                 sceneMode: "theater",
               })
             }
+            onEnterChapter={() => enterChapter(activePrinciple.key)}
           />
         </section>
 
@@ -322,6 +364,23 @@ export function LuminaHome() {
           </div>
         </section>
       </div>
+
+      {chapterOverlayOpen ? (
+        <PrincipleChapterOverlay
+          activeEra={selectedEra}
+          activeExhibit={activeExhibit}
+          activePrinciple={activePrinciple}
+          sceneMode={sceneMode}
+          onClose={closeChapter}
+          onSetPreview={() => {
+            focusCodex(activePrinciple.key, { sceneMode: "preview" });
+            closeChapter();
+          }}
+          onSetTheater={(era) => {
+            focusCodex(activePrinciple.key, { era, sceneMode: "theater" });
+          }}
+        />
+      ) : null}
     </main>
   );
 }

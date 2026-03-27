@@ -9,6 +9,7 @@ type PrincipleChapterStageProps = {
   sceneMode: SceneMode;
   onSetPreview: () => void;
   onSetTheater: (era?: EraKey) => void;
+  onEnterChapter: () => void;
 };
 
 const chapterDetails: Record<
@@ -79,6 +80,7 @@ export function PrincipleChapterStage({
   sceneMode,
   onSetPreview,
   onSetTheater,
+  onEnterChapter,
 }: PrincipleChapterStageProps) {
   const details = chapterDetails[activePrinciple.key];
   const eraName = eras.find((era) => era.key === activeEra)?.name ?? activeEra;
@@ -138,6 +140,9 @@ export function PrincipleChapterStage({
           <p className="lumina-kicker">Conduct this chapter</p>
           <p>{activeExhibit.sceneCue}</p>
           <div className="lumina-stage-card__controls">
+            <button type="button" className="lumina-button lumina-button--secondary" onClick={onEnterChapter}>
+              Enter full chapter
+            </button>
             <button type="button" className="lumina-button lumina-button--secondary" onClick={onSetPreview}>
               Return to Preview
             </button>
