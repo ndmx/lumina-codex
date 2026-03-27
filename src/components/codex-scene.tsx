@@ -25,6 +25,8 @@ type PointerState = {
   y: number;
 };
 
+type SceneMode = "preview" | "theater";
+
 type CodexSceneProps = {
   activePrincipleKey: string;
   balanceCycle: number;
@@ -32,6 +34,7 @@ type CodexSceneProps = {
   liteMode: boolean;
   pointer: PointerState;
   scrollProgress: number;
+  sceneMode: SceneMode;
 };
 
 type Palette = {
@@ -215,18 +218,28 @@ function CameraRig({
   liteMode,
   pointer,
   scrollProgress,
+  sceneMode,
 }: {
   activePrincipleKey: string;
   liteMode: boolean;
   pointer: PointerState;
   scrollProgress: number;
+  sceneMode: SceneMode;
 }) {
   useFrame((state) => {
     const rigCamera = state.camera as PerspectiveCameraType;
     const influence = activeOffsets[activePrincipleKey] ?? 0;
-    const targetX = (pointer.x - 0.5) * (liteMode ? 0.9 : 1.6) + Math.sin(influence) * 0.18;
-    const targetY = (0.5 - pointer.y) * (liteMode ? 0.7 : 1.3) + Math.cos(influence) * 0.12;
-    const narrativeDrift = scrollProgress * (liteMode ? 0.24 : 0.52);
+    const theaterBoost = sceneMode === "theater" ? 1 : 0;
+    const targetX =
+      (pointer.x - 0.5) * (liteMode ? 0.9 : 1.6) +
+      Math.sin(influence) * 0.18 +
+      theaterBoost * 0.08;
+    const targetY =
+      (0.5 - pointer.y) * (liteMode ? 0.7 : 1.3) +
+      Math.cos(influence) * 0.12 +
+      theaterBoost * 0.04;
+    const narrativeDrift =
+      scrollProgress * (liteMode ? 0.24 : 0.52) + theaterBoost * (liteMode ? 0.08 : 0.22);
     const targetZ =
       activePrincipleKey === "contrast" ? (liteMode ? 8 : 7.55) : liteMode ? 8.45 : 8.15;
 
@@ -238,15 +251,15 @@ function CameraRig({
     );
     rigCamera.position.z = THREE.MathUtils.lerp(
       rigCamera.position.z,
-      targetZ - scrollProgress * 0.28,
+      targetZ - scrollProgress * 0.28 - theaterBoost * 0.26,
       0.04,
     );
     rigCamera.rotation.z = THREE.MathUtils.lerp(
       rigCamera.rotation.z,
-      (scrollProgress - 0.35) * 0.05,
+      (scrollProgress - 0.35) * 0.05 + theaterBoost * 0.03,
       0.035,
     );
-    rigCamera.lookAt(0, scrollProgress * 0.45, 0);
+    rigCamera.lookAt(0, scrollProgress * 0.45 + theaterBoost * 0.18, 0);
   });
 
   return null;
@@ -257,11 +270,13 @@ function NarrativeBackdrop({
   liteMode,
   palette,
   scrollProgress,
+  sceneMode,
 }: {
   activePrincipleKey: string;
   liteMode: boolean;
   palette: Palette;
   scrollProgress: number;
+  sceneMode: SceneMode;
 }) {
   const meshRef = useRef<Mesh>(null);
   const material = useMemo(() => {
@@ -296,14 +311,16 @@ function NarrativeBackdrop({
 
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
-    const focus = (focusStrengths[activePrincipleKey] ?? 1) + scrollProgress * 0.24;
+    const theaterBoost = sceneMode === "theater" ? 1 : 0;
+    const focus =
+      (focusStrengths[activePrincipleKey] ?? 1) + scrollProgress * 0.24 + theaterBoost * 0.32;
 
     if (meshRef.current) {
-      meshRef.current.position.y = scrollProgress * 0.85;
-      meshRef.current.position.z = -5.6 + scrollProgress * 0.2;
-      meshRef.current.rotation.z = Math.sin(t * 0.14) * 0.09;
-      meshRef.current.scale.x = 1 + scrollProgress * 0.12;
-      meshRef.current.scale.y = 1 + scrollProgress * 0.18;
+      meshRef.current.position.y = scrollProgress * 0.85 + theaterBoost * 0.25;
+      meshRef.current.position.z = -5.6 + scrollProgress * 0.2 + theaterBoost * 0.16;
+      meshRef.current.rotation.z = Math.sin(t * 0.14) * 0.09 + theaterBoost * 0.03;
+      meshRef.current.scale.x = 1 + scrollProgress * 0.12 + theaterBoost * 0.18;
+      meshRef.current.scale.y = 1 + scrollProgress * 0.18 + theaterBoost * 0.24;
     }
 
     const backdropMaterial = materialRef.current;
@@ -799,11 +816,14 @@ function PostEffects({
   activePrincipleKey,
   liteMode,
   scrollProgress,
+  sceneMode,
 }: {
   activePrincipleKey: string;
   liteMode: boolean;
   scrollProgress: number;
+  sceneMode: SceneMode;
 }) {
+  const theaterBoost = sceneMode === "theater" ? 0.22 : 0;
   const bloomIntensity =
     activePrincipleKey === "contrast" ? 1.1 : activePrincipleKey === "balance" ? 0.92 : 0.82;
 
@@ -815,12 +835,12 @@ function PostEffects({
         luminanceSmoothing={0.48}
         intensity={
           liteMode
-            ? bloomIntensity * 0.6 + scrollProgress * 0.08
-            : bloomIntensity + scrollProgress * 0.2
+            ? bloomIntensity * 0.6 + scrollProgress * 0.08 + theaterBoost * 0.12
+            : bloomIntensity + scrollProgress * 0.2 + theaterBoost
         }
       />
-      <Noise opacity={liteMode ? 0.01 : 0.022} />
-      <Vignette eskil={false} offset={0.18} darkness={liteMode ? 0.46 : 0.58} />
+      <Noise opacity={liteMode ? 0.01 : 0.022 + theaterBoost * 0.02} />
+      <Vignette eskil={false} offset={0.18} darkness={liteMode ? 0.46 : 0.58 + theaterBoost * 0.12} />
     </EffectComposer>
   );
 }
@@ -832,10 +852,12 @@ const SceneContent = memo(function SceneContent({
   liteMode,
   pointer,
   scrollProgress,
+  sceneMode,
 }: CodexSceneProps) {
   const palette = useMemo(() => palettes[era], [era]);
   const lightBoost = activePrincipleKey === "contrast" ? 1.25 : 1;
-  const narrativeBoost = 1 + scrollProgress * 0.2;
+  const theaterBoost = sceneMode === "theater" ? 1 : 0;
+  const narrativeBoost = 1 + scrollProgress * 0.2 + theaterBoost * 0.16;
 
   return (
     <>
@@ -864,19 +886,25 @@ const SceneContent = memo(function SceneContent({
         activePrincipleKey={activePrincipleKey}
         liteMode={liteMode}
         scrollProgress={scrollProgress}
+        sceneMode={sceneMode}
       />
       <NarrativeBackdrop
         activePrincipleKey={activePrincipleKey}
         liteMode={liteMode}
         palette={palette}
         scrollProgress={scrollProgress}
+        sceneMode={sceneMode}
       />
       {liteMode ? null : <Environment preset="sunset" />}
       <Sparkles
-        count={liteMode ? 64 : 140}
-        scale={liteMode ? [8, 6, 6] : [10, 8 + scrollProgress * 2, 8]}
-        size={liteMode ? 1.8 : 2.6 + scrollProgress * 0.4}
-        speed={liteMode ? 0.28 : 0.45 + scrollProgress * 0.1}
+        count={liteMode ? 64 : sceneMode === "theater" ? 170 : 140}
+        scale={
+          liteMode
+            ? [8, 6, 6]
+            : [10 + theaterBoost * 1.2, 8 + scrollProgress * 2, 8 + theaterBoost * 1.4]
+        }
+        size={liteMode ? 1.8 : 2.6 + scrollProgress * 0.4 + theaterBoost * 0.25}
+        speed={liteMode ? 0.28 : 0.45 + scrollProgress * 0.1 + theaterBoost * 0.12}
         color={palette.sparkles}
       />
       <EnergyTrails
@@ -899,7 +927,12 @@ const SceneContent = memo(function SceneContent({
         palette={palette}
         scrollProgress={scrollProgress}
       />
-      <PostEffects activePrincipleKey={activePrincipleKey} liteMode={liteMode} scrollProgress={scrollProgress} />
+      <PostEffects
+        activePrincipleKey={activePrincipleKey}
+        liteMode={liteMode}
+        scrollProgress={scrollProgress}
+        sceneMode={sceneMode}
+      />
     </>
   );
 });

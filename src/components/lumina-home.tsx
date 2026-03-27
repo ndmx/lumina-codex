@@ -16,12 +16,15 @@ import {
   type EraKey,
 } from "@/components/codex-content";
 
+type SceneMode = "preview" | "theater";
+
 export function LuminaHome() {
   const [selectedEra, setSelectedEra] = useState<EraKey>("atelier");
   const [activePrincipleKey, setActivePrincipleKey] = useState("balance");
   const [balanceCycle, setBalanceCycle] = useState(1);
   const [activeChapterId, setActiveChapterId] = useState<CodexChapterId>("entry");
   const [pageProgress, setPageProgress] = useState(0);
+  const [sceneMode, setSceneMode] = useState<SceneMode>("preview");
 
   const activePrinciple = useMemo(
     () => principles.find((principle) => principle.key === activePrincipleKey) ?? principles[0],
@@ -92,11 +95,18 @@ export function LuminaHome() {
     };
   }, []);
 
-  function focusCodex(principleKey: string, options?: { era?: EraKey; scrollToEntry?: boolean }) {
+  function focusCodex(
+    principleKey: string,
+    options?: { era?: EraKey; scrollToEntry?: boolean; sceneMode?: SceneMode },
+  ) {
     setActivePrincipleKey(principleKey);
 
     if (options?.era) {
       setSelectedEra(options.era);
+    }
+
+    if (options?.sceneMode) {
+      setSceneMode(options.sceneMode);
     }
 
     if (principleKey === "balance") {
@@ -109,7 +119,7 @@ export function LuminaHome() {
   }
 
   return (
-    <main className="lumina-page" data-active-chapter={activeChapterId} style={pageStyle}>
+    <main className="lumina-page" data-active-chapter={activeChapterId} data-scene-mode={sceneMode} style={pageStyle}>
       <div className="lumina-page__veil" />
       <div className="lumina-page__noise" />
 
@@ -155,11 +165,11 @@ export function LuminaHome() {
               </div>
               <div>
                 <dt>Current move</dt>
-                <dd>{activeEra.name} exhibit</dd>
+                <dd>{activeEra.name} {sceneMode === "theater" ? "theater" : "preview"}</dd>
               </div>
               <div>
                 <dt>Next upgrade</dt>
-                <dd>Chapter-linked transitions</dd>
+                <dd>Scene-specific chapters</dd>
               </div>
             </dl>
           </div>
@@ -168,8 +178,10 @@ export function LuminaHome() {
             selectedEra={selectedEra}
             onSelectEra={setSelectedEra}
             activePrincipleKey={activePrincipleKey}
-            onSelectPrinciple={(principleKey) => focusCodex(principleKey)}
+            onSelectPrinciple={(principleKey) => focusCodex(principleKey, { sceneMode: "preview" })}
             balanceCycle={balanceCycle}
+            sceneMode={sceneMode}
+            sceneCue={activeExhibit.sceneCue}
           />
         </section>
 
@@ -188,8 +200,8 @@ export function LuminaHome() {
             <p className="lumina-kicker">Narrative strategy</p>
             <h2>Every section should deepen the same spell instead of resetting it.</h2>
             <p>
-              The chamber now responds to era, principle, and scroll depth. The homepage is shifting into a real chapter
-              sequence so scroll becomes a form of direction, not just movement down the page.
+              The chamber now responds to era, principle, scroll depth, and scene mode. The homepage is shifting into a
+              real chapter sequence so scroll becomes a form of direction, not just movement down the page.
             </p>
           </article>
         </section>
@@ -212,7 +224,12 @@ export function LuminaHome() {
                   <button
                     type="button"
                     className="lumina-principle-card__trigger"
-                    onClick={() => focusCodex(principle.key, { scrollToEntry: true })}
+                    onClick={() =>
+                      focusCodex(principle.key, {
+                        scrollToEntry: true,
+                        sceneMode: "preview",
+                      })
+                    }
                   >
                     Demonstrate in chamber
                   </button>
@@ -252,6 +269,7 @@ export function LuminaHome() {
                   focusCodex(activeExhibit.principleKey, {
                     era: activeExhibit.recommendedEra,
                     scrollToEntry: true,
+                    sceneMode: "theater",
                   })
                 }
               >
@@ -260,7 +278,12 @@ export function LuminaHome() {
               <button
                 type="button"
                 className="lumina-button lumina-button--secondary"
-                onClick={() => focusCodex(activeExhibit.principleKey, { scrollToEntry: false })}
+                onClick={() =>
+                  focusCodex(activeExhibit.principleKey, {
+                    sceneMode: "theater",
+                    scrollToEntry: false,
+                  })
+                }
               >
                 Keep this principle live
               </button>

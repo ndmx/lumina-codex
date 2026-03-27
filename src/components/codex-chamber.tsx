@@ -6,6 +6,7 @@ import { eras, principles, type EraKey } from "@/components/codex-content";
 import { CodexScene } from "@/components/codex-scene";
 
 type ChamberStyle = CSSProperties;
+type SceneMode = "preview" | "theater";
 
 type CodexChamberProps = {
   selectedEra: EraKey;
@@ -13,6 +14,8 @@ type CodexChamberProps = {
   activePrincipleKey: string;
   onSelectPrinciple: (principleKey: string) => void;
   balanceCycle: number;
+  sceneMode: SceneMode;
+  sceneCue: string;
 };
 
 const eraClassMap: Record<EraKey, string> = {
@@ -34,6 +37,8 @@ export function CodexChamber({
   activePrincipleKey,
   onSelectPrinciple,
   balanceCycle,
+  sceneMode,
+  sceneCue,
 }: CodexChamberProps) {
   const [pointer, setPointer] = useState({ x: 0.5, y: 0.32 });
   const [liteMode, setLiteMode] = useState(false);
@@ -56,10 +61,10 @@ export function CodexChamber({
 
   const liveAnnouncement = useMemo(
     () =>
-      `${activePrinciple.name} active in ${activeEra.name}. ${interactionNotes[activePrincipleKey]} ${
+      `${activePrinciple.name} active in ${activeEra.name}. ${sceneMode === "theater" ? "Theater mode active." : "Preview mode active."} ${interactionNotes[activePrincipleKey]} ${
         liteMode ? "Lite scene active." : "Full scene active."
       } Narrative depth ${scrollPercent} percent.`,
-    [activeEra.name, activePrinciple.name, activePrincipleKey, liteMode, scrollPercent],
+    [activeEra.name, activePrinciple.name, activePrincipleKey, liteMode, sceneMode, scrollPercent],
   );
 
   useEffect(() => {
@@ -102,6 +107,7 @@ export function CodexChamber({
       onPointerMove={handlePointerMove}
       onPointerLeave={() => setPointer({ x: 0.5, y: 0.32 })}
       aria-labelledby="codex-heading"
+      data-scene-mode={sceneMode}
     >
       <p className="lumina-sr-only" aria-live="polite">
         {liveAnnouncement}
@@ -138,6 +144,7 @@ export function CodexChamber({
 
         <div className="lumina-chamber__viewport">
           <div className="lumina-chamber__hud" aria-hidden="true">
+            <span>{sceneMode === "theater" ? "Theater mode" : "Preview mode"}</span>
             <span>Depth {scrollPercent}%</span>
             <span>{liteMode ? "Lite scene" : "Full scene"}</span>
           </div>
@@ -149,6 +156,7 @@ export function CodexChamber({
             liteMode={liteMode}
             pointer={pointer}
             scrollProgress={scrollProgress}
+            sceneMode={sceneMode}
           />
 
           {principles.map((principle) => {
@@ -187,9 +195,9 @@ export function CodexChamber({
           </div>
 
           <div className="lumina-era-note">
-            <p className="lumina-kicker">Era mood</p>
-            <h3>{activeEra.mood}</h3>
-            <p>{activeEra.descriptor}</p>
+            <p className="lumina-kicker">Scene cue</p>
+            <h3>{sceneMode === "theater" ? "Exhibit mode engaged" : activeEra.mood}</h3>
+            <p>{sceneMode === "theater" ? sceneCue : activeEra.descriptor}</p>
             <p className="lumina-render-note">
               {liteMode ? "Lite scene active" : "Full scene active"} • narrative depth {scrollPercent}%.
             </p>

@@ -79,3 +79,25 @@
 
 ### Next recommended move
 - Introduce principle-specific scene variants or micro-routes so each exhibit can change more than the active principle state and begin to feel like its own authored chapter.
+
+## 2026-03-27 — Theater Mode Pass
+
+### What changed
+- Added an explicit chamber `theater` mode alongside the lighter `preview` mode.
+- The principle theater can now push a stronger scene variant instead of only selecting a principle.
+- The chamber HUD, footer, and page shell now reflect whether the codex is in preview or exhibit mode.
+
+### Scene-specific upgrades
+- `src/components/codex-scene.tsx` now intensifies camera drift, backdrop focus, sparkles, and post-processing when theater mode is active.
+- `src/components/codex-chamber.tsx` now exposes scene mode and cue text to the chamber UI.
+
+### Experience-specific upgrades
+- `src/components/lumina-home.tsx` now controls scene mode and uses the exhibit panel to switch into theater mode.
+- `src/app/globals.css` now adds stronger shell styling when theater mode is engaged.
+
+### Verification
+- `npm run lint` — passing
+- `npm run build` — passing
+
+### Next recommended move
+- Split the principle theater into deeper authored chapter states so each exhibit can drive unique layouts, copy density, or route-like transitions beyond the shared homepage shell.
