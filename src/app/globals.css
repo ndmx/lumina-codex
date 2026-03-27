@@ -1,0 +1,1034 @@
+@import "tailwindcss";
+
+:root {
+  --color-void: #06070a;
+  --color-ink: #101217;
+  --color-ivory: #f5eee5;
+  --color-aura: #73f2df;
+  --color-spark: #ff7d60;
+  --color-mist: rgba(255, 243, 230, 0.5);
+  --shadow-atmosphere: 0 32px 120px rgba(0, 0, 0, 0.42);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, rgba(255, 248, 236, 0.16), transparent 26%),
+    radial-gradient(circle at 20% 18%, rgba(115, 242, 223, 0.08), transparent 22%),
+    linear-gradient(180deg, #161112 0%, #090b0e 38%, #050608 100%);
+  color: var(--color-ivory);
+  font-family: var(--font-body), "Segoe UI", sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}
+
+.lumina-page {
+  position: relative;
+  min-height: 100vh;
+  overflow: clip;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 244, 233, 0.14), transparent 28%),
+    radial-gradient(circle at 10% 10%, rgba(115, 242, 223, 0.08), transparent 20%),
+    linear-gradient(180deg, #161112 0%, #08090b 32%, #050608 100%);
+}
+
+.lumina-page__veil,
+.lumina-page__noise {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+}
+
+.lumina-page__veil {
+  background:
+    radial-gradient(circle at top, rgba(255, 247, 238, 0.14), transparent 30%),
+    radial-gradient(circle at 50% 24%, rgba(115, 242, 223, 0.08), transparent 20%);
+  filter: blur(10px);
+}
+
+.lumina-page__noise {
+  opacity: 0.22;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-position: center;
+  background-size: 72px 72px;
+  mask-image: radial-gradient(circle at center, black 45%, transparent 86%);
+}
+
+.lumina-shell {
+  position: relative;
+  z-index: 1;
+  width: min(1280px, calc(100vw - 2rem));
+  margin: 0 auto;
+  padding: 1.25rem 0 4rem;
+}
+
+.lumina-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 0 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lumina-brand,
+.lumina-kicker {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-size: 0.72rem;
+  color: rgba(245, 238, 229, 0.56);
+}
+
+.lumina-subbrand {
+  margin: 0.7rem 0 0;
+  font-size: 0.96rem;
+  color: rgba(245, 238, 229, 0.7);
+}
+
+.lumina-nav__links {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.lumina-nav__links a,
+.lumina-button,
+.lumina-toggle-group button {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    background-color 220ms ease,
+    color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.lumina-nav__links a {
+  padding: 0.8rem 1rem;
+  font-size: 0.92rem;
+  color: rgba(245, 238, 229, 0.74);
+  backdrop-filter: blur(20px);
+}
+
+.lumina-nav__links a:hover,
+.lumina-nav__links a:focus-visible {
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  outline: none;
+}
+
+.lumina-hero {
+  display: grid;
+  align-items: center;
+  gap: 2rem;
+  padding: 4rem 0 2rem;
+}
+
+.lumina-hero__copy {
+  max-width: 41rem;
+}
+
+.lumina-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-size: 0.72rem;
+  color: var(--color-aura);
+  backdrop-filter: blur(16px);
+}
+
+.lumina-hero h1,
+.lumina-editorial h2,
+.lumina-principle-card h2,
+.lumina-roadmap h2,
+.lumina-panel-title,
+.lumina-status h3,
+.lumina-era-note h3 {
+  margin: 0;
+  font-family: var(--font-display), "Times New Roman", serif;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+
+.lumina-hero h1 {
+  margin-top: 1.35rem;
+  font-size: clamp(3.5rem, 7vw, 7.4rem);
+  line-height: 0.92;
+  text-wrap: balance;
+}
+
+.lumina-lede {
+  max-width: 39rem;
+  margin: 1.6rem 0 0;
+  font-size: 1.05rem;
+  line-height: 1.95;
+  color: rgba(245, 238, 229, 0.76);
+}
+
+.lumina-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-top: 2rem;
+}
+
+.lumina-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0 1.35rem;
+  font-size: 0.94rem;
+  font-weight: 700;
+}
+
+.lumina-button:hover,
+.lumina-button:focus-visible,
+.lumina-toggle-group button:hover,
+.lumina-toggle-group button:focus-visible {
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.lumina-button--primary {
+  background: var(--color-aura);
+  color: #071010;
+  box-shadow: 0 14px 50px rgba(115, 242, 223, 0.24);
+}
+
+.lumina-button--secondary {
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(245, 238, 229, 0.84);
+}
+
+.lumina-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 2.4rem 0 0;
+}
+
+.lumina-facts div {
+  padding: 1.15rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.4rem;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px);
+}
+
+.lumina-facts dt {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(245, 238, 229, 0.48);
+}
+
+.lumina-facts dd {
+  margin: 0.85rem 0 0;
+  font-size: 1.15rem;
+  color: white;
+}
+
+.lumina-chamber {
+  --pointer-x: 0.5;
+  --pointer-y: 0.32;
+  --accent-color: var(--color-aura);
+  position: relative;
+  min-height: 44rem;
+  border-radius: 2.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at calc(var(--pointer-x) * 100%) calc(var(--pointer-y) * 100%), rgba(255, 255, 255, 0.16), transparent 18%),
+    radial-gradient(circle at top, rgba(255, 244, 232, 0.52), transparent 28%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  box-shadow: var(--shadow-atmosphere);
+  isolation: isolate;
+  backdrop-filter: blur(24px);
+}
+
+.lumina-chamber__glow,
+.lumina-chamber__mist,
+.lumina-chamber__grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.lumina-chamber__glow {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 248, 236, 0.95), rgba(255, 248, 236, 0.22), transparent 48%),
+    radial-gradient(circle at 50% 48%, color-mix(in srgb, var(--accent-color) 38%, transparent), transparent 30%);
+  opacity: 0.92;
+  filter: blur(34px);
+}
+
+.lumina-chamber__mist {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 244, 232, 0.28), transparent 40%),
+    radial-gradient(circle at 20% 35%, rgba(115, 242, 223, 0.18), transparent 22%),
+    radial-gradient(circle at 80% 34%, rgba(255, 125, 96, 0.16), transparent 22%);
+  opacity: 0.7;
+}
+
+.lumina-chamber__grid {
+  opacity: 0.24;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 76px 76px;
+  mask-image: radial-gradient(circle at center, black 30%, transparent 88%);
+}
+
+.lumina-chamber__panel {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: inherit;
+  padding: 1.25rem;
+}
+
+.lumina-chamber__controls,
+.lumina-chamber__footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: end;
+}
+
+.lumina-panel-title {
+  margin-top: 0.45rem;
+  font-size: clamp(2rem, 4.2vw, 3.4rem);
+}
+
+.lumina-toggle-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.55rem;
+}
+
+.lumina-toggle-group button {
+  min-height: 2.8rem;
+  padding: 0 0.95rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(245, 238, 229, 0.76);
+}
+
+.lumina-toggle-group .is-active {
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.14);
+  color: white;
+  box-shadow: 0 12px 40px rgba(255, 255, 255, 0.08);
+}
+
+.lumina-chamber__viewport {
+  position: relative;
+  margin: 1rem 0;
+  min-height: 28rem;
+}
+
+.lumina-halo,
+.lumina-axis,
+.lumina-filament {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.lumina-halo {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.lumina-halo--outer {
+  width: min(72%, 30rem);
+  aspect-ratio: 1;
+  box-shadow: 0 0 60px color-mix(in srgb, var(--accent-color) 12%, transparent);
+}
+
+.lumina-halo--inner {
+  width: min(44%, 19rem);
+  aspect-ratio: 1;
+  opacity: 0.72;
+}
+
+.lumina-axis--x {
+  width: min(78%, 34rem);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.54), transparent);
+}
+
+.lumina-axis--y {
+  width: 1px;
+  height: min(88%, 30rem);
+  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.44), transparent);
+}
+
+.lumina-axis--ring {
+  width: min(56%, 24rem);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  transform: translate(-50%, -50%) rotate(18deg);
+}
+
+.lumina-filament {
+  border-radius: 999px;
+  opacity: 0.85;
+  filter: blur(1px);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent-color) 72%, white), transparent);
+}
+
+.lumina-filament--one {
+  width: 58%;
+  height: 2px;
+  transform: translate(-50%, -50%) rotate(24deg);
+}
+
+.lumina-filament--two {
+  width: 54%;
+  height: 2px;
+  transform: translate(-50%, -50%) rotate(-28deg);
+}
+
+.lumina-filament--three {
+  width: 42%;
+  height: 2px;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.lumina-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(42vw, 18rem);
+  aspect-ratio: 1;
+  transform:
+    translate(-50%, -50%)
+    rotateX(calc((var(--pointer-y) - 0.5) * -10deg))
+    rotateY(calc((var(--pointer-x) - 0.5) * 20deg));
+  transform-style: preserve-3d;
+  transition: transform 280ms ease;
+}
+
+.lumina-core__shell,
+.lumina-core__prism,
+.lumina-core__flare {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+}
+
+.lumina-core__shell {
+  background:
+    radial-gradient(circle at 35% 28%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.18), transparent 48%),
+    conic-gradient(from 160deg, rgba(255, 255, 255, 0.88), color-mix(in srgb, var(--accent-color) 80%, white), rgba(255, 125, 96, 0.65), rgba(255, 255, 255, 0.85));
+  filter: blur(2px);
+  box-shadow:
+    inset 0 0 30px rgba(255, 255, 255, 0.44),
+    0 0 80px color-mix(in srgb, var(--accent-color) 30%, transparent);
+}
+
+.lumina-core__prism {
+  inset: 12%;
+  border-radius: 26%;
+  border: 1px solid rgba(255, 255, 255, 0.48);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.08)),
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.5), transparent 50%);
+  transform: rotate(45deg);
+  backdrop-filter: blur(16px);
+}
+
+.lumina-core__flare {
+  inset: -22%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent-color) 38%, white), transparent 60%);
+  filter: blur(30px);
+  opacity: 0.85;
+}
+
+.lumina-core--balanced .lumina-core__prism {
+  animation: lumina-balance-pulse 5.4s ease-in-out infinite;
+}
+
+.lumina-axis--ring {
+  animation: lumina-spin 18s linear infinite;
+}
+
+.lumina-satellite {
+  position: absolute;
+  display: grid;
+  justify-items: center;
+  gap: 0.7rem;
+  width: 7.25rem;
+  padding: 0.65rem;
+  border: 0;
+  background: transparent;
+  color: rgba(245, 238, 229, 0.9);
+  transform: translateY(0);
+  transition:
+    transform 260ms ease,
+    filter 260ms ease,
+    opacity 260ms ease;
+}
+
+.lumina-satellite:hover,
+.lumina-satellite:focus-visible,
+.lumina-satellite.is-active {
+  transform: translateY(-3px) scale(1.02);
+  filter: drop-shadow(0 0 24px color-mix(in srgb, var(--accent-color) 28%, transparent));
+  outline: none;
+}
+
+.lumina-satellite__shape {
+  width: 4.35rem;
+  height: 4.35rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background:
+    radial-gradient(circle at 32% 30%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.16), transparent 58%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.06));
+  backdrop-filter: blur(20px);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.16);
+}
+
+.lumina-satellite__meta {
+  display: grid;
+  gap: 0.15rem;
+  text-align: center;
+}
+
+.lumina-satellite__name {
+  font-weight: 700;
+}
+
+.lumina-satellite__shape-label {
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(245, 238, 229, 0.56);
+}
+
+.lumina-chamber__footer {
+  align-items: stretch;
+}
+
+.lumina-status,
+.lumina-era-note,
+.lumina-editorial__panel,
+.lumina-principle-card,
+.lumina-roadmap__item {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(8, 10, 12, 0.34);
+  backdrop-filter: blur(18px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.lumina-status,
+.lumina-era-note {
+  flex: 1;
+  border-radius: 1.45rem;
+  padding: 1rem 1.15rem;
+}
+
+.lumina-status h3,
+.lumina-era-note h3 {
+  margin-top: 0.55rem;
+  font-size: 1.5rem;
+}
+
+.lumina-status p:last-child,
+.lumina-era-note p:last-child,
+.lumina-editorial__panel p:last-child,
+.lumina-principle-card p,
+.lumina-roadmap__item p:last-child {
+  color: rgba(245, 238, 229, 0.7);
+  line-height: 1.8;
+}
+
+.lumina-editorial,
+.lumina-principles,
+.lumina-roadmap {
+  margin-top: 2rem;
+}
+
+.lumina-editorial {
+  display: grid;
+  gap: 1rem;
+}
+
+.lumina-editorial__panel {
+  border-radius: 1.85rem;
+  padding: 1.5rem;
+}
+
+.lumina-editorial h2,
+.lumina-roadmap h2 {
+  margin-top: 0.6rem;
+  font-size: clamp(2.2rem, 4vw, 3.6rem);
+  max-width: 18ch;
+}
+
+.lumina-editorial__panel p:last-child {
+  margin-bottom: 0;
+}
+
+.lumina-principles {
+  display: grid;
+  gap: 1rem;
+}
+
+.lumina-principle-card {
+  border-radius: 1.8rem;
+  padding: 1.45rem;
+}
+
+.lumina-principle-card h2 {
+  margin-top: 0.65rem;
+  font-size: 2.35rem;
+}
+
+.lumina-principle-card__footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.4rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(245, 238, 229, 0.58);
+}
+
+.lumina-roadmap__grid {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.2rem;
+}
+
+.lumina-roadmap__item {
+  border-radius: 1.7rem;
+  padding: 1.35rem;
+}
+
+.lumina-roadmap__intro {
+  max-width: 48rem;
+}
+
+.lumina-chamber--atelier {
+  background:
+    radial-gradient(circle at calc(var(--pointer-x) * 100%) calc(var(--pointer-y) * 100%), rgba(255, 255, 255, 0.14), transparent 18%),
+    radial-gradient(circle at top, rgba(255, 244, 232, 0.56), transparent 28%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+}
+
+.lumina-chamber--memphis {
+  background:
+    radial-gradient(circle at calc(var(--pointer-x) * 100%) calc(var(--pointer-y) * 100%), rgba(255, 248, 120, 0.18), transparent 18%),
+    radial-gradient(circle at top, rgba(255, 185, 227, 0.26), transparent 28%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
+}
+
+.lumina-chamber--memphis .lumina-core__shell,
+.lumina-chamber--memphis .lumina-satellite__shape {
+  border-radius: 26%;
+}
+
+.lumina-chamber--brutalist {
+  background:
+    radial-gradient(circle at calc(var(--pointer-x) * 100%) calc(var(--pointer-y) * 100%), rgba(115, 242, 223, 0.1), transparent 18%),
+    radial-gradient(circle at top, rgba(214, 227, 255, 0.12), transparent 26%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
+}
+
+.lumina-chamber--brutalist .lumina-core__prism {
+  border-radius: 18%;
+}
+
+@keyframes lumina-balance-pulse {
+  0%,
+  100% {
+    transform: rotate(45deg) scale(0.98);
+  }
+
+  35% {
+    transform: rotate(45deg) scale(1.03);
+  }
+
+  68% {
+    transform: rotate(39deg) scale(0.995);
+  }
+}
+
+@keyframes lumina-spin {
+  from {
+    transform: translate(-50%, -50%) rotate(18deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(378deg);
+  }
+}
+
+@media (min-width: 960px) {
+  .lumina-shell {
+    width: min(1360px, calc(100vw - 3rem));
+    padding-top: 1.5rem;
+  }
+
+  .lumina-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(28rem, 40rem);
+    gap: 2.5rem;
+    padding-top: 5rem;
+  }
+
+  .lumina-editorial {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lumina-principles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lumina-roadmap__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 959px) {
+  .lumina-shell {
+    width: min(100vw - 1.25rem, 48rem);
+  }
+
+  .lumina-nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .lumina-facts {
+    grid-template-columns: 1fr;
+  }
+
+  .lumina-chamber {
+    min-height: 39rem;
+  }
+
+  .lumina-chamber__controls,
+  .lumina-chamber__footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .lumina-toggle-group {
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .lumina-core {
+    transform: translate(-50%, -50%);
+  }
+}
+
+.lumina-chamber__viewport {
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.lumina-scene {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.lumina-scene canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.lumina-scene__vignette,
+.lumina-scene__scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.lumina-scene__vignette {
+  background: radial-gradient(circle at center, transparent 38%, rgba(5, 6, 8, 0.46) 100%);
+}
+
+.lumina-scene__scrim {
+  background:
+    radial-gradient(circle at 50% 12%, rgba(255, 247, 238, 0.26), transparent 28%),
+    linear-gradient(180deg, rgba(5, 6, 8, 0.12), rgba(5, 6, 8, 0.42));
+  mix-blend-mode: screen;
+  opacity: 0.75;
+}
+
+.lumina-satellite {
+  z-index: 2;
+}
+
+.lumina-satellite__shape {
+  background:
+    radial-gradient(circle at 32% 30%, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.2), transparent 58%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.03));
+}
+
+.lumina-render-note {
+  margin-top: 0.8rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(245, 238, 229, 0.52);
+}
+
+.lumina-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.lumina-rail {
+  position: sticky;
+  top: 1rem;
+  z-index: 3;
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 1.25rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.45rem;
+  background: rgba(8, 10, 12, 0.38);
+  backdrop-filter: blur(18px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.lumina-rail__header,
+.lumina-rail__focus,
+.lumina-rail__chapters a,
+.lumina-chamber__hud {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.lumina-rail__header,
+.lumina-chamber__hud {
+  align-items: center;
+}
+
+.lumina-rail__percent {
+  margin: 0;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(245, 238, 229, 0.72);
+}
+
+.lumina-rail__meter {
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.lumina-rail__meter span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: left center;
+  background: linear-gradient(90deg, var(--color-aura), rgba(255, 125, 96, 0.9));
+}
+
+.lumina-rail__focus {
+  flex-direction: column;
+}
+
+.lumina-rail__focus h2 {
+  margin: 0;
+  font-family: var(--font-display), "Times New Roman", serif;
+  font-size: clamp(1.6rem, 3vw, 2.35rem);
+  letter-spacing: -0.04em;
+}
+
+.lumina-rail__focus p:last-child {
+  margin: 0;
+  color: rgba(245, 238, 229, 0.7);
+  line-height: 1.7;
+}
+
+.lumina-rail__chapters {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.lumina-rail__chapters a {
+  align-items: flex-start;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.1rem;
+  background: rgba(255, 255, 255, 0.03);
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    background-color 220ms ease,
+    color 220ms ease;
+}
+
+.lumina-rail__chapters a span:first-child {
+  min-width: 6rem;
+  font-weight: 700;
+}
+
+.lumina-rail__chapters a span:last-child {
+  color: rgba(245, 238, 229, 0.62);
+  line-height: 1.6;
+}
+
+.lumina-rail__chapters a:hover,
+.lumina-rail__chapters a:focus-visible,
+.lumina-rail__chapters a.is-active {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  outline: none;
+}
+
+.lumina-chamber__hud {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  z-index: 2;
+  min-width: min(16rem, calc(100% - 2rem));
+  padding: 0.7rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  background: rgba(9, 11, 14, 0.4);
+  backdrop-filter: blur(16px);
+  color: rgba(245, 238, 229, 0.72);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 960px) {
+  .lumina-rail {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    align-items: start;
+  }
+
+  .lumina-rail__focus {
+    max-width: 23rem;
+  }
+}
+
+@media (max-width: 959px) {
+  .lumina-rail {
+    position: relative;
+    top: 0;
+  }
+
+  .lumina-rail__header,
+  .lumina-rail__chapters a,
+  .lumina-chamber__hud {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .lumina-chamber__hud {
+    min-width: auto;
+    border-radius: 1rem;
+  }
+}
+
+.lumina-principle-card.is-active {
+  border-color: rgba(115, 242, 223, 0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 16px 40px rgba(115, 242, 223, 0.08);
+}
+
+.lumina-principle-card__statement {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(245, 238, 229, 0.58);
+}
+
+.lumina-principle-card__trigger {
+  width: 100%;
+  min-height: 3rem;
+  margin-top: 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(245, 238, 229, 0.9);
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    background-color 220ms ease,
+    color 220ms ease;
+}
+
+.lumina-principle-card__trigger:hover,
+.lumina-principle-card__trigger:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.08);
+  outline: none;
+}
