@@ -16,6 +16,7 @@ type CodexChamberProps = {
   balanceCycle: number;
   sceneMode: SceneMode;
   sceneCue: string;
+  chapterOverlayOpen: boolean;
 };
 
 const eraClassMap: Record<EraKey, string> = {
@@ -39,6 +40,7 @@ export function CodexChamber({
   balanceCycle,
   sceneMode,
   sceneCue,
+  chapterOverlayOpen,
 }: CodexChamberProps) {
   const [pointer, setPointer] = useState({ x: 0.5, y: 0.32 });
   const [liteMode, setLiteMode] = useState(false);
@@ -61,10 +63,18 @@ export function CodexChamber({
 
   const liveAnnouncement = useMemo(
     () =>
-      `${activePrinciple.name} active in ${activeEra.name}. ${sceneMode === "theater" ? "Theater mode active." : "Preview mode active."} ${interactionNotes[activePrincipleKey]} ${
+      `${activePrinciple.name} active in ${activeEra.name}. ${sceneMode === "theater" ? "Theater mode active." : "Preview mode active."} ${chapterOverlayOpen ? "Full chapter open." : "Chapter shell closed."} ${interactionNotes[activePrincipleKey]} ${
         liteMode ? "Lite scene active." : "Full scene active."
       } Narrative depth ${scrollPercent} percent.`,
-    [activeEra.name, activePrinciple.name, activePrincipleKey, liteMode, sceneMode, scrollPercent],
+    [
+      activeEra.name,
+      activePrinciple.name,
+      activePrincipleKey,
+      chapterOverlayOpen,
+      liteMode,
+      sceneMode,
+      scrollPercent,
+    ],
   );
 
   useEffect(() => {
@@ -146,7 +156,7 @@ export function CodexChamber({
           <div className="lumina-chamber__hud" aria-hidden="true">
             <span>{sceneMode === "theater" ? "Theater mode" : "Preview mode"}</span>
             <span>Depth {scrollPercent}%</span>
-            <span>{liteMode ? "Lite scene" : "Full scene"}</span>
+            <span>{chapterOverlayOpen ? "Chapter live" : liteMode ? "Lite scene" : "Full scene"}</span>
           </div>
 
           <CodexScene
@@ -157,6 +167,7 @@ export function CodexChamber({
             pointer={pointer}
             scrollProgress={scrollProgress}
             sceneMode={sceneMode}
+            chapterOverlayOpen={chapterOverlayOpen}
           />
 
           {principles.map((principle) => {

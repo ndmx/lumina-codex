@@ -141,3 +141,23 @@
 
 ### Next recommended move
 - Give the live chamber a chapter-specific scene layer so opening a full chapter changes more than the shell and copy treatment; it should trigger deeper geometry, lighting, or particle behaviors per principle.
+
+
+## 2026-03-27 — Chapter Scene Layer Pass
+
+### What changed
+- Added a chapter-specific scene layer so opening a full principle exhibit now changes the live chamber as well as the page shell.
+- The chamber HUD and accessibility announcement now recognize when a chapter is actively open.
+- Introduced principle-specific glyph geometry in the 3D scene to give each chapter a more authored silhouette.
+
+### Scene-specific upgrades
+- `src/components/codex-scene.tsx` now renders chapter-only glyph geometry and boosts sparkles, fog, and post-processing while a full chapter is open.
+- `src/components/codex-chamber.tsx` now exposes chapter-open state to the chamber UI and scene.
+- `src/components/lumina-home.tsx` now passes chapter-open state into the chamber so the 3D scene and overlay stay synchronized.
+
+### Verification
+- `npm run lint` — passing
+- `npm run build` — passing
+
+### Next recommended move
+- Add authored transitions between principle states inside the chamber itself so switching principles morphs between dedicated geometries instead of swapping immediately.

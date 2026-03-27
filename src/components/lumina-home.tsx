@@ -208,6 +208,7 @@ export function LuminaHome() {
             balanceCycle={balanceCycle}
             sceneMode={sceneMode}
             sceneCue={activeExhibit.sceneCue}
+            chapterOverlayOpen={chapterOverlayOpen}
           />
         </section>
 

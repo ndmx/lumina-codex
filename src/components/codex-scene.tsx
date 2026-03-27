@@ -35,6 +35,7 @@ type CodexSceneProps = {
   pointer: PointerState;
   scrollProgress: number;
   sceneMode: SceneMode;
+  chapterOverlayOpen: boolean;
 };
 
 type Palette = {
@@ -812,18 +813,129 @@ function EnergyTrails({
   );
 }
 
+function ChapterGlyph({
+  activePrincipleKey,
+  liteMode,
+  palette,
+  scrollProgress,
+}: {
+  activePrincipleKey: string;
+  liteMode: boolean;
+  palette: Palette;
+  scrollProgress: number;
+}) {
+  const groupRef = useRef<Group>(null);
+
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime();
+
+    if (!groupRef.current) {
+      return;
+    }
+
+    groupRef.current.position.y = THREE.MathUtils.lerp(
+      groupRef.current.position.y,
+      scrollProgress * 0.42,
+      0.06,
+    );
+    groupRef.current.rotation.y = t * 0.14;
+    groupRef.current.rotation.z = Math.sin(t * 0.38) * 0.08;
+  });
+
+  if (activePrincipleKey === "balance") {
+    return (
+      <group ref={groupRef}>
+        <mesh position={[0, 1.18, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[1.62, 0.035, 18, liteMode ? 90 : 160]} />
+          <meshBasicMaterial color={palette.tertiary} transparent opacity={0.28} />
+        </mesh>
+        <mesh position={[0, -1.18, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[1.62, 0.035, 18, liteMode ? 90 : 160]} />
+          <meshBasicMaterial color={palette.primary} transparent opacity={0.32} />
+        </mesh>
+        <mesh rotation={[0, 0, Math.PI / 4]}>
+          <boxGeometry args={[0.04, 3.4, 0.04]} />
+          <meshBasicMaterial color={palette.primary} transparent opacity={0.22} />
+        </mesh>
+        <mesh rotation={[Math.PI / 2, 0, 0]}>
+          <boxGeometry args={[0.04, 3.4, 0.04]} />
+          <meshBasicMaterial color={palette.secondary} transparent opacity={0.14} />
+        </mesh>
+      </group>
+    );
+  }
+
+  if (activePrincipleKey === "contrast") {
+    return (
+      <group ref={groupRef} rotation={[0.18, 0, 0]}>
+        <mesh position={[-1.25, 0, 0.5]} rotation={[0, 0, 0.5]}>
+          <boxGeometry args={[0.12, 4, 0.12]} />
+          <meshBasicMaterial color={palette.secondary} transparent opacity={0.36} />
+        </mesh>
+        <mesh position={[1.25, 0, -0.35]} rotation={[0, 0, -0.44]}>
+          <boxGeometry args={[0.12, 4.2, 0.12]} />
+          <meshBasicMaterial color={palette.primary} transparent opacity={0.42} />
+        </mesh>
+        <mesh position={[0, 0, -0.1]} rotation={[0.5, 0.26, 0]}>
+          <torusGeometry args={[1.9, 0.045, 20, liteMode ? 72 : 140]} />
+          <meshBasicMaterial color={palette.tertiary} transparent opacity={0.2} />
+        </mesh>
+      </group>
+    );
+  }
+
+  if (activePrincipleKey === "rhythm") {
+    return (
+      <group ref={groupRef}>
+        {[-0.75, 0, 0.75].map((offset, index) => (
+          <mesh key={String(offset)} position={[0, offset, index * 0.12 - 0.12]} rotation={[Math.PI / 2, 0, 0]}>
+            <torusGeometry args={[1.45 + index * 0.26, 0.04, 18, liteMode ? 84 : 156]} />
+            <meshBasicMaterial
+              color={index % 2 === 0 ? palette.primary : palette.secondary}
+              transparent
+              opacity={0.24 + index * 0.05}
+            />
+          </mesh>
+        ))}
+      </group>
+    );
+  }
+
+  return (
+    <group ref={groupRef}>
+      <mesh>
+        <icosahedronGeometry args={[1.9, 0]} />
+        <meshBasicMaterial color={palette.primary} wireframe transparent opacity={0.18} />
+      </mesh>
+      <mesh>
+        <sphereGeometry args={[1.32, liteMode ? 24 : 40, liteMode ? 24 : 40]} />
+        <meshBasicMaterial color={palette.tertiary} wireframe transparent opacity={0.12} />
+      </mesh>
+      {[-1, 1].map((direction) => (
+        <mesh key={String(direction)} position={[direction * 1.7, direction * 0.58, 0.2]}>
+          <sphereGeometry args={[0.1, 16, 16]} />
+          <meshBasicMaterial color={palette.secondary} transparent opacity={0.7} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 function PostEffects({
   activePrincipleKey,
   liteMode,
   scrollProgress,
   sceneMode,
+  chapterOverlayOpen,
 }: {
   activePrincipleKey: string;
   liteMode: boolean;
   scrollProgress: number;
   sceneMode: SceneMode;
+  chapterOverlayOpen: boolean;
 }) {
   const theaterBoost = sceneMode === "theater" ? 0.22 : 0;
+  const chapterBoost = chapterOverlayOpen ? 0.2 : 0;
   const bloomIntensity =
     activePrincipleKey === "contrast" ? 1.1 : activePrincipleKey === "balance" ? 0.92 : 0.82;
 
@@ -835,12 +947,16 @@ function PostEffects({
         luminanceSmoothing={0.48}
         intensity={
           liteMode
-            ? bloomIntensity * 0.6 + scrollProgress * 0.08 + theaterBoost * 0.12
-            : bloomIntensity + scrollProgress * 0.2 + theaterBoost
+            ? bloomIntensity * 0.6 + scrollProgress * 0.08 + theaterBoost * 0.12 + chapterBoost * 0.1
+            : bloomIntensity + scrollProgress * 0.2 + theaterBoost + chapterBoost
         }
       />
-      <Noise opacity={liteMode ? 0.01 : 0.022 + theaterBoost * 0.02} />
-      <Vignette eskil={false} offset={0.18} darkness={liteMode ? 0.46 : 0.58 + theaterBoost * 0.12} />
+      <Noise opacity={liteMode ? 0.01 + chapterBoost * 0.01 : 0.022 + theaterBoost * 0.02 + chapterBoost * 0.02} />
+      <Vignette
+        eskil={false}
+        offset={0.18}
+        darkness={liteMode ? 0.46 + chapterBoost * 0.05 : 0.58 + theaterBoost * 0.12 + chapterBoost * 0.08}
+      />
     </EffectComposer>
   );
 }
@@ -853,16 +969,25 @@ const SceneContent = memo(function SceneContent({
   pointer,
   scrollProgress,
   sceneMode,
+  chapterOverlayOpen,
 }: CodexSceneProps) {
   const palette = useMemo(() => palettes[era], [era]);
   const lightBoost = activePrincipleKey === "contrast" ? 1.25 : 1;
   const theaterBoost = sceneMode === "theater" ? 1 : 0;
-  const narrativeBoost = 1 + scrollProgress * 0.2 + theaterBoost * 0.16;
+  const chapterBoost = chapterOverlayOpen ? 1 : 0;
+  const narrativeBoost = 1 + scrollProgress * 0.2 + theaterBoost * 0.16 + chapterBoost * 0.12;
 
   return (
     <>
       <color attach="background" args={[palette.background]} />
-      <fog attach="fog" args={[palette.fog, liteMode ? 8 : 7, liteMode ? 13 : 15 + scrollProgress * 2]} />
+      <fog
+        attach="fog"
+        args={[
+          palette.fog,
+          liteMode ? 8 - chapterBoost * 0.25 : 7 - chapterBoost * 0.4,
+          liteMode ? 13 - chapterBoost * 0.45 : 15 + scrollProgress * 2 - chapterBoost * 0.85,
+        ]}
+      />
       <ambientLight intensity={(liteMode ? 0.78 : 0.9) * narrativeBoost} color={palette.ambient} />
       <directionalLight
         position={[3.5, 5, 4.5]}
@@ -871,13 +996,13 @@ const SceneContent = memo(function SceneContent({
       />
       <pointLight
         position={[-4, -1.5, 2]}
-        intensity={(liteMode ? 16 : 22) * lightBoost * narrativeBoost}
+        intensity={(liteMode ? 16 : 22) * lightBoost * narrativeBoost * (1 + chapterBoost * 0.08)}
         distance={12}
         color={palette.primary}
       />
       <pointLight
         position={[4, 2.5, -2]}
-        intensity={(liteMode ? 8 : 12) * lightBoost * narrativeBoost}
+        intensity={(liteMode ? 8 : 12) * lightBoost * narrativeBoost * (1 + chapterBoost * 0.12)}
         distance={10}
         color={palette.secondary}
       />
@@ -897,14 +1022,14 @@ const SceneContent = memo(function SceneContent({
       />
       {liteMode ? null : <Environment preset="sunset" />}
       <Sparkles
-        count={liteMode ? 64 : sceneMode === "theater" ? 170 : 140}
+        count={liteMode ? (chapterOverlayOpen ? 86 : 64) : sceneMode === "theater" ? (chapterOverlayOpen ? 228 : 170) : 140}
         scale={
           liteMode
             ? [8, 6, 6]
-            : [10 + theaterBoost * 1.2, 8 + scrollProgress * 2, 8 + theaterBoost * 1.4]
+            : [10 + theaterBoost * 1.2 + chapterBoost * 0.9, 8 + scrollProgress * 2 + chapterBoost * 0.6, 8 + theaterBoost * 1.4 + chapterBoost * 1.1]
         }
-        size={liteMode ? 1.8 : 2.6 + scrollProgress * 0.4 + theaterBoost * 0.25}
-        speed={liteMode ? 0.28 : 0.45 + scrollProgress * 0.1 + theaterBoost * 0.12}
+        size={liteMode ? 1.8 + chapterBoost * 0.15 : 2.6 + scrollProgress * 0.4 + theaterBoost * 0.25 + chapterBoost * 0.18}
+        speed={liteMode ? 0.28 + chapterBoost * 0.05 : 0.45 + scrollProgress * 0.1 + theaterBoost * 0.12 + chapterBoost * 0.08}
         color={palette.sparkles}
       />
       <EnergyTrails
@@ -913,6 +1038,14 @@ const SceneContent = memo(function SceneContent({
         palette={palette}
         scrollProgress={scrollProgress}
       />
+      {chapterOverlayOpen ? (
+        <ChapterGlyph
+          activePrincipleKey={activePrincipleKey}
+          liteMode={liteMode}
+          palette={palette}
+          scrollProgress={scrollProgress}
+        />
+      ) : null}
       <Orb
         activePrincipleKey={activePrincipleKey}
         balanceCycle={balanceCycle}
@@ -932,6 +1065,7 @@ const SceneContent = memo(function SceneContent({
         liteMode={liteMode}
         scrollProgress={scrollProgress}
         sceneMode={sceneMode}
+        chapterOverlayOpen={chapterOverlayOpen}
       />
     </>
   );
