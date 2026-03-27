@@ -161,3 +161,33 @@
 
 ### Next recommended move
 - Add authored transitions between principle states inside the chamber itself so switching principles morphs between dedicated geometries instead of swapping immediately.
+
+
+## 2026-03-27 — Six-Stage Finish Pass
+
+### What changed
+- Converted the next six strategic stages into a tracked repo checklist and executed them in one coordinated pass.
+- Added authored chamber transition behavior, deeper principle-specific scene fields, stronger chapter sequencing, tighter mobile/accessibility handling, visual craft polish, and launch-facing artifacts.
+- Kept the work on `codex/foundation-baseline` with verification passing after the full sweep.
+
+### Experience-specific upgrades
+- `src/components/lumina-home.tsx` now coordinates chamber transition cycles, chapter sequencing, and richer principle-state handoff.
+- `src/components/principle-chapter-overlay.tsx` now behaves more like a destination with chapter chips, next/previous chapter controls, focus trapping, focus restoration, and keyboard navigation.
+- `src/components/codex-chamber.tsx` now exposes transition state in the HUD and live announcements.
+- `src/app/globals.css` now includes transition-state styling, chapter sequence visuals, reduced-motion fallbacks, and stronger overlay polish.
+
+### Scene-specific upgrades
+- `src/components/codex-scene.tsx` now includes authored principle fields, transition-driven chamber motion, and transition rings that make principle changes feel staged instead of instant.
+- Chapter mode continues to deepen the 3D scene with chapter-only glyph geometry and stronger atmosphere.
+
+### Delivery upgrades
+- Added `README.md`, `docs/launch-checklist.md`, and `docs/next-stage-todo.md`.
+- Added production-facing metadata and crawler artifacts in `src/app/layout.tsx`, `src/app/manifest.ts`, `src/app/robots.ts`, and `src/app/sitemap.ts`.
+- Added `npm run verify` to streamline launch checks.
+
+### Verification
+- `npm run lint` — passing
+- `npm run build` — passing
+
+### Remaining external step
+- Production deployment itself still requires attaching the repo to a Vercel project and setting `NEXT_PUBLIC_SITE_URL` for the final domain.

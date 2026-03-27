@@ -14,6 +14,7 @@ import type {
   Group,
   Mesh,
   PerspectiveCamera as PerspectiveCameraType,
+  MeshBasicMaterial as MeshBasicMaterialType,
   ShaderMaterialParameters,
   Vector3Tuple,
 } from "three";
@@ -30,6 +31,7 @@ type SceneMode = "preview" | "theater";
 type CodexSceneProps = {
   activePrincipleKey: string;
   balanceCycle: number;
+  transitionCycle: number;
   era: EraKey;
   liteMode: boolean;
   pointer: PointerState;
@@ -214,31 +216,66 @@ function getBalanceEnvelope(now: number, startTime: number) {
   return Math.sin(progress * Math.PI);
 }
 
+function useTransitionStart(transitionCycle: number) {
+  const startRef = useRef(0);
+
+  useEffect(() => {
+    if (transitionCycle > 0) {
+      startRef.current = performance.now() / 1000;
+    }
+  }, [transitionCycle]);
+
+  return startRef;
+}
+
+function getTransitionEnvelope(now: number, startTime: number) {
+  if (startTime === 0) {
+    return 0;
+  }
+
+  const duration = 1.18;
+  const elapsed = now - startTime;
+
+  if (elapsed < 0 || elapsed > duration) {
+    return 0;
+  }
+
+  const progress = elapsed / duration;
+  return Math.sin(progress * Math.PI) * (1 - progress * 0.12);
+}
+
 function CameraRig({
   activePrincipleKey,
   liteMode,
   pointer,
   scrollProgress,
   sceneMode,
+  transitionCycle,
 }: {
   activePrincipleKey: string;
   liteMode: boolean;
   pointer: PointerState;
   scrollProgress: number;
   sceneMode: SceneMode;
+  transitionCycle: number;
 }) {
+  const transitionStartRef = useTransitionStart(transitionCycle);
+
   useFrame((state) => {
     const rigCamera = state.camera as PerspectiveCameraType;
     const influence = activeOffsets[activePrincipleKey] ?? 0;
     const theaterBoost = sceneMode === "theater" ? 1 : 0;
+    const transitionEnvelope = getTransitionEnvelope(state.clock.getElapsedTime(), transitionStartRef.current);
     const targetX =
       (pointer.x - 0.5) * (liteMode ? 0.9 : 1.6) +
       Math.sin(influence) * 0.18 +
-      theaterBoost * 0.08;
+      theaterBoost * 0.08 +
+      Math.sin(influence * 4 + transitionEnvelope * 5) * 0.08 * transitionEnvelope;
     const targetY =
       (0.5 - pointer.y) * (liteMode ? 0.7 : 1.3) +
       Math.cos(influence) * 0.12 +
-      theaterBoost * 0.04;
+      theaterBoost * 0.04 +
+      transitionEnvelope * 0.08;
     const narrativeDrift =
       scrollProgress * (liteMode ? 0.24 : 0.52) + theaterBoost * (liteMode ? 0.08 : 0.22);
     const targetZ =
@@ -252,15 +289,15 @@ function CameraRig({
     );
     rigCamera.position.z = THREE.MathUtils.lerp(
       rigCamera.position.z,
-      targetZ - scrollProgress * 0.28 - theaterBoost * 0.26,
+      targetZ - scrollProgress * 0.28 - theaterBoost * 0.26 - transitionEnvelope * 0.34,
       0.04,
     );
     rigCamera.rotation.z = THREE.MathUtils.lerp(
       rigCamera.rotation.z,
-      (scrollProgress - 0.35) * 0.05 + theaterBoost * 0.03,
+      (scrollProgress - 0.35) * 0.05 + theaterBoost * 0.03 + transitionEnvelope * 0.04,
       0.035,
     );
-    rigCamera.lookAt(0, scrollProgress * 0.45 + theaterBoost * 0.18, 0);
+    rigCamera.lookAt(0, scrollProgress * 0.45 + theaterBoost * 0.18 + transitionEnvelope * 0.16, 0);
   });
 
   return null;
@@ -272,12 +309,14 @@ function NarrativeBackdrop({
   palette,
   scrollProgress,
   sceneMode,
+  transitionCycle,
 }: {
   activePrincipleKey: string;
   liteMode: boolean;
   palette: Palette;
   scrollProgress: number;
   sceneMode: SceneMode;
+  transitionCycle: number;
 }) {
   const meshRef = useRef<Mesh>(null);
   const material = useMemo(() => {
@@ -301,6 +340,7 @@ function NarrativeBackdrop({
     return new THREE.ShaderMaterial(config) as BackdropMaterialImpl;
   }, [palette.primary, palette.secondary, palette.tertiary]);
   const materialRef = useRef<BackdropMaterialImpl | null>(null);
+  const transitionStartRef = useTransitionStart(transitionCycle);
 
   useEffect(() => {
     materialRef.current = material;
@@ -313,15 +353,16 @@ function NarrativeBackdrop({
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
     const theaterBoost = sceneMode === "theater" ? 1 : 0;
+    const transitionEnvelope = getTransitionEnvelope(t, transitionStartRef.current);
     const focus =
-      (focusStrengths[activePrincipleKey] ?? 1) + scrollProgress * 0.24 + theaterBoost * 0.32;
+      (focusStrengths[activePrincipleKey] ?? 1) + scrollProgress * 0.24 + theaterBoost * 0.32 + transitionEnvelope * 0.26;
 
     if (meshRef.current) {
       meshRef.current.position.y = scrollProgress * 0.85 + theaterBoost * 0.25;
       meshRef.current.position.z = -5.6 + scrollProgress * 0.2 + theaterBoost * 0.16;
-      meshRef.current.rotation.z = Math.sin(t * 0.14) * 0.09 + theaterBoost * 0.03;
-      meshRef.current.scale.x = 1 + scrollProgress * 0.12 + theaterBoost * 0.18;
-      meshRef.current.scale.y = 1 + scrollProgress * 0.18 + theaterBoost * 0.24;
+      meshRef.current.rotation.z = Math.sin(t * 0.14) * 0.09 + theaterBoost * 0.03 + transitionEnvelope * 0.06;
+      meshRef.current.scale.x = 1 + scrollProgress * 0.12 + theaterBoost * 0.18 + transitionEnvelope * 0.18;
+      meshRef.current.scale.y = 1 + scrollProgress * 0.18 + theaterBoost * 0.24 + transitionEnvelope * 0.22;
     }
 
     const backdropMaterial = materialRef.current;
@@ -813,6 +854,96 @@ function EnergyTrails({
   );
 }
 
+function PrincipleField({
+  activePrincipleKey,
+  liteMode,
+  palette,
+  sceneMode,
+}: {
+  activePrincipleKey: string;
+  liteMode: boolean;
+  palette: Palette;
+  sceneMode: SceneMode;
+}) {
+  const groupRef = useRef<Group>(null);
+
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime();
+
+    if (!groupRef.current) {
+      return;
+    }
+
+    groupRef.current.rotation.y = t * (activePrincipleKey === "rhythm" ? 0.22 : 0.12);
+    groupRef.current.rotation.z = Math.sin(t * 0.3) * 0.05;
+    groupRef.current.scale.setScalar(sceneMode === "theater" ? 1.06 : 1);
+  });
+
+  if (activePrincipleKey === "balance") {
+    return (
+      <group ref={groupRef}>
+        <mesh rotation={[0, 0, Math.PI / 4]}>
+          <boxGeometry args={[0.03, liteMode ? 3 : 3.6, 0.03]} />
+          <meshBasicMaterial color={palette.primary} transparent opacity={0.18} />
+        </mesh>
+        <mesh rotation={[Math.PI / 2, 0, 0]}>
+          <boxGeometry args={[0.03, liteMode ? 3 : 3.6, 0.03]} />
+          <meshBasicMaterial color={palette.tertiary} transparent opacity={0.12} />
+        </mesh>
+        <mesh rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[1.94, 0.03, 18, liteMode ? 84 : 148]} />
+          <meshBasicMaterial color={palette.secondary} transparent opacity={0.12} />
+        </mesh>
+      </group>
+    );
+  }
+
+  if (activePrincipleKey === "contrast") {
+    return (
+      <group ref={groupRef}>
+        <mesh position={[-1.5, 0, 0.1]} rotation={[0, 0, 0.44]}>
+          <boxGeometry args={[0.08, 4.1, 0.08]} />
+          <meshBasicMaterial color={palette.secondary} transparent opacity={0.22} />
+        </mesh>
+        <mesh position={[1.5, 0, -0.12]} rotation={[0, 0, -0.44]}>
+          <boxGeometry args={[0.08, 4.3, 0.08]} />
+          <meshBasicMaterial color={palette.primary} transparent opacity={0.28} />
+        </mesh>
+      </group>
+    );
+  }
+
+  if (activePrincipleKey === "rhythm") {
+    return (
+      <group ref={groupRef}>
+        {[1.3, 1.7, 2.12].map((radius, index) => (
+          <mesh key={String(radius)} rotation={[Math.PI / 2, 0, 0]} position={[0, index * 0.08 - 0.08, 0]}>
+            <torusGeometry args={[radius, 0.03, 18, liteMode ? 88 : 150]} />
+            <meshBasicMaterial
+              color={index % 2 === 0 ? palette.primary : palette.secondary}
+              transparent
+              opacity={0.12 + index * 0.05}
+            />
+          </mesh>
+        ))}
+      </group>
+    );
+  }
+
+  return (
+    <group ref={groupRef}>
+      <mesh>
+        <icosahedronGeometry args={[1.72, 0]} />
+        <meshBasicMaterial color={palette.primary} wireframe transparent opacity={0.12} />
+      </mesh>
+      <mesh>
+        <sphereGeometry args={[1.24, liteMode ? 22 : 34, liteMode ? 22 : 34]} />
+        <meshBasicMaterial color={palette.tertiary} wireframe transparent opacity={0.08} />
+      </mesh>
+    </group>
+  );
+}
+
 function ChapterGlyph({
   activePrincipleKey,
   liteMode,
@@ -921,6 +1052,84 @@ function ChapterGlyph({
   );
 }
 
+function TransitionField({
+  activePrincipleKey,
+  liteMode,
+  palette,
+  transitionCycle,
+}: {
+  activePrincipleKey: string;
+  liteMode: boolean;
+  palette: Palette;
+  transitionCycle: number;
+}) {
+  const groupRef = useRef<Group>(null);
+  const ringRefs = useRef<Mesh[]>([]);
+  const materialRefs = useRef<MeshBasicMaterialType[]>([]);
+  const transitionStartRef = useTransitionStart(transitionCycle);
+
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime();
+    const envelope = getTransitionEnvelope(t, transitionStartRef.current);
+
+    if (!groupRef.current) {
+      return;
+    }
+
+    groupRef.current.visible = envelope > 0.001;
+    groupRef.current.rotation.z = t * 0.16;
+
+    ringRefs.current.forEach((mesh, index) => {
+      if (!mesh) {
+        return;
+      }
+
+      const offset = index * 0.14;
+      const scale = 1 + envelope * (0.22 + offset);
+      mesh.scale.setScalar(scale);
+      mesh.position.z = -0.18 + index * 0.12 + envelope * 0.2;
+    });
+
+    materialRefs.current.forEach((material, index) => {
+      if (!material) {
+        return;
+      }
+
+      material.opacity = envelope * (0.22 - index * 0.04);
+    });
+  });
+
+  const colors = [palette.primary, palette.secondary, palette.tertiary];
+
+  return (
+    <group ref={groupRef}>
+      {colors.map((color, index) => (
+        <mesh
+          key={color + String(index)}
+          ref={(element) => {
+            if (element) {
+              ringRefs.current[index] = element;
+            }
+          }}
+          rotation={[Math.PI / 2, 0, index * 0.32 + (activePrincipleKey === "contrast" ? 0.22 : 0)]}
+        >
+          <torusGeometry args={[1.86 + index * 0.24, 0.032, 18, liteMode ? 92 : 152]} />
+          <meshBasicMaterial
+            ref={(material) => {
+              if (material) {
+                materialRefs.current[index] = material;
+              }
+            }}
+            color={color}
+            transparent
+            opacity={0}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 function PostEffects({
   activePrincipleKey,
   liteMode,
@@ -964,6 +1173,7 @@ function PostEffects({
 const SceneContent = memo(function SceneContent({
   activePrincipleKey,
   balanceCycle,
+  transitionCycle,
   era,
   liteMode,
   pointer,
@@ -1012,6 +1222,7 @@ const SceneContent = memo(function SceneContent({
         liteMode={liteMode}
         scrollProgress={scrollProgress}
         sceneMode={sceneMode}
+        transitionCycle={transitionCycle}
       />
       <NarrativeBackdrop
         activePrincipleKey={activePrincipleKey}
@@ -1019,6 +1230,7 @@ const SceneContent = memo(function SceneContent({
         palette={palette}
         scrollProgress={scrollProgress}
         sceneMode={sceneMode}
+        transitionCycle={transitionCycle}
       />
       {liteMode ? null : <Environment preset="sunset" />}
       <Sparkles
@@ -1037,6 +1249,18 @@ const SceneContent = memo(function SceneContent({
         liteMode={liteMode}
         palette={palette}
         scrollProgress={scrollProgress}
+      />
+      <PrincipleField
+        activePrincipleKey={activePrincipleKey}
+        liteMode={liteMode}
+        palette={palette}
+        sceneMode={sceneMode}
+      />
+      <TransitionField
+        activePrincipleKey={activePrincipleKey}
+        liteMode={liteMode}
+        palette={palette}
+        transitionCycle={transitionCycle}
       />
       {chapterOverlayOpen ? (
         <ChapterGlyph

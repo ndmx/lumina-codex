@@ -14,6 +14,7 @@ type CodexChamberProps = {
   activePrincipleKey: string;
   onSelectPrinciple: (principleKey: string) => void;
   balanceCycle: number;
+  transitionCycle: number;
   sceneMode: SceneMode;
   sceneCue: string;
   chapterOverlayOpen: boolean;
@@ -26,10 +27,10 @@ const eraClassMap: Record<EraKey, string> = {
 };
 
 const interactionNotes: Record<string, string> = {
-  balance: "Balance now runs a replayable lock, fracture, and restoration cycle inside the live scene.",
-  contrast: "Contrast pushes the active satellite forward and sharpens the chamber color opposition.",
-  rhythm: "Rhythm turns the satellite field into a pulsing cadence with synchronized vertical motion.",
-  unity: "Unity draws the system inward so the chamber behaves like one organism instead of isolated objects.",
+  balance: "Balance now runs a replayable lock, fracture, restoration, and chapter alignment cycle inside the live scene.",
+  contrast: "Contrast pushes the active satellite forward, sharpens chamber opposition, and now cuts a stronger chapter field through the scene.",
+  rhythm: "Rhythm turns the satellite field into a pulsing cadence with synchronized vertical motion and chapter-driven loop energy.",
+  unity: "Unity draws the system inward so the chamber behaves like one organism instead of isolated objects, especially in full chapter mode.",
 };
 
 export function CodexChamber({
@@ -38,6 +39,7 @@ export function CodexChamber({
   activePrincipleKey,
   onSelectPrinciple,
   balanceCycle,
+  transitionCycle,
   sceneMode,
   sceneCue,
   chapterOverlayOpen,
@@ -45,6 +47,7 @@ export function CodexChamber({
   const [pointer, setPointer] = useState({ x: 0.5, y: 0.32 });
   const [liteMode, setLiteMode] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const activePrinciple =
     principles.find((principle) => principle.key === activePrincipleKey) ?? principles[0];
@@ -63,7 +66,7 @@ export function CodexChamber({
 
   const liveAnnouncement = useMemo(
     () =>
-      `${activePrinciple.name} active in ${activeEra.name}. ${sceneMode === "theater" ? "Theater mode active." : "Preview mode active."} ${chapterOverlayOpen ? "Full chapter open." : "Chapter shell closed."} ${interactionNotes[activePrincipleKey]} ${
+      `${activePrinciple.name} active in ${activeEra.name}. ${sceneMode === "theater" ? "Theater mode active." : "Preview mode active."} ${chapterOverlayOpen ? "Full chapter open." : "Chapter shell closed."} ${isTransitioning ? "Transition live." : "Transition settled."} ${interactionNotes[activePrincipleKey]} ${
         liteMode ? "Lite scene active." : "Full scene active."
       } Narrative depth ${scrollPercent} percent.`,
     [
@@ -71,6 +74,7 @@ export function CodexChamber({
       activePrinciple.name,
       activePrincipleKey,
       chapterOverlayOpen,
+      isTransitioning,
       liteMode,
       sceneMode,
       scrollPercent,
@@ -103,6 +107,22 @@ export function CodexChamber({
     };
   }, []);
 
+  useEffect(() => {
+    if (transitionCycle === 0) {
+      return;
+    }
+
+    const frame = window.requestAnimationFrame(() => {
+      setIsTransitioning(true);
+    });
+    const timeout = window.setTimeout(() => setIsTransitioning(false), 1150);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(timeout);
+    };
+  }, [transitionCycle]);
+
   function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
     const rect = event.currentTarget.getBoundingClientRect();
     const x = (event.clientX - rect.left) / rect.width;
@@ -112,12 +132,17 @@ export function CodexChamber({
 
   return (
     <section
-      className={["lumina-chamber", eraClassMap[selectedEra]].join(" ")}
+      className={[
+        "lumina-chamber",
+        eraClassMap[selectedEra],
+        isTransitioning ? "is-transitioning" : "",
+      ].join(" ")}
       style={chamberStyle}
       onPointerMove={handlePointerMove}
       onPointerLeave={() => setPointer({ x: 0.5, y: 0.32 })}
       aria-labelledby="codex-heading"
       data-scene-mode={sceneMode}
+      data-transitioning={isTransitioning ? "true" : "false"}
     >
       <p className="lumina-sr-only" aria-live="polite">
         {liveAnnouncement}
@@ -155,7 +180,7 @@ export function CodexChamber({
         <div className="lumina-chamber__viewport">
           <div className="lumina-chamber__hud" aria-hidden="true">
             <span>{sceneMode === "theater" ? "Theater mode" : "Preview mode"}</span>
-            <span>Depth {scrollPercent}%</span>
+            <span>{isTransitioning ? "Transition live" : `Depth ${scrollPercent}%`}</span>
             <span>{chapterOverlayOpen ? "Chapter live" : liteMode ? "Lite scene" : "Full scene"}</span>
           </div>
 
@@ -163,6 +188,7 @@ export function CodexChamber({
             era={selectedEra}
             activePrincipleKey={activePrincipleKey}
             balanceCycle={balanceCycle}
+            transitionCycle={transitionCycle}
             liteMode={liteMode}
             pointer={pointer}
             scrollProgress={scrollProgress}
@@ -187,6 +213,7 @@ export function CodexChamber({
                 className={buttonClassName}
                 onClick={() => onSelectPrinciple(principle.key)}
                 aria-pressed={isActive}
+                aria-label={`${principle.name} satellite`}
               >
                 <span className="lumina-satellite__shape" />
                 <span className="lumina-satellite__meta">
@@ -210,7 +237,7 @@ export function CodexChamber({
             <h3>{sceneMode === "theater" ? "Exhibit mode engaged" : activeEra.mood}</h3>
             <p>{sceneMode === "theater" ? sceneCue : activeEra.descriptor}</p>
             <p className="lumina-render-note">
-              {liteMode ? "Lite scene active" : "Full scene active"} • narrative depth {scrollPercent}%.
+              {isTransitioning ? "Transition live" : liteMode ? "Lite scene active" : "Full scene active"} • narrative depth {scrollPercent}%.
             </p>
           </div>
         </div>

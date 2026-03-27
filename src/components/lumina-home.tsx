@@ -24,6 +24,7 @@ export function LuminaHome() {
   const [selectedEra, setSelectedEra] = useState<EraKey>("atelier");
   const [activePrincipleKey, setActivePrincipleKey] = useState("balance");
   const [balanceCycle, setBalanceCycle] = useState(1);
+  const [transitionCycle, setTransitionCycle] = useState(0);
   const [activeChapterId, setActiveChapterId] = useState<CodexChapterId>("entry");
   const [pageProgress, setPageProgress] = useState(0);
   const [sceneMode, setSceneMode] = useState<SceneMode>("preview");
@@ -31,6 +32,10 @@ export function LuminaHome() {
 
   const activePrinciple = useMemo(
     () => principles.find((principle) => principle.key === activePrincipleKey) ?? principles[0],
+    [activePrincipleKey],
+  );
+  const activePrincipleIndex = useMemo(
+    () => Math.max(0, principles.findIndex((principle) => principle.key === activePrincipleKey)),
     [activePrincipleKey],
   );
   const activeExhibit = useMemo(
@@ -102,6 +107,10 @@ export function LuminaHome() {
     principleKey: string,
     options?: { era?: EraKey; scrollToEntry?: boolean; sceneMode?: SceneMode },
   ) {
+    if (principleKey !== activePrincipleKey) {
+      setTransitionCycle((current) => current + 1);
+    }
+
     setActivePrincipleKey(principleKey);
 
     if (options?.era) {
@@ -128,6 +137,13 @@ export function LuminaHome() {
       scrollToEntry: false,
     });
     setChapterOverlayOpen(true);
+  }
+
+  function moveChapter(direction: 1 | -1) {
+    const total = principles.length;
+    const nextIndex = (activePrincipleIndex + direction + total) % total;
+    const nextPrinciple = principles[nextIndex];
+    enterChapter(nextPrinciple.key);
   }
 
   function closeChapter() {
@@ -165,7 +181,7 @@ export function LuminaHome() {
 
         <section id="entry" className={["lumina-hero", activeChapterId === "entry" ? "is-active" : ""].join(" ")}>
           <div className="lumina-hero__copy">
-            <p className="lumina-pill">Milestone 4 in motion</p>
+            <p className="lumina-pill">Milestone 5 in motion</p>
             <h1>Design should feel like entering a chamber of light, pressure, and intention.</h1>
             <p className="lumina-lede">
               Lumina Codex is being built as a portfolio where the interface itself becomes the proof of craft.
@@ -194,8 +210,8 @@ export function LuminaHome() {
                 </dd>
               </div>
               <div>
-                <dt>Next upgrade</dt>
-                <dd>Scene-specific chapters</dd>
+                <dt>Transition system</dt>
+                <dd>{chapterOverlayOpen ? "Chapter engaged" : "Chamber live"}</dd>
               </div>
             </dl>
           </div>
@@ -206,6 +222,7 @@ export function LuminaHome() {
             activePrincipleKey={activePrincipleKey}
             onSelectPrinciple={(principleKey) => focusCodex(principleKey, { sceneMode: "preview" })}
             balanceCycle={balanceCycle}
+            transitionCycle={transitionCycle}
             sceneMode={sceneMode}
             sceneCue={activeExhibit.sceneCue}
             chapterOverlayOpen={chapterOverlayOpen}
@@ -230,8 +247,9 @@ export function LuminaHome() {
             <p className="lumina-kicker">Narrative strategy</p>
             <h2>Every section should deepen the same spell instead of resetting it.</h2>
             <p>
-              The chamber now responds to era, principle, scroll depth, and scene mode. The homepage is shifting into a
-              real chapter sequence so scroll becomes a form of direction, not just movement down the page.
+              The chamber now responds to era, principle, scroll depth, transition state, and chapter mode. The
+              homepage is shifting into a real chapter sequence so scroll becomes a form of direction, not just movement
+              down the page.
             </p>
           </article>
         </section>
@@ -248,6 +266,7 @@ export function LuminaHome() {
                 <article
                   key={principle.key}
                   className={["lumina-principle-card", isActive ? "is-active" : ""].join(" ")}
+                  aria-current={isActive ? "true" : undefined}
                 >
                   <p className="lumina-kicker">{principle.eyebrow}</p>
                   <h2>{principle.name}</h2>
@@ -266,6 +285,8 @@ export function LuminaHome() {
                         sceneMode: "preview",
                       })
                     }
+                    aria-pressed={isActive}
+                    aria-label={`Demonstrate ${principle.name} in the chamber`}
                   >
                     Demonstrate in chamber
                   </button>
@@ -380,6 +401,9 @@ export function LuminaHome() {
           onSetTheater={(era) => {
             focusCodex(activePrinciple.key, { era, sceneMode: "theater" });
           }}
+          onSelectChapter={(principleKey) => enterChapter(principleKey)}
+          onNextChapter={() => moveChapter(1)}
+          onPreviousChapter={() => moveChapter(-1)}
         />
       ) : null}
     </main>
