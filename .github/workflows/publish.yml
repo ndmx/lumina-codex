@@ -18,6 +18,11 @@ permissions:
   contents: read
   id-token: write # required for npm OIDC trusted publishing + provenance
 
+# Run the bundled JS actions on the runner's Node 24 (opts out of the deprecated
+# Node 20 action runtime).
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -26,7 +31,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           registry-url: https://registry.npmjs.org
 
       # OIDC trusted publishing needs npm >= 11.5.1.
