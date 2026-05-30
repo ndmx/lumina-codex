@@ -1,0 +1,49 @@
+name: Publish @xlumina/system
+
+# Publishes packages/lumina-system to npm using OIDC "trusted publishing" —
+# no NPM_TOKEN secret, no OTP. Trigger manually (Actions → Run workflow) or by
+# publishing a GitHub Release. The version published is whatever is in
+# packages/lumina-system/package.json, so bump it before triggering.
+#
+# One-time setup on npmjs.com (required before the first run):
+#   @xlumina/system → Settings → Trusted Publisher → GitHub Actions
+#   Org/repo: ndmx/lumina-codex   ·   Workflow filename: publish.yml
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  id-token: write # required for npm OIDC trusted publishing + provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      # OIDC trusted publishing needs npm >= 11.5.1.
+      - name: Update npm
+        run: npm install -g npm@latest
+
+      # Root install provides TypeScript; npm walks up to find tsc for the
+      # nested package's build script.
+      - name: Install
+        run: npm ci
+
+      - name: Build the package
+        run: npm run build
+        working-directory: packages/lumina-system
+
+      # With a configured trusted publisher, npm authenticates via the OIDC
+      # id-token — no NODE_AUTH_TOKEN needed — and attaches provenance.
+      - name: Publish
+        run: npm publish --access public --provenance
+        working-directory: packages/lumina-system
