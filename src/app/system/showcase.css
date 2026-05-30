@@ -1,0 +1,466 @@
+/**
+ * System showcase styles.
+ *
+ * Every surface inside a `.ls-device` reads only `--ls-*` custom properties, so
+ * the same markup renders correctly in light and dark and at any device width.
+ * The outer chrome (`.ls-showcase`) uses a fixed neutral dark so the page frame
+ * stays stable while the device previews flip schemes inside it.
+ */
+
+.ls-showcase {
+  --chrome-bg: #0b0d11;
+  --chrome-surface: rgba(255, 255, 255, 0.04);
+  --chrome-text: rgba(245, 238, 229, 0.92);
+  --chrome-muted: rgba(245, 238, 229, 0.6);
+  --chrome-border: rgba(255, 255, 255, 0.12);
+
+  position: relative;
+  z-index: 1;
+  width: min(1360px, calc(100vw - 2rem));
+  margin: 0 auto;
+  padding: 2.5rem 0 5rem;
+  color: var(--chrome-text);
+  font-family: var(--font-body), "Segoe UI", system-ui, sans-serif;
+}
+
+/* ─── Header + controls ─────────────────────────────────────────────── */
+
+.ls-showcase__eyebrow {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--chrome-muted);
+}
+
+.ls-showcase__head h1 {
+  margin: 0.8rem 0 0;
+  font-family: var(--font-display), "Times New Roman", serif;
+  font-weight: 600;
+  font-size: clamp(2.4rem, 5vw, 4.4rem);
+  line-height: 0.96;
+  letter-spacing: -0.04em;
+}
+
+.ls-showcase__lede {
+  max-width: 46rem;
+  margin: 1.1rem 0 0;
+  font-size: 1.02rem;
+  line-height: 1.7;
+  color: var(--chrome-muted);
+}
+
+.ls-showcase__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 1.8rem;
+}
+
+.ls-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border: 1px solid var(--chrome-border);
+  border-radius: 999px;
+  background: var(--chrome-surface);
+  backdrop-filter: blur(16px);
+}
+
+.ls-control button {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.5rem 0.9rem;
+  background: transparent;
+  color: var(--chrome-muted);
+  font: inherit;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+  cursor: pointer;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+.ls-control button:hover {
+  color: var(--chrome-text);
+}
+
+.ls-control button.is-active {
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+}
+
+.ls-showcase__seed {
+  padding: 0 0.6rem;
+  font-size: 0.78rem;
+  color: var(--chrome-muted);
+}
+
+/* ─── Device frames ─────────────────────────────────────────────────── */
+
+.ls-frames {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1.6rem;
+  margin-top: 2.4rem;
+}
+
+.ls-frame {
+  margin: 0;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.ls-frame__caption {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--chrome-muted);
+}
+
+.ls-frame__caption span {
+  color: var(--chrome-text);
+}
+
+/* The device shell: this is where the --ls-* tokens take over. */
+.ls-device {
+  position: relative;
+  width: min(var(--ls-frame-width), calc(100vw - 3rem));
+  border: 1px solid var(--ls-border-strong);
+  border-radius: calc(1.6rem * var(--ls-var-radius-scale));
+  background: var(--ls-bg);
+  color: var(--ls-text);
+  overflow: hidden;
+  box-shadow:
+    var(--ls-shadow),
+    0 0 60px color-mix(in srgb, var(--ls-accent) calc(14% * var(--ls-var-glow)), transparent);
+  rotate: var(--ls-var-tilt);
+  transition: rotate 320ms ease;
+}
+
+.ls-frame[data-device="mobile"] .ls-device {
+  aspect-ratio: 390 / 760;
+}
+
+/* Grid overlay — visualizes the active column model. */
+.ls-device__grid-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+  padding-inline: var(--ls-grid-margin);
+  background-image: repeating-linear-gradient(
+    to right,
+    color-mix(in srgb, var(--ls-accent) 26%, transparent) 0,
+    color-mix(in srgb, var(--ls-accent) 26%, transparent) calc((100% - (var(--ls-grid-columns) - 1) * var(--ls-grid-gutter)) / var(--ls-grid-columns)),
+    transparent 0
+  );
+  background-position: var(--ls-grid-margin) 0;
+  background-size: calc(100% - 2 * var(--ls-grid-margin)) 100%;
+  background-repeat: no-repeat;
+  transition: opacity 220ms ease;
+}
+
+.ls-showcase[data-show-grid="true"] .ls-device__grid-overlay {
+  opacity: 0.5;
+}
+
+/* ─── Screen content (rides the grid) ───────────────────────────────── */
+
+.ls-screen {
+  display: grid;
+  gap: calc(1rem * var(--ls-var-density));
+  padding: calc(var(--ls-grid-margin) * 0.9) var(--ls-grid-margin)
+    calc(var(--ls-grid-margin) * 1.2);
+}
+
+.ls-screen__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ls-screen__brand {
+  font-family: var(--font-display), serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.ls-screen__chip {
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--ls-border-visible);
+  background: var(--ls-overlay);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ls-text-subtle);
+}
+
+.ls-screen__kicker {
+  margin: 0;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ls-accent);
+}
+
+.ls-screen__hero h2 {
+  margin: 0.5rem 0 0;
+  font-family: var(--font-display), serif;
+  font-weight: 600;
+  font-size: clamp(1.5rem, 4.5cqw, 2.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+.ls-screen__body {
+  margin: 0.6rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--ls-text-muted);
+}
+
+.ls-screen__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.ls-btn {
+  border: 1px solid var(--ls-border-visible);
+  border-radius: 999px;
+  padding: 0.6rem 1.1rem;
+  background: var(--ls-overlay);
+  color: var(--ls-text);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 180ms ease, filter 180ms ease;
+}
+
+.ls-btn:hover {
+  transform: translateY(-1px);
+}
+
+.ls-btn--primary {
+  border-color: transparent;
+  background: var(--ls-accent);
+  color: var(--ls-on-accent);
+  box-shadow: 0 12px 30px
+    color-mix(in srgb, var(--ls-accent) calc(30% * var(--ls-var-glow)), transparent);
+}
+
+/* The card grid — actual CSS Grid using the resolved column count. */
+.ls-screen__grid {
+  display: grid;
+  grid-template-columns: var(--ls-grid-template);
+  gap: var(--ls-grid-gutter);
+  container-type: inline-size;
+}
+
+.ls-card {
+  grid-column: span var(--ls-span, 1);
+  display: grid;
+  gap: 0.3rem;
+  align-content: start;
+  min-height: var(--ls-grid-target);
+  padding: calc(0.95rem * var(--ls-var-density));
+  border: 1px solid var(--ls-border);
+  border-radius: calc(1rem * var(--ls-var-radius-scale));
+  background: var(--ls-surface-raised);
+}
+
+.ls-card__tag {
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ls-text-faint);
+}
+
+.ls-card strong {
+  font-size: 1rem;
+}
+
+.ls-card p {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--ls-text-muted);
+}
+
+/* ─── Proximity dock ────────────────────────────────────────────────── */
+
+.ls-dock-stage {
+  display: grid;
+  gap: 2rem;
+  margin-top: 3rem;
+  padding: 2rem;
+  border: 1px solid var(--chrome-border);
+  border-radius: 1.6rem;
+  background: var(--chrome-surface);
+}
+
+@media (min-width: 960px) {
+  .ls-dock-stage {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+.ls-dock-stage__note {
+  max-width: 40rem;
+  margin: 0.6rem 0 1.6rem;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--chrome-muted);
+}
+
+.ls-dock {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-end;
+  padding: 0.8rem 1rem;
+  width: fit-content;
+  max-width: 100%;
+  border: 1px solid var(--chrome-border);
+  border-radius: 1.4rem;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+}
+
+.ls-dock[data-orientation="vertical"] {
+  flex-direction: column;
+  align-items: center;
+}
+
+.ls-dock__item {
+  --p: 0;
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem;
+  border: 0;
+  background: transparent;
+  color: var(--chrome-text);
+  font: inherit;
+  cursor: pointer;
+  transform-origin: bottom center;
+  /* The proximity payoff: scale + lift driven purely by cached-distance --p. */
+  scale: calc(1 + var(--p) * var(--ls-dock-max-scale, 0.5));
+  translate: 0 calc(var(--p) * -10px);
+  transition: scale 120ms ease, translate 120ms ease;
+}
+
+.ls-dock__glyph {
+  display: grid;
+  place-items: center;
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  /* "Darken/lighten by distance" — nearer items brighten. */
+  background: rgba(255, 255, 255, calc(0.05 + var(--p) * 0.16));
+  box-shadow: 0 0 calc(var(--p) * 24px) rgba(115, 242, 223, calc(var(--p) * 0.5));
+  font-size: 1.25rem;
+}
+
+.ls-dock__label {
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--chrome-muted);
+  opacity: calc(0.5 + var(--p) * 0.5);
+}
+
+@media (max-width: 720px) {
+  .ls-dock__label {
+    display: none;
+  }
+}
+
+/* ─── Scroll-proximity rail (mobile analog) ─────────────────────────── */
+
+.ls-prail {
+  display: flex;
+  gap: 0.8rem;
+  max-width: 100%;
+  padding: 1.4rem 50%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ls-prail::-webkit-scrollbar {
+  display: none;
+}
+
+.ls-prail__item {
+  --p: 0;
+  flex: 0 0 auto;
+  display: grid;
+  justify-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem;
+  border: 0;
+  background: transparent;
+  color: var(--chrome-text);
+  font: inherit;
+  cursor: pointer;
+  scroll-snap-align: center;
+  transform-origin: center bottom;
+  scale: calc(1 + var(--p) * var(--ls-rail-max-scale, 0.4));
+  opacity: calc(0.4 + var(--p) * 0.6);
+  transition: scale 90ms linear, opacity 90ms linear;
+}
+
+.ls-prail__glyph {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, calc(0.05 + var(--p) * 0.16));
+  box-shadow: 0 0 calc(var(--p) * 28px) rgba(115, 242, 223, calc(var(--p) * 0.55));
+  font-size: 1.3rem;
+}
+
+.ls-prail__label {
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--chrome-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ls-device,
+  .ls-dock__item,
+  .ls-btn,
+  .ls-prail__item {
+    transition: none;
+  }
+
+  .ls-dock__item {
+    scale: 1;
+    translate: 0;
+  }
+
+  .ls-prail {
+    scroll-snap-type: none;
+  }
+
+  .ls-prail__item {
+    scale: 1;
+    opacity: 1;
+  }
+}

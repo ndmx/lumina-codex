@@ -1,5 +1,25 @@
 # Lumina Codex Build Log
 
+## 2026-05-06 — Lumina System Unification Pass
+
+### What changed
+- Promoted Lumina from a site-only identity into a cross-medium design-system source of truth.
+- Added canonical docs for platform tags, naming rules, universal element roles, and source mapping.
+- Linked the older mobile design-system folder back to the Lumina system so JxL Scheduler and ParkMemory Hub remain product profiles instead of competing vocabularies.
+- Audited the existing `appDesign` docs and marked archived source snapshots so legacy terms do not override active Lumina naming.
+- Consolidated the constitution and mobile design-system docs into `lumina-codex`, leaving `AppDEVguideS` outside as a sensitive boundary.
+- Added agent-facing entry points and a continuous improvement architecture so apps and agents can point at one root.
+
+### System-specific upgrades
+- New folder: `docs/system/`.
+- New files: `LUMINA.md`, `AGENTS.md`, `lumina.manifest.json`, `README.md`, `platform-taxonomy.md`, `naming-and-tags.md`, `element-model.md`, `source-map.md`, `adherence-audit.md`, `registry.md`, `continuous-improvement.md`, and `improvement-log.md`.
+- The element model now covers HTML, React, TypeScript, SwiftUI, native mobile, SVG, canvas, and 3D scene surfaces.
+
+### Notes
+- Product-specific labels are preserved as aliases: JxL Scheduler keeps `Group`; ParkMemory Hub keeps `Circle`; Lumina uses `Shared Space` as the canonical concept above both.
+- `AppDEVguideS` is treated as a sensitive-material boundary because it contains credential-like JSON files.
+- Refreshed package metadata, resolved Next to `16.2.4`, and added a PostCSS override so `npm audit --omit=dev` reports zero vulnerabilities.
+
 ## 2026-03-27
 
 ### Current milestone

@@ -1,0 +1,126 @@
+{
+  "name": "Lumina Codex",
+  "version": "0.5.0",
+  "purpose": "Portable design-system source for apps, websites, web apps, native apps, documents, presentations, and rendered software surfaces.",
+  "entrypoint": "LUMINA.md",
+  "agentInstructions": "AGENTS.md",
+  "canonicalSystemPath": "docs/system",
+  "constitution": "docs/constitution.md",
+  "productProfilesPath": "docs/products",
+  "sensitiveBoundary": "../AppDEVguideS",
+  "package": {
+    "name": "@xlumina/system",
+    "source": "packages/lumina-system",
+    "install": "npm install @xlumina/system",
+    "entry": "packages/lumina-system/src/index.ts",
+    "cli": "npx lumina  (record | audit | close | meta)",
+    "cliSource": "packages/lumina-system/bin/lumina.mjs",
+    "feedbackEnv": "LUMINA_FEEDBACK_URL — POST events to a central Lumina instead of a local file",
+    "published": true,
+    "registry": "https://www.npmjs.com/package/@xlumina/system",
+    "publishedVersion": "1.0.0",
+    "description": "Framework-agnostic executable brain: tokens, eras, schemes, grid, variation, platform-rules, and the recursive-improvement loop. Zero runtime dependencies. Ships a `lumina` CLI."
+  },
+  "systemModules": {
+    "tokens": "packages/lumina-system/src/tokens.ts",
+    "eras": "packages/lumina-system/src/eras.ts",
+    "scheme": "packages/lumina-system/src/scheme.ts",
+    "grid": "packages/lumina-system/src/grid.ts",
+    "variation": "packages/lumina-system/src/variation.ts",
+    "platformRules": "packages/lumina-system/src/platform-rules.ts",
+    "registry": "packages/lumina-system/src/registry.ts",
+    "feedback": "packages/lumina-system/src/feedback.ts",
+    "improvementLedger": "packages/lumina-system/src/improvement-ledger.ts",
+    "invariants": "packages/lumina-system/src/invariants.ts",
+    "fitness": "packages/lumina-system/src/fitness.ts",
+    "evaluation": "packages/lumina-system/src/evaluation.ts",
+    "closer": "packages/lumina-system/src/closer.ts",
+    "meta": "packages/lumina-system/src/meta.ts"
+  },
+  "recursiveLoop": {
+    "doc": "docs/system/recursive-loop.md",
+    "ledger": "lumina-ledger.jsonl",
+    "state": "lumina-state.json",
+    "audit": "scripts/lumina-audit.mjs",
+    "auditCommand": "npm run lumina:audit",
+    "report": "docs/system/fitness-report.md",
+    "evaluate": "scripts/lumina-evaluate.mjs",
+    "evaluateCommand": "npm run lumina:evaluate",
+    "evaluationReport": "docs/system/evaluation-report.md",
+    "close": "scripts/lumina-close.mjs",
+    "closeCommand": "npm run lumina:close",
+    "closeReport": "docs/system/close-report.md",
+    "meta": "scripts/lumina-meta.mjs",
+    "metaCommand": "npm run lumina:meta",
+    "metaReport": "docs/system/meta-report.md",
+    "stages": "1-5 built (observe, score, propose, evaluate, apply, meta-guard); autonomous source-file edits intentionally left human-gated"
+  },
+  "tokenSource": "packages/lumina-system/src/tokens.ts",
+  "eraSource": "packages/lumina-system/src/eras.ts",
+  "productRegistry": "packages/lumina-system/src/registry.ts",
+  "integrationGuide": "docs/system/integration-guide.md",
+  "readOrder": [
+    "LUMINA.md",
+    "docs/system/README.md",
+    "docs/system/platform-taxonomy.md",
+    "docs/system/naming-and-tags.md",
+    "docs/system/element-model.md",
+    "docs/system/scheme-grid-variation.md",
+    "docs/system/mobile-vs-web.md",
+    "docs/system/integration-guide.md",
+    "docs/system/registry.md",
+    "docs/products",
+    "docs/system/continuous-improvement.md",
+    "docs/system/recursive-loop.md"
+  ],
+  "canonicalConcepts": {
+    "sharedSpace": {
+      "name": "Shared Space",
+      "approvedAliases": {
+        "JxL Scheduler": "Group",
+        "ParkMemory Hub": "Circle"
+      }
+    }
+  },
+  "defaultTags": [
+    "design-system",
+    "mobile",
+    "web",
+    "web-app",
+    "native-app",
+    "ios-app",
+    "react",
+    "typescript",
+    "swiftui"
+  ],
+  "continuousImprovement": {
+    "workflow": "docs/system/continuous-improvement.md",
+    "log": "docs/system/improvement-log.md",
+    "registry": "docs/system/registry.md"
+  },
+  "registeredProducts": [
+    {
+      "id": "lumina-codex",
+      "name": "Lumina Codex",
+      "platforms": ["browser"],
+      "frameworks": ["nextjs", "react", "threejs"],
+      "defaultEra": "atelier"
+    },
+    {
+      "id": "jxl-scheduler",
+      "name": "JxL Scheduler",
+      "platforms": ["ios", "ipados"],
+      "frameworks": ["swiftui"],
+      "defaultEra": "atelier",
+      "conceptAliases": { "sharedSpace": "Group" }
+    },
+    {
+      "id": "park-memory-hub",
+      "name": "ParkMemory Hub",
+      "platforms": ["ios"],
+      "frameworks": ["swiftui"],
+      "defaultEra": "atelier",
+      "conceptAliases": { "sharedSpace": "Circle" }
+    }
+  ]
+}

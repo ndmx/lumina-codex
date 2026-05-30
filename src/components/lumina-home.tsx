@@ -19,8 +19,10 @@ import {
 } from "@/components/codex-content";
 
 type SceneMode = "preview" | "theater";
+type Scheme = "light" | "dark";
 
 export function LuminaHome() {
+  const [scheme, setScheme] = useState<Scheme>("dark");
   const [selectedEra, setSelectedEra] = useState<EraKey>("atelier");
   const [activePrincipleKey, setActivePrincipleKey] = useState("balance");
   const [balanceCycle, setBalanceCycle] = useState(1);
@@ -57,6 +59,37 @@ export function LuminaHome() {
       }) as CSSProperties,
     [activePrinciple.accent, pageProgress],
   );
+
+  // Initialize scheme from saved preference, falling back to the OS setting.
+  // Runs post-mount so SSR (always dark) and first client render agree.
+  // Storage access is guarded — it must never crash the page (private mode,
+  // disabled storage, or a runtime without localStorage).
+  useEffect(() => {
+    let saved: string | null = null;
+    try {
+      saved = window.localStorage?.getItem("lumina-scheme") ?? null;
+    } catch {
+      saved = null;
+    }
+    const next: Scheme | null =
+      saved === "light" || saved === "dark"
+        ? saved
+        : window.matchMedia?.("(prefers-color-scheme: light)").matches
+          ? "light"
+          : null;
+
+    if (next) {
+      startTransition(() => setScheme(next));
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      window.localStorage?.setItem("lumina-scheme", scheme);
+    } catch {
+      // Ignore — preference simply won't persist this session.
+    }
+  }, [scheme]);
 
   useEffect(() => {
     const observedSections = codexChapters
@@ -155,6 +188,7 @@ export function LuminaHome() {
       className="lumina-page"
       data-active-chapter={activeChapterId}
       data-scene-mode={sceneMode}
+      data-scheme={scheme}
       data-overlay-open={chapterOverlayOpen ? "true" : "false"}
       style={pageStyle}
     >
@@ -174,6 +208,17 @@ export function LuminaHome() {
             <a href="#manifesto">Manifesto</a>
             <a href="#principles">Principles</a>
             <a href="#roadmap">Roadmap</a>
+            <button
+              type="button"
+              className="lumina-scheme-toggle"
+              onClick={() => setScheme((current) => (current === "dark" ? "light" : "dark"))}
+              aria-pressed={scheme === "light"}
+              aria-label={`Switch to ${scheme === "dark" ? "light" : "dark"} mode`}
+              title={`Switch to ${scheme === "dark" ? "light" : "dark"} mode`}
+            >
+              <span aria-hidden="true">{scheme === "dark" ? "☀" : "☾"}</span>
+              <span>{scheme === "dark" ? "Light" : "Dark"}</span>
+            </button>
           </nav>
         </header>
 

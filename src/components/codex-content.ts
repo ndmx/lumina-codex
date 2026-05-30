@@ -1,4 +1,6 @@
-export type EraKey = "atelier" | "memphis" | "brutalist";
+import type { EraKey } from "@/system/eras";
+
+export type { EraKey };
 
 export type Principle = {
   key: string;
@@ -34,31 +36,7 @@ export type PrincipleDossier = {
   impactNote: string;
 };
 
-export const eras: {
-  key: EraKey;
-  name: string;
-  mood: string;
-  descriptor: string;
-}[] = [
-  {
-    key: "atelier",
-    name: "Atelier",
-    mood: "Warm luminous fog",
-    descriptor: "The north-star atmosphere pulled from your reference frames.",
-  },
-  {
-    key: "memphis",
-    name: "Memphis",
-    mood: "Playful voltage",
-    descriptor: "The chamber becomes punchier, lighter, and more irreverent.",
-  },
-  {
-    key: "brutalist",
-    name: "Cyber-Brutalist",
-    mood: "Wireframe tension",
-    descriptor: "Sharper geometry, deeper shadows, and a colder electric pulse.",
-  },
-];
+export { eraList as eras } from "@/system/eras";
 
 export const principles: Principle[] = [
   {

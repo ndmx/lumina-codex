@@ -23,6 +23,15 @@
       }
     ],
     "paths": {
+      "@xlumina/system": [
+        "./packages/lumina-system/src/index.ts"
+      ],
+      "@xlumina/system/*": [
+        "./packages/lumina-system/src/*"
+      ],
+      "@/system/*": [
+        "./packages/lumina-system/src/*"
+      ],
       "@/*": [
         "./src/*"
       ]
@@ -36,6 +45,7 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "packages/*/dist"
   ]
 }

@@ -8,6 +8,48 @@
   --color-spark: #ff7d60;
   --color-mist: rgba(255, 243, 230, 0.5);
   --shadow-atmosphere: 0 32px 120px rgba(0, 0, 0, 0.42);
+
+  /*
+   * Scheme channels (space-separated RGB triplets consumed via rgb(var(--x) / a)).
+   * Dark is the default; .lumina-page[data-scheme="light"] flips them below.
+   * Accent colors (aura/spark) are brand-constant and intentionally NOT channelized.
+   * High-alpha "luminous" whites in the chamber are literal light sources and
+   * also stay constant across schemes.
+   */
+  --fg: 245 238 229; /* body/foreground text */
+  --line: 255 255 255; /* borders, overlays, hairlines */
+  --panel: 8 10 12; /* dark glass surfaces and scrims */
+  --text-strong: 255 255 255; /* strongest emphasis text */
+}
+
+/* ─── Light scheme ──────────────────────────────────────────────────────────── */
+
+.lumina-page[data-scheme="light"] {
+  --fg: 21 20 15;
+  --line: 21 20 15;
+  --panel: 255 252 247;
+  --text-strong: 21 20 15;
+  --color-ivory: #15140f;
+  --color-mist: rgba(58, 44, 24, 0.42);
+  --shadow-atmosphere: 0 28px 90px rgba(58, 44, 24, 0.18);
+
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.7), transparent 30%),
+    radial-gradient(circle at 12% 12%, color-mix(in srgb, var(--color-aura) 14%, transparent), transparent 22%),
+    linear-gradient(180deg, #f6efe4 0%, #efe6d8 42%, #e9dfcf 100%);
+}
+
+body:has(.lumina-page[data-scheme="light"]) {
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.5), transparent 26%),
+    linear-gradient(180deg, #f4ece0 0%, #ece2d2 100%);
+  color: #15140f;
+}
+
+/* In light mode the chamber reads as a bright glass vitrine, so soften its
+   internal dark scrim while leaving the luminous core untouched. */
+.lumina-page[data-scheme="light"] .lumina-scene__vignette {
+  background: radial-gradient(circle at center, transparent 42%, rgba(58, 44, 24, 0.16) 100%);
 }
 
 * {
@@ -66,8 +108,8 @@ button {
 .lumina-page__noise {
   opacity: 0.22;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(rgb(var(--line) / 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--line) / 0.03) 1px, transparent 1px);
   background-position: center;
   background-size: 72px 72px;
   mask-image: radial-gradient(circle at center, black 45%, transparent 86%);
@@ -87,7 +129,7 @@ button {
   justify-content: space-between;
   gap: 1rem;
   padding: 0 0 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgb(var(--line) / 0.1);
 }
 
 .lumina-brand,
@@ -96,13 +138,13 @@ button {
   text-transform: uppercase;
   letter-spacing: 0.28em;
   font-size: 0.72rem;
-  color: rgba(245, 238, 229, 0.56);
+  color: rgb(var(--fg) / 0.56);
 }
 
 .lumina-subbrand {
   margin: 0.7rem 0 0;
   font-size: 0.96rem;
-  color: rgba(245, 238, 229, 0.7);
+  color: rgb(var(--fg) / 0.7);
 }
 
 .lumina-nav__links {
@@ -115,7 +157,7 @@ button {
 .lumina-button,
 .lumina-toggle-group button {
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgb(var(--line) / 0.12);
   transition:
     transform 220ms ease,
     border-color 220ms ease,
@@ -127,15 +169,49 @@ button {
 .lumina-nav__links a {
   padding: 0.8rem 1rem;
   font-size: 0.92rem;
-  color: rgba(245, 238, 229, 0.74);
+  color: rgb(var(--fg) / 0.74);
   backdrop-filter: blur(20px);
 }
 
 .lumina-nav__links a:hover,
 .lumina-nav__links a:focus-visible {
-  border-color: rgba(255, 255, 255, 0.28);
-  background: rgba(255, 255, 255, 0.05);
-  color: white;
+  border-color: rgb(var(--line) / 0.28);
+  background: rgb(var(--line) / 0.05);
+  color: rgb(var(--text-strong));
+  outline: none;
+}
+
+.lumina-scheme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgb(var(--line) / 0.12);
+  background: rgb(var(--line) / 0.04);
+  color: rgb(var(--fg) / 0.74);
+  font-size: 0.92rem;
+  cursor: pointer;
+  backdrop-filter: blur(20px);
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    background-color 220ms ease,
+    color 220ms ease;
+}
+
+.lumina-scheme-toggle span:first-child {
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--color-aura);
+}
+
+.lumina-scheme-toggle:hover,
+.lumina-scheme-toggle:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgb(var(--line) / 0.28);
+  background: rgb(var(--line) / 0.08);
+  color: rgb(var(--text-strong));
   outline: none;
 }
 
@@ -157,8 +233,8 @@ button {
   margin: 0;
   padding: 0.7rem 1rem;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgb(var(--line) / 0.14);
+  background: rgb(var(--line) / 0.05);
   text-transform: uppercase;
   letter-spacing: 0.24em;
   font-size: 0.72rem;
@@ -191,7 +267,7 @@ button {
   margin: 1.6rem 0 0;
   font-size: 1.05rem;
   line-height: 1.95;
-  color: rgba(245, 238, 229, 0.76);
+  color: rgb(var(--fg) / 0.76);
 }
 
 .lumina-actions {
@@ -226,8 +302,8 @@ button {
 }
 
 .lumina-button--secondary {
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(245, 238, 229, 0.84);
+  background: rgb(var(--line) / 0.04);
+  color: rgb(var(--fg) / 0.84);
 }
 
 .lumina-facts {
@@ -239,9 +315,9 @@ button {
 
 .lumina-facts div {
   padding: 1.15rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgb(var(--line) / 0.08);
   border-radius: 1.4rem;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgb(var(--line) / 0.04);
   backdrop-filter: blur(16px);
 }
 
@@ -249,13 +325,13 @@ button {
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: rgba(245, 238, 229, 0.48);
+  color: rgb(var(--fg) / 0.48);
 }
 
 .lumina-facts dd {
   margin: 0.85rem 0 0;
   font-size: 1.15rem;
-  color: white;
+  color: rgb(var(--text-strong));
 }
 
 .lumina-chamber {
@@ -265,12 +341,12 @@ button {
   position: relative;
   min-height: 44rem;
   border-radius: 2.25rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgb(var(--line) / 0.1);
   overflow: hidden;
   background:
-    radial-gradient(circle at calc(var(--pointer-x) * 100%) calc(var(--pointer-y) * 100%), rgba(255, 255, 255, 0.16), transparent 18%),
+    radial-gradient(circle at calc(var(--pointer-x) * 100%) calc(var(--pointer-y) * 100%), rgb(var(--line) / 0.16), transparent 18%),
     radial-gradient(circle at top, rgba(255, 244, 232, 0.52), transparent 28%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+    linear-gradient(180deg, rgb(var(--line) / 0.06), rgb(var(--line) / 0.02));
   box-shadow: var(--shadow-atmosphere);
   isolation: isolate;
   backdrop-filter: blur(24px);
@@ -303,8 +379,8 @@ button {
 .lumina-chamber__grid {
   opacity: 0.24;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    linear-gradient(rgb(var(--line) / 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--line) / 0.04) 1px, transparent 1px);
   background-size: 76px 76px;
   mask-image: radial-gradient(circle at center, black 30%, transparent 88%);
 }
@@ -341,15 +417,15 @@ button {
 .lumina-toggle-group button {
   min-height: 2.8rem;
   padding: 0 0.95rem;
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(245, 238, 229, 0.76);
+  background: rgb(var(--line) / 0.05);
+  color: rgb(var(--fg) / 0.76);
 }
 
 .lumina-toggle-group .is-active {
-  border-color: rgba(255, 255, 255, 0.28);
-  background: rgba(255, 255, 255, 0.14);
-  color: white;
-  box-shadow: 0 12px 40px rgba(255, 255, 255, 0.08);
+  border-color: rgb(var(--line) / 0.28);
+  background: rgb(var(--line) / 0.14);
+  color: rgb(var(--text-strong));
+  box-shadow: 0 12px 40px rgb(var(--line) / 0.08);
 }
 
 .lumina-chamber__viewport {
@@ -370,7 +446,7 @@ button {
 
 .lumina-halo {
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid rgb(var(--line) / 0.16);
 }
 
 .lumina-halo--outer {
@@ -401,7 +477,7 @@ button {
   width: min(56%, 24rem);
   aspect-ratio: 1;
   border-radius: 999px;
-  border: 1px dashed rgba(255, 255, 255, 0.16);
+  border: 1px dashed rgb(var(--line) / 0.16);
   transform: translate(-50%, -50%) rotate(18deg);
 }
 
@@ -454,7 +530,7 @@ button {
 
 .lumina-core__shell {
   background:
-    radial-gradient(circle at 35% 28%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.18), transparent 48%),
+    radial-gradient(circle at 35% 28%, rgba(255, 255, 255, 0.95), rgb(var(--line) / 0.18), transparent 48%),
     conic-gradient(from 160deg, rgba(255, 255, 255, 0.88), color-mix(in srgb, var(--accent-color) 80%, white), rgba(255, 125, 96, 0.65), rgba(255, 255, 255, 0.85));
   filter: blur(2px);
   box-shadow:
@@ -467,7 +543,7 @@ button {
   border-radius: 26%;
   border: 1px solid rgba(255, 255, 255, 0.48);
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.08)),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.76), rgb(var(--line) / 0.08)),
     radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.5), transparent 50%);
   transform: rotate(45deg);
   backdrop-filter: blur(16px);
@@ -497,7 +573,7 @@ button {
   padding: 0.65rem;
   border: 0;
   background: transparent;
-  color: rgba(245, 238, 229, 0.9);
+  color: rgb(var(--fg) / 0.9);
   transform: translateY(0);
   transition:
     transform 260ms ease,
@@ -519,8 +595,8 @@ button {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.35);
   background:
-    radial-gradient(circle at 32% 30%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.16), transparent 58%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.06));
+    radial-gradient(circle at 32% 30%, rgba(255, 255, 255, 0.95), rgb(var(--line) / 0.16), transparent 58%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgb(var(--line) / 0.06));
   backdrop-filter: blur(20px);
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.16);
 }
@@ -539,7 +615,7 @@ button {
   font-size: 0.78rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(245, 238, 229, 0.56);
+  color: rgb(var(--fg) / 0.56);
 }
 
 .lumina-chamber__footer {
@@ -551,10 +627,10 @@ button {
 .lumina-editorial__panel,
 .lumina-principle-card,
 .lumina-roadmap__item {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(8, 10, 12, 0.34);
+  border: 1px solid rgb(var(--line) / 0.1);
+  background: rgb(var(--panel) / 0.34);
   backdrop-filter: blur(18px);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px 0 rgb(var(--line) / 0.06);
 }
 
 .lumina-status,
@@ -575,7 +651,7 @@ button {
 .lumina-editorial__panel p:last-child,
 .lumina-principle-card p,
 .lumina-roadmap__item p:last-child {
-  color: rgba(245, 238, 229, 0.7);
+  color: rgb(var(--fg) / 0.7);
   line-height: 1.8;
 }
 
@@ -627,11 +703,11 @@ button {
   gap: 1rem;
   margin-top: 1.4rem;
   padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgb(var(--line) / 0.08);
   font-size: 0.8rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(245, 238, 229, 0.58);
+  color: rgb(var(--fg) / 0.58);
 }
 
 .lumina-roadmap__grid {
@@ -651,16 +727,16 @@ button {
 
 .lumina-chamber--atelier {
   background:
-    radial-gradient(circle at calc(var(--pointer-x) * 100%) calc(var(--pointer-y) * 100%), rgba(255, 255, 255, 0.14), transparent 18%),
+    radial-gradient(circle at calc(var(--pointer-x) * 100%) calc(var(--pointer-y) * 100%), rgb(var(--line) / 0.14), transparent 18%),
     radial-gradient(circle at top, rgba(255, 244, 232, 0.56), transparent 28%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+    linear-gradient(180deg, rgb(var(--line) / 0.08), rgb(var(--line) / 0.03));
 }
 
 .lumina-chamber--memphis {
   background:
     radial-gradient(circle at calc(var(--pointer-x) * 100%) calc(var(--pointer-y) * 100%), rgba(255, 248, 120, 0.18), transparent 18%),
     radial-gradient(circle at top, rgba(255, 185, 227, 0.26), transparent 28%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
+    linear-gradient(180deg, rgb(var(--line) / 0.1), rgb(var(--line) / 0.03));
 }
 
 .lumina-chamber--memphis .lumina-core__shell,
@@ -672,7 +748,7 @@ button {
   background:
     radial-gradient(circle at calc(var(--pointer-x) * 100%) calc(var(--pointer-y) * 100%), rgba(115, 242, 223, 0.1), transparent 18%),
     radial-gradient(circle at top, rgba(214, 227, 255, 0.12), transparent 26%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
+    linear-gradient(180deg, rgb(var(--line) / 0.05), rgb(var(--line) / 0.015));
 }
 
 .lumina-chamber--brutalist .lumina-core__prism {
@@ -801,13 +877,13 @@ button {
 }
 
 .lumina-scene__vignette {
-  background: radial-gradient(circle at center, transparent 38%, rgba(5, 6, 8, 0.46) 100%);
+  background: radial-gradient(circle at center, transparent 38%, rgb(var(--panel) / 0.46) 100%);
 }
 
 .lumina-scene__scrim {
   background:
     radial-gradient(circle at 50% 12%, rgba(255, 247, 238, 0.26), transparent 28%),
-    linear-gradient(180deg, rgba(5, 6, 8, 0.12), rgba(5, 6, 8, 0.42));
+    linear-gradient(180deg, rgb(var(--panel) / 0.12), rgb(var(--panel) / 0.42));
   mix-blend-mode: screen;
   opacity: 0.75;
 }
@@ -818,8 +894,8 @@ button {
 
 .lumina-satellite__shape {
   background:
-    radial-gradient(circle at 32% 30%, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.2), transparent 58%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.03));
+    radial-gradient(circle at 32% 30%, rgba(255, 255, 255, 0.96), rgb(var(--line) / 0.2), transparent 58%),
+    linear-gradient(180deg, rgb(var(--line) / 0.24), rgb(var(--line) / 0.03));
 }
 
 .lumina-render-note {
@@ -827,7 +903,7 @@ button {
   font-size: 0.8rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(245, 238, 229, 0.52);
+  color: rgb(var(--fg) / 0.52);
 }
 
 .lumina-sr-only {
@@ -850,11 +926,11 @@ button {
   gap: 0.9rem;
   margin-top: 1.25rem;
   padding: 1rem 1.1rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgb(var(--line) / 0.1);
   border-radius: 1.45rem;
-  background: rgba(8, 10, 12, 0.38);
+  background: rgb(var(--panel) / 0.38);
   backdrop-filter: blur(18px);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px 0 rgb(var(--line) / 0.06);
 }
 
 .lumina-rail__header,
@@ -876,13 +952,13 @@ button {
   font-size: 0.9rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(245, 238, 229, 0.72);
+  color: rgb(var(--fg) / 0.72);
 }
 
 .lumina-rail__meter {
   height: 2px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgb(var(--line) / 0.12);
   overflow: hidden;
 }
 
@@ -907,7 +983,7 @@ button {
 
 .lumina-rail__focus p:last-child {
   margin: 0;
-  color: rgba(245, 238, 229, 0.7);
+  color: rgb(var(--fg) / 0.7);
   line-height: 1.7;
 }
 
@@ -919,9 +995,9 @@ button {
 .lumina-rail__chapters a {
   align-items: flex-start;
   padding: 0.9rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgb(var(--line) / 0.08);
   border-radius: 1.1rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgb(var(--line) / 0.03);
   transition:
     transform 220ms ease,
     border-color 220ms ease,
@@ -935,7 +1011,7 @@ button {
 }
 
 .lumina-rail__chapters a span:last-child {
-  color: rgba(245, 238, 229, 0.62);
+  color: rgb(var(--fg) / 0.62);
   line-height: 1.6;
 }
 
@@ -943,8 +1019,8 @@ button {
 .lumina-rail__chapters a:focus-visible,
 .lumina-rail__chapters a.is-active {
   transform: translateY(-1px);
-  border-color: rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.06);
+  border-color: rgb(var(--line) / 0.18);
+  background: rgb(var(--line) / 0.06);
   outline: none;
 }
 
@@ -955,11 +1031,11 @@ button {
   z-index: 2;
   min-width: min(16rem, calc(100% - 2rem));
   padding: 0.7rem 0.9rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgb(var(--line) / 0.1);
   border-radius: 999px;
-  background: rgba(9, 11, 14, 0.4);
+  background: rgb(var(--panel) / 0.4);
   backdrop-filter: blur(16px);
-  color: rgba(245, 238, 229, 0.72);
+  color: rgb(var(--fg) / 0.72);
   font-size: 0.78rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -998,7 +1074,7 @@ button {
 .lumina-principle-card.is-active {
   border-color: rgba(115, 242, 223, 0.3);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 1px 0 rgb(var(--line) / 0.06),
     0 16px 40px rgba(115, 242, 223, 0.08);
 }
 
@@ -1007,17 +1083,17 @@ button {
   font-size: 0.95rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(245, 238, 229, 0.58);
+  color: rgb(var(--fg) / 0.58);
 }
 
 .lumina-principle-card__trigger {
   width: 100%;
   min-height: 3rem;
   margin-top: 1.2rem;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgb(var(--line) / 0.12);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(245, 238, 229, 0.9);
+  background: rgb(var(--line) / 0.05);
+  color: rgb(var(--fg) / 0.9);
   transition:
     transform 220ms ease,
     border-color 220ms ease,
@@ -1028,8 +1104,8 @@ button {
 .lumina-principle-card__trigger:hover,
 .lumina-principle-card__trigger:focus-visible {
   transform: translateY(-1px);
-  border-color: rgba(255, 255, 255, 0.22);
-  background: rgba(255, 255, 255, 0.08);
+  border-color: rgb(var(--line) / 0.22);
+  background: rgb(var(--line) / 0.08);
   outline: none;
 }
 
@@ -1084,36 +1160,36 @@ button {
 }
 
 .lumina-page[data-active-chapter="entry"] .lumina-chamber {
-  border-color: rgba(255, 255, 255, 0.18);
+  border-color: rgb(var(--line) / 0.18);
   box-shadow:
     var(--shadow-atmosphere),
     0 24px 80px rgba(115, 242, 223, 0.1);
 }
 
 .lumina-page[data-active-chapter="manifesto"] .lumina-editorial__panel {
-  border-color: rgba(255, 255, 255, 0.14);
+  border-color: rgb(var(--line) / 0.14);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 1px 0 rgb(var(--line) / 0.06),
     0 18px 48px rgba(255, 248, 236, 0.05);
 }
 
 .lumina-page[data-active-chapter="principles"] .lumina-principle-card {
-  border-color: rgba(255, 255, 255, 0.14);
+  border-color: rgb(var(--line) / 0.14);
   transform: translateY(-2px);
 }
 
 .lumina-page[data-active-chapter="roadmap"] .lumina-roadmap__item {
-  border-color: rgba(255, 255, 255, 0.14);
+  border-color: rgb(var(--line) / 0.14);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 1px 0 rgb(var(--line) / 0.06),
     0 16px 44px rgba(115, 242, 223, 0.05);
 }
 
 .lumina-page[data-active-chapter="manifesto"] .lumina-chamber__hud,
 .lumina-page[data-active-chapter="principles"] .lumina-chamber__hud,
 .lumina-page[data-active-chapter="roadmap"] .lumina-chamber__hud {
-  background: rgba(9, 11, 14, 0.52);
-  border-color: rgba(255, 255, 255, 0.16);
+  background: rgb(var(--panel) / 0.52);
+  border-color: rgb(var(--line) / 0.16);
 }
 
 .lumina-principles {
@@ -1128,15 +1204,15 @@ button {
 .lumina-exhibit-panel {
   display: grid;
   gap: 1.1rem;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgb(var(--line) / 0.12);
   border-radius: 2rem;
   padding: 1.55rem;
   background:
     radial-gradient(circle at top, rgba(255, 247, 238, 0.08), transparent 34%),
-    rgba(8, 10, 12, 0.42);
+    rgb(var(--panel) / 0.42);
   backdrop-filter: blur(18px);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 1px 0 rgb(var(--line) / 0.06),
     0 20px 54px rgba(0, 0, 0, 0.18);
 }
 
@@ -1152,14 +1228,14 @@ button {
 .lumina-exhibit-panel__copy > p:last-child,
 .lumina-exhibit-panel__facts dd {
   margin: 0;
-  color: rgba(245, 238, 229, 0.72);
+  color: rgb(var(--fg) / 0.72);
   line-height: 1.85;
 }
 
 .lumina-exhibit-panel__lede {
   margin: 1rem 0 0;
   font-size: 1.05rem;
-  color: rgba(245, 238, 229, 0.84);
+  color: rgb(var(--fg) / 0.84);
   line-height: 1.9;
 }
 
@@ -1171,9 +1247,9 @@ button {
 
 .lumina-exhibit-panel__facts div {
   padding: 1rem 1.05rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgb(var(--line) / 0.08);
   border-radius: 1.2rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgb(var(--line) / 0.03);
 }
 
 .lumina-exhibit-panel__facts dt {
@@ -1181,7 +1257,7 @@ button {
   font-size: 0.75rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(245, 238, 229, 0.54);
+  color: rgb(var(--fg) / 0.54);
 }
 
 .lumina-exhibit-panel__actions {
@@ -1193,7 +1269,7 @@ button {
 .lumina-page[data-active-chapter="principles"] .lumina-exhibit-panel {
   border-color: rgba(115, 242, 223, 0.2);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 1px 0 rgb(var(--line) / 0.06),
     0 22px 56px rgba(115, 242, 223, 0.08);
 }
 
@@ -1221,19 +1297,19 @@ button {
 }
 
 .lumina-principle-card.is-active {
-  border-color: color-mix(in srgb, var(--active-principle-accent) 42%, rgba(255, 255, 255, 0.16));
+  border-color: color-mix(in srgb, var(--active-principle-accent) 42%, rgb(var(--line) / 0.16));
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 1px 0 rgb(var(--line) / 0.06),
     0 16px 40px color-mix(in srgb, var(--active-principle-accent) 22%, transparent);
 }
 
 .lumina-principle-card__trigger:hover,
 .lumina-principle-card__trigger:focus-visible {
-  border-color: color-mix(in srgb, var(--active-principle-accent) 36%, rgba(255, 255, 255, 0.18));
+  border-color: color-mix(in srgb, var(--active-principle-accent) 36%, rgb(var(--line) / 0.18));
 }
 
 .lumina-exhibit-panel {
-  border-color: color-mix(in srgb, var(--active-principle-accent) 18%, rgba(255, 255, 255, 0.12));
+  border-color: color-mix(in srgb, var(--active-principle-accent) 18%, rgb(var(--line) / 0.12));
 }
 
 .lumina-page[data-active-chapter="entry"] .lumina-chamber {
@@ -1243,22 +1319,22 @@ button {
 }
 
 .lumina-page[data-active-chapter="principles"] .lumina-exhibit-panel {
-  border-color: color-mix(in srgb, var(--active-principle-accent) 32%, rgba(255, 255, 255, 0.12));
+  border-color: color-mix(in srgb, var(--active-principle-accent) 32%, rgb(var(--line) / 0.12));
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 1px 0 rgb(var(--line) / 0.06),
     0 22px 56px color-mix(in srgb, var(--active-principle-accent) 16%, transparent);
 }
 
 .lumina-page[data-scene-mode="theater"] .lumina-chamber__hud,
 .lumina-chamber[data-scene-mode="theater"] .lumina-chamber__hud {
-  border-color: color-mix(in srgb, var(--active-principle-accent) 36%, rgba(255, 255, 255, 0.16));
+  border-color: color-mix(in srgb, var(--active-principle-accent) 36%, rgb(var(--line) / 0.16));
   box-shadow: 0 14px 34px color-mix(in srgb, var(--active-principle-accent) 14%, transparent);
 }
 
 .lumina-page[data-scene-mode="theater"] .lumina-exhibit-panel,
 .lumina-chamber[data-scene-mode="theater"] {
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 1px 0 rgb(var(--line) / 0.06),
     0 24px 60px color-mix(in srgb, var(--active-principle-accent) 18%, transparent);
 }
 
@@ -1267,14 +1343,14 @@ button {
   gap: 1.1rem;
   grid-column: 1 / -1;
   padding: 1.8rem;
-  border: 1px solid color-mix(in srgb, var(--active-principle-accent) 22%, rgba(255, 255, 255, 0.12));
+  border: 1px solid color-mix(in srgb, var(--active-principle-accent) 22%, rgb(var(--line) / 0.12));
   border-radius: 2.2rem;
   background:
     radial-gradient(circle at top left, color-mix(in srgb, var(--active-principle-accent) 14%, transparent), transparent 34%),
-    rgba(7, 9, 12, 0.5);
+    rgb(var(--panel) / 0.5);
   backdrop-filter: blur(20px);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 1px 0 rgb(var(--line) / 0.06),
     0 24px 64px color-mix(in srgb, var(--active-principle-accent) 12%, transparent);
 }
 
@@ -1295,7 +1371,7 @@ button {
 .lumina-stage-card p:last-child,
 .lumina-stage-card li,
 .lumina-stage-card__metric-grid span {
-  color: rgba(245, 238, 229, 0.72);
+  color: rgb(var(--fg) / 0.72);
   line-height: 1.8;
 }
 
@@ -1305,10 +1381,10 @@ button {
 }
 
 .lumina-stage-card {
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgb(var(--line) / 0.08);
   border-radius: 1.5rem;
   padding: 1.2rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgb(var(--line) / 0.03);
 }
 
 .lumina-stage-card h3 {
@@ -1331,7 +1407,7 @@ button {
 
 .lumina-stage-card__metric-grid strong {
   font-size: 1.1rem;
-  color: white;
+  color: rgb(var(--text-strong));
 }
 
 .lumina-stage-card--beats ol {
@@ -1348,7 +1424,7 @@ button {
 
 .lumina-chapter-stage[data-principle="contrast"] .lumina-stage-card--primary,
 .lumina-chapter-stage[data-principle="contrast"] .lumina-stage-card--controls {
-  background: linear-gradient(135deg, rgba(255, 125, 96, 0.1), rgba(255, 255, 255, 0.02));
+  background: linear-gradient(135deg, rgba(255, 125, 96, 0.1), rgb(var(--line) / 0.02));
 }
 
 .lumina-chapter-stage[data-principle="rhythm"] .lumina-stage-card--beats li {
@@ -1368,12 +1444,12 @@ button {
 
 .lumina-chapter-stage[data-principle="unity"] .lumina-stage-card,
 .lumina-chapter-stage[data-principle="balance"] .lumina-stage-card--metrics {
-  border-color: color-mix(in srgb, var(--active-principle-accent) 24%, rgba(255, 255, 255, 0.08));
+  border-color: color-mix(in srgb, var(--active-principle-accent) 24%, rgb(var(--line) / 0.08));
 }
 
 .lumina-page[data-scene-mode="theater"] .lumina-chapter-stage {
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 1px 0 rgb(var(--line) / 0.06),
     0 26px 72px color-mix(in srgb, var(--active-principle-accent) 18%, transparent);
 }
 
@@ -1447,7 +1523,7 @@ button {
   border: 0;
   background:
     radial-gradient(circle at top, color-mix(in srgb, var(--active-principle-accent) 18%, transparent), transparent 30%),
-    rgba(4, 6, 8, 0.82);
+    rgb(var(--panel) / 0.82);
   backdrop-filter: blur(20px);
 }
 
@@ -1461,12 +1537,12 @@ button {
   gap: 1.4rem;
   padding: clamp(1.35rem, 2vw, 2rem);
   border-radius: 2rem;
-  border: 1px solid color-mix(in srgb, var(--active-principle-accent) 22%, rgba(255, 255, 255, 0.14));
+  border: 1px solid color-mix(in srgb, var(--active-principle-accent) 22%, rgb(var(--line) / 0.14));
   background:
     radial-gradient(circle at top left, color-mix(in srgb, var(--active-principle-accent) 18%, transparent), transparent 34%),
-    linear-gradient(145deg, rgba(255, 249, 241, 0.08), rgba(10, 12, 16, 0.92));
+    linear-gradient(145deg, rgba(255, 249, 241, 0.08), rgb(var(--panel) / 0.92));
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 1px 0 rgb(var(--line) / 0.08),
     0 30px 110px rgba(0, 0, 0, 0.45);
 }
 
@@ -1492,10 +1568,10 @@ button {
 }
 
 .lumina-chapter-overlay__close {
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgb(var(--line) / 0.12);
   border-radius: 999px;
   padding: 0.75rem 1rem;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgb(var(--line) / 0.04);
   color: rgba(255, 245, 234, 0.84);
   font: inherit;
   letter-spacing: 0.02em;
@@ -1508,9 +1584,9 @@ button {
 
 .lumina-chapter-overlay__close:hover,
 .lumina-chapter-overlay__close:focus-visible {
-  border-color: color-mix(in srgb, var(--active-principle-accent) 34%, rgba(255, 255, 255, 0.16));
-  background: rgba(255, 255, 255, 0.08);
-  color: white;
+  border-color: color-mix(in srgb, var(--active-principle-accent) 34%, rgb(var(--line) / 0.16));
+  background: rgb(var(--line) / 0.08);
+  color: rgb(var(--text-strong));
   transform: translateY(-1px);
 }
 
@@ -1534,7 +1610,7 @@ button {
 .lumina-chapter-overlay__card p:last-child,
 .lumina-chapter-overlay__facts dd,
 .lumina-chapter-overlay__list li {
-  color: rgba(245, 238, 229, 0.76);
+  color: rgb(var(--fg) / 0.76);
   line-height: 1.82;
 }
 
@@ -1548,8 +1624,8 @@ button {
   gap: 0.8rem;
   padding: 1.15rem;
   border-radius: 1.45rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgb(var(--line) / 0.08);
+  background: rgb(var(--line) / 0.04);
 }
 
 .lumina-chapter-overlay__card h3 {
@@ -1566,7 +1642,7 @@ button {
 .lumina-chapter-overlay__facts div {
   padding: 0.95rem 1rem;
   border-radius: 1.1rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgb(var(--line) / 0.03);
 }
 
 .lumina-chapter-overlay__facts dt {
@@ -1574,7 +1650,7 @@ button {
   font-size: 0.72rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(245, 238, 229, 0.5);
+  color: rgb(var(--fg) / 0.5);
 }
 
 .lumina-chapter-overlay__facts dd {
@@ -1594,7 +1670,7 @@ button {
 
 .lumina-chapter-overlay[data-principle="contrast"] .lumina-chapter-overlay__card--wide,
 .lumina-chapter-overlay[data-principle="contrast"] .lumina-chapter-overlay__close {
-  background: linear-gradient(140deg, rgba(255, 125, 96, 0.14), rgba(255, 255, 255, 0.04));
+  background: linear-gradient(140deg, rgba(255, 125, 96, 0.14), rgb(var(--line) / 0.04));
 }
 
 .lumina-chapter-overlay[data-principle="rhythm"] .lumina-chapter-overlay__list li {
@@ -1608,7 +1684,7 @@ button {
 
 .lumina-chapter-overlay[data-principle="unity"] .lumina-chapter-overlay__card,
 .lumina-chapter-overlay[data-principle="balance"] .lumina-chapter-overlay__facts div {
-  border-color: color-mix(in srgb, var(--active-principle-accent) 22%, rgba(255, 255, 255, 0.08));
+  border-color: color-mix(in srgb, var(--active-principle-accent) 22%, rgb(var(--line) / 0.08));
 }
 
 @media (min-width: 960px) {
@@ -1653,17 +1729,17 @@ button {
 }
 
 .lumina-principle-card[aria-current="true"] {
-  outline: 1px solid color-mix(in srgb, var(--active-principle-accent) 28%, rgba(255, 255, 255, 0.18));
+  outline: 1px solid color-mix(in srgb, var(--active-principle-accent) 28%, rgb(var(--line) / 0.18));
   outline-offset: 0;
 }
 
 .lumina-chamber[data-transitioning="true"] .lumina-chamber__hud,
 .lumina-chamber.is-transitioning .lumina-era-note,
 .lumina-chamber.is-transitioning .lumina-status {
-  border-color: color-mix(in srgb, var(--active-principle-accent) 42%, rgba(255, 255, 255, 0.16));
+  border-color: color-mix(in srgb, var(--active-principle-accent) 42%, rgb(var(--line) / 0.16));
   box-shadow:
     0 18px 42px color-mix(in srgb, var(--active-principle-accent) 12%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    inset 0 1px 0 rgb(var(--line) / 0.05);
 }
 
 .lumina-chamber[data-transitioning="true"] .lumina-chamber__grid {
@@ -1675,7 +1751,7 @@ button {
   font-size: 0.78rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(245, 238, 229, 0.52);
+  color: rgb(var(--fg) / 0.52);
 }
 
 .lumina-chapter-overlay__sequence {
@@ -1690,8 +1766,8 @@ button {
   justify-items: start;
   padding: 0.95rem 1rem;
   border-radius: 1.2rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgb(var(--line) / 0.08);
+  background: rgb(var(--line) / 0.03);
   color: rgba(255, 245, 234, 0.78);
   font: inherit;
   text-align: left;
@@ -1706,7 +1782,7 @@ button {
   font-size: 0.72rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(245, 238, 229, 0.44);
+  color: rgb(var(--fg) / 0.44);
 }
 
 .lumina-chapter-overlay__chip strong {
@@ -1718,9 +1794,9 @@ button {
 .lumina-chapter-overlay__chip:focus-visible,
 .lumina-chapter-overlay__chip.is-active {
   transform: translateY(-1px);
-  border-color: color-mix(in srgb, var(--active-principle-accent) 36%, rgba(255, 255, 255, 0.14));
-  background: color-mix(in srgb, var(--active-principle-accent) 12%, rgba(255, 255, 255, 0.04));
-  color: white;
+  border-color: color-mix(in srgb, var(--active-principle-accent) 36%, rgb(var(--line) / 0.14));
+  background: color-mix(in srgb, var(--active-principle-accent) 12%, rgb(var(--line) / 0.04));
+  color: rgb(var(--text-strong));
 }
 
 .lumina-chapter-overlay__chip.is-active span {

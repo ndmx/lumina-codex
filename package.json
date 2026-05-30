@@ -4,17 +4,31 @@
   "private": true,
   "description": "Lumina Codex portfolio experience.",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
-    "verify": "npm run lint && npm run build"
+    "verify": "npm run lint && npm run build",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "lumina:audit": "npm --prefix packages/lumina-system run build && node scripts/lumina-audit.mjs",
+    "lumina:evaluate": "npm --prefix packages/lumina-system run build && node scripts/lumina-evaluate.mjs",
+    "lumina:close": "npm --prefix packages/lumina-system run build && node scripts/lumina-close.mjs",
+    "lumina:meta": "npm --prefix packages/lumina-system run build && node scripts/lumina-meta.mjs"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ndmx/lumina-codex.git"
   },
-  "keywords": [],
+  "keywords": [
+    "lumina",
+    "design-system",
+    "web-app",
+    "react",
+    "nextjs",
+    "threejs"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
@@ -33,12 +47,22 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/coverage-v8": "^4.1.5",
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.1",
+    "jsdom": "^29.1.1",
     "tailwindcss": "^4.2.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.5"
+  },
+  "overrides": {
+    "postcss": "^8.5.14"
   }
 }

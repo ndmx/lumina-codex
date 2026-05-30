@@ -1,0 +1,103 @@
+{
+  "name": "@xlumina/system",
+  "version": "1.0.1",
+  "description": "The portable Lumina design-system brain: tokens, eras, light/dark schemes, responsive grid, seeded variation, and mobile-vs-web interaction rules. Framework-agnostic, zero runtime dependencies.",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ndmx/lumina-codex.git",
+    "directory": "packages/lumina-system"
+  },
+  "homepage": "https://github.com/ndmx/lumina-codex#readme",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "bin",
+    "README.md"
+  ],
+  "bin": {
+    "lumina": "bin/lumina.mjs"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json",
+    "./tokens": {
+      "types": "./dist/tokens.d.ts",
+      "import": "./dist/tokens.js"
+    },
+    "./eras": {
+      "types": "./dist/eras.d.ts",
+      "import": "./dist/eras.js"
+    },
+    "./registry": {
+      "types": "./dist/registry.d.ts",
+      "import": "./dist/registry.js"
+    },
+    "./scheme": {
+      "types": "./dist/scheme.d.ts",
+      "import": "./dist/scheme.js"
+    },
+    "./grid": {
+      "types": "./dist/grid.d.ts",
+      "import": "./dist/grid.js"
+    },
+    "./variation": {
+      "types": "./dist/variation.d.ts",
+      "import": "./dist/variation.js"
+    },
+    "./platform-rules": {
+      "types": "./dist/platform-rules.d.ts",
+      "import": "./dist/platform-rules.js"
+    },
+    "./feedback": {
+      "types": "./dist/feedback.d.ts",
+      "import": "./dist/feedback.js"
+    },
+    "./improvement-ledger": {
+      "types": "./dist/improvement-ledger.d.ts",
+      "import": "./dist/improvement-ledger.js"
+    },
+    "./invariants": {
+      "types": "./dist/invariants.d.ts",
+      "import": "./dist/invariants.js"
+    },
+    "./fitness": {
+      "types": "./dist/fitness.d.ts",
+      "import": "./dist/fitness.js"
+    },
+    "./evaluation": {
+      "types": "./dist/evaluation.d.ts",
+      "import": "./dist/evaluation.js"
+    },
+    "./closer": {
+      "types": "./dist/closer.d.ts",
+      "import": "./dist/closer.js"
+    },
+    "./meta": {
+      "types": "./dist/meta.d.ts",
+      "import": "./dist/meta.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "design-system",
+    "design-tokens",
+    "theme",
+    "light-dark",
+    "responsive-grid",
+    "lumina"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
