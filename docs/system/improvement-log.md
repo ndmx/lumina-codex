@@ -1,5 +1,25 @@
 # Lumina Improvement Log
 
+## 2026-05-31 - Background-as-surface rule (decorative backgrounds, mobile)
+
+Type: rule
+Scope: system
+Tags: design-system, mobile, native-app, ios-app, background, surface, contrast, accessibility
+
+Decision:
+- Added `docs/system/background-as-surface.md`: on a decorative/photographic background, treat the background as part of the primary visual surface. Content (text, icons, controls, and the repeated content surfaces — summary sections, cards, profile rows, plan rows, memory cards, radar/member panels) sits directly on the background rather than inside opaque white/filled cards. Grouping and legibility come from spacing → hierarchy → dividers → subtle shadow → thin low-opacity outline, in that order, all sourced from `--ls-*` scheme variables. Buttons/controls stay visually clear and keep the 44px touch target, but whole sections are not wrapped in opaque containers. Backgrounds are chosen per screen, with busy regions kept away from dense text. When contrast drops below the `contrast-floor`, recover with a full-screen readability wash or gradient (`--ls-overlay-*`) before adding any filled container.
+- Registered the doc in `docs/system/README.md` (Files list), `LUMINA.md` (read order, after `mobile-vs-web.md`), and `lumina.manifest.json` (`readOrder`).
+
+Reason:
+- The system encoded scheme surfaces, the contrast floor, and touch targets, but had no rule for what to do when a screen's background is itself designed. The unstated default — box everything in opaque cards for legibility — erases the chosen surface and contradicts the "Shared Space"/atmosphere intent. This makes the better default explicit and ties it to existing contracts so it composes additively: it never lowers the contrast floor or shrinks a target, it only changes *how* a screen reaches legibility (surface + spacing + wash over opaque fills).
+
+Caveat:
+- Kept as prose rather than a new executable module: it is a compositional/aesthetic principle, not a single resolvable value like proximity mode. It defers to the existing `contrast-floor` invariant and `platform-rules.ts` target minimum, which remain the enforceable floors.
+
+Files:
+- `docs/system/background-as-surface.md` (new)
+- `docs/system/README.md`, `LUMINA.md`, `lumina.manifest.json` (updated)
+
 ## 2026-05-30 - Portable CLI + distribution (call the loop from any project)
 
 Type: component, source-boundary

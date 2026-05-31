@@ -38,11 +38,12 @@ Theme helpers emit CSS custom properties prefixed `--ls-*`; components read thos
 5. `docs/system/element-model.md`
 6. `docs/system/scheme-grid-variation.md` — light/dark, responsive grid, seeded variation
 7. `docs/system/mobile-vs-web.md` — interaction rules per device class
-8. `docs/system/integration-guide.md` — install `@xlumina/system`, register and theme a product
-9. `docs/system/registry.md`
-10. Product profile, when one exists under `docs/products/`
-11. `docs/constitution.md`, only when the work needs the deeper Lumina Codex vision
-12. `docs/system/continuous-improvement.md`, when adding or changing the system
+8. `docs/system/background-as-surface.md` — decorative backgrounds as the primary surface (mobile)
+9. `docs/system/integration-guide.md` — install `@xlumina/system`, register and theme a product
+10. `docs/system/registry.md`
+11. Product profile, when one exists under `docs/products/`
+12. `docs/constitution.md`, only when the work needs the deeper Lumina Codex vision
+13. `docs/system/continuous-improvement.md`, when adding or changing the system
 
 ## Agent Contract
 

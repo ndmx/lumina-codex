@@ -11,6 +11,7 @@ For app or agent usage, start at `LUMINA.md`.
 - `platform-taxonomy.md`: the canonical medium, platform, runtime, and surface tags.
 - `naming-and-tags.md`: naming rules for products, screens, components, tokens, props, files, states, events, and user-facing copy.
 - `element-model.md`: the canonical Lumina element model, with coverage for HTML, React, TypeScript, SwiftUI, native mobile, canvas, SVG, and 3D engines.
+- `background-as-surface.md`: the mobile rule for decorative backgrounds — treat the background as the primary surface; content sits on it rather than inside opaque cards.
 - `source-map.md`: where the existing appDesign files and adjacent app folders fit into Lumina.
 - `registry.md`: ownership map for canonical files and product profiles.
 - `continuous-improvement.md`: the agent workflow for quickly adding reusable system knowledge.
