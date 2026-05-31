@@ -4,6 +4,34 @@ Lumina Codex is both a portable design-system package and an immersive portfolio
 
 The live site is built with Next.js, React Three Fiber, and an editorial narrative shell. The system docs define naming, tags, product profiles, element coverage, and continuous improvement rules for apps across mobile, web, native, documents, presentations, canvas, and 3D surfaces.
 
+## The design system on npm — `@xlumina/system`
+
+The portable Lumina brain ships as a published, framework-agnostic package with zero runtime dependencies ([npm](https://www.npmjs.com/package/@xlumina/system) · source: `packages/lumina-system/`).
+
+```bash
+npm install @xlumina/system
+```
+
+```ts
+import {
+  tokens,                   // raw primitives — the single source of truth
+  eras, defaultEra,         // accent/atmosphere themes
+  resolveSchemeVars,        // light | dark → CSS custom properties (--ls-*)
+  resolveGrid, spanColumns, // responsive column model
+  createVariation,          // seeded, bounded per-instance uniqueness
+  resolveInteraction,       // mobile-vs-web interaction rules
+} from "@xlumina/system";
+```
+
+Installing the package also gives every project the `lumina` CLI for the recursive-improvement loop:
+
+```bash
+npx lumina record --kind gap --target concept:Reminder --detail "no canonical chip"
+npx lumina audit   # score this project's ledger + open proposals
+```
+
+See [`packages/lumina-system/README.md`](packages/lumina-system/README.md) for the full surface (subpath imports, usage, the loop) and `docs/system/integration-guide.md` to register and theme a product.
+
 ## Stack
 - Next.js App Router
 - TypeScript
@@ -36,7 +64,7 @@ npm run verify
 
 ## Lumina system docs
 
-The shared cross-medium design-system layer lives in this package.
+The rules and reference for the cross-medium design system (the prose layer behind the `@xlumina/system` package above):
 
 - `LUMINA.md` is the main human/agent entry point.
 - `AGENTS.md` gives Codex-style agents the repo-local operating rules.
@@ -47,6 +75,6 @@ The shared cross-medium design-system layer lives in this package.
 - `docs/system/element-model.md` maps Lumina roles to HTML, React, TypeScript, SwiftUI, native mobile, SVG, canvas, and 3D engines.
 - `docs/system/registry.md` tells agents where to read and where to write.
 - `docs/system/continuous-improvement.md` defines the quick-add workflow for reusable agent discoveries.
-- `docs/system/source-map.md` explains how app sources, product profiles, and sensitive references roll up into Lumina.
+- `docs/system/source-map.md` explains how app sources, product profiles, and out-of-scope reference folders roll up into Lumina.
 - `docs/system/adherence-audit.md` records which files are canonical, product-specific, archived, generated, or sensitive.
 - `docs/products/` stores product profiles, including the migrated mobile design-system docs.

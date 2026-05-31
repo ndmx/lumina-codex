@@ -53,7 +53,7 @@ When designing or editing an app with Lumina:
 - Prefer native platform components before custom UI.
 - Preserve product-specific aliases such as JxL Scheduler `Group` and ParkMemory Hub `Circle` when they are the clearer user-facing terms.
 - Add reusable decisions back to Lumina through the continuous improvement workflow.
-- Do not ingest or publish files from `../AppDEVguideS`; treat that folder as sensitive reference material.
+- Do not ingest or publish files from `../AppDEVguideS`; treat that folder as out-of-scope reference material.
 
 ## Quick Add Protocol
 
