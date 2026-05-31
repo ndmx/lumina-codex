@@ -96,6 +96,16 @@ This package is the *brain*. For the full rules an agent should follow — namin
 platform taxonomy, element model, mobile-vs-web, the continuous-improvement
 workflow — see the Lumina Codex repo's `LUMINA.md` entry point and `docs/system/`.
 
+One rule worth calling out for mobile work: **background-as-surface**. On a
+decorative/photographic background, treat the background as the primary visual
+surface — content (summary sections, cards, profile rows, plan rows, memory
+cards, radar/member panels) sits directly on it rather than inside opaque white
+cards. Separate with spacing, hierarchy, dividers, a subtle shadow, or a thin
+`--ls-border-subtle` outline; when contrast dips below the floor, reach for a
+full-screen readability wash (`--ls-overlay-*`) before a filled container.
+Controls stay clear and keep the 44px touch target. Full rule:
+`docs/system/background-as-surface.md`.
+
 ## Publishing / letting people try it
 
 The package is publish-ready (`files` ships only `dist/` + `bin/` + README).

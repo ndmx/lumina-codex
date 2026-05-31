@@ -18,7 +18,7 @@
     "feedbackEnv": "LUMINA_FEEDBACK_URL — POST events to a central Lumina instead of a local file",
     "published": true,
     "registry": "https://www.npmjs.com/package/@xlumina/system",
-    "publishedVersion": "1.0.1",
+    "publishedVersion": "1.0.2",
     "description": "Framework-agnostic executable brain: tokens, eras, schemes, grid, variation, platform-rules, and the recursive-improvement loop. Zero runtime dependencies. Ships a `lumina` CLI."
   },
   "systemModules": {
