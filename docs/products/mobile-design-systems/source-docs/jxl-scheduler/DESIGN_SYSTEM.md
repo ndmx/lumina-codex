@@ -1,6 +1,6 @@
 # JxL Scheduler Design System
 
-> Lumina archive status: source snapshot. Use `lumina-codex/docs/products/mobile-design-systems/jxl-scheduler/design-system.md` for the current product profile and `lumina-codex/docs/system/` for canonical naming and tags.
+> Lumina archive status: source snapshot. Use `docs/products/mobile-design-systems/jxl-scheduler/design-system.md` for the current product profile and `docs/system/` for canonical naming and tags.
 
 ## Product Name
 

@@ -1,12 +1,8 @@
 # Lumina Agent Entry Point
 
-Use this file when pointing any app, repo, or agent at Lumina.
-
-Canonical path:
-
-```text
-lumina-codex/LUMINA.md
-```
+Use this file when pointing any app, repo, or agent at Lumina. It is the
+canonical entry point — start here (`LUMINA.md` at the repository root), then
+follow the read order below.
 
 ## Mission
 

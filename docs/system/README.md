@@ -4,7 +4,7 @@ Lumina is the shared design-system language for software rendered on any medium:
 
 This folder is the source of truth for names, tags, and element coverage. Product-specific systems such as JxL Scheduler and ParkMemory Hub should map their local terms into Lumina instead of inventing new global terms.
 
-For app or agent usage, start at `lumina-codex/LUMINA.md`.
+For app or agent usage, start at `LUMINA.md`.
 
 ## Files
 

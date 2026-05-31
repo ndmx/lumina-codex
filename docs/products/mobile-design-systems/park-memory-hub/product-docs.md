@@ -67,13 +67,3 @@ Use this structure for App Review:
 ```text
 ParkMemory Hub is a shared trip app for families and friends. Users create or join a circle, then share memories, plans, and optional location updates through iCloud/CloudKit. To test circle features, create a circle on one device, share the invite link from Profile, open it on a second device, and accept the invite inside the app.
 ```
-
-## Source Docs
-
-Original source snapshots live in:
-
-- `../source-docs/park-memory-hub/README.md`
-- `../source-docs/park-memory-hub/RELEASE_CHECKLIST.md`
-- `../source-docs/park-memory-hub/IOS_VERSION_REQUIREMENTS.md`
-- `../source-docs/park-memory-hub/SUPPORT.md`
-- `../source-docs/park-memory-hub/PRIVACY_POLICY.md`

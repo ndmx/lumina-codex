@@ -8,7 +8,7 @@ rules an agent should follow (`LUMINA.md` + `docs/system/`).
 
 ## The one-liner
 
-> Read `lumina-codex/LUMINA.md` and follow it
+> Read `LUMINA.md` and follow it
 > to build me **<your app idea>**.
 
 That file routes the agent through the read order, the `@xlumina/system` package,
@@ -19,7 +19,7 @@ and the naming/platform/interaction rules.
 ## The full template (copy, fill the blanks)
 
 > **Design system:** Use Lumina. Its entry point is
-> `lumina-codex/LUMINA.md` — read it and
+> `LUMINA.md` — read it and
 > `lumina.manifest.json` first, then follow the read order.
 >
 > **Install the brain:** `npm install @xlumina/system` (source lives at

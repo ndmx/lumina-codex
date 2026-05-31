@@ -17,7 +17,7 @@
 
 ### Notes
 - Product-specific labels are preserved as aliases: JxL Scheduler keeps `Group`; ParkMemory Hub keeps `Circle`; Lumina uses `Shared Space` as the canonical concept above both.
-- `AppDEVguideS` is treated as a sensitive-material boundary because it contains credential-like JSON files.
+- `AppDEVguideS` is treated as an out-of-scope reference boundary; its contents are never ingested into or published from Lumina.
 - Refreshed package metadata, resolved Next to `16.2.4`, and added a PostCSS override so `npm audit --omit=dev` reports zero vulnerabilities.
 
 ## 2026-03-27

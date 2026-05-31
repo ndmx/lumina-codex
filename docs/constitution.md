@@ -1,7 +1,7 @@
 # The LUMINA CODEX Design Constitution
 *A Replicable Blueprint for the Ultimate Homage to Design*
 
-> Lumina status: vision document. The active cross-medium design-system source of truth lives in `lumina-codex/docs/system/`; the implemented Lumina Codex app lives in `lumina-codex/`.
+> Lumina status: vision document. The active cross-medium design-system source of truth lives in `docs/system/`; the implemented Lumina Codex app lives at the repository root.
 
 This is not a tutorial. It is a **living constitution** — a complete, self-contained rule set and technical manifesto that any designer, developer, or creative can follow to recreate the LUMINA CODEX exactly as built. The site itself *is* the portfolio: an immersive, interactive 3D digital atelier where visitors do not merely view design — they experience its principles in real time.
 

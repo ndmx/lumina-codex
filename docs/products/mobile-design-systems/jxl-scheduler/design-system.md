@@ -28,7 +28,7 @@ Avoid `Organization`, `Team`, `Comms`, `Files`, and `Ops` in primary UI unless t
 
 The current source of truth is:
 
-`iOS_apps/Jx Scheduler/Jx Scheduler/Views/Style.swift`
+`Jx Scheduler/Jx Scheduler/Views/Style.swift`
 
 Important tokens:
 

@@ -1,6 +1,6 @@
 # Mobile Design-System Product Profiles
 
-> Lumina note: this folder is now product-specific source material under the broader Lumina system. Use `lumina-codex/docs/system/` as the cross-medium source of truth for naming, tags, platform taxonomy, and element coverage.
+> Lumina note: this folder is now product-specific source material under the broader Lumina system. Use `docs/system/` as the cross-medium source of truth for naming, tags, platform taxonomy, and element coverage.
 
 This folder collects the design-system and product-documentation work for the current EdenTV iOS apps:
 
@@ -30,8 +30,7 @@ docs/products/mobile-design-systems/
     product-docs.md
   source-docs/
     jxl-scheduler/
-    park-memory-hub/
-    edentv-jxl/
+      DESIGN_SYSTEM.md
 ```
 
 ## Shared Design Direction
@@ -51,11 +50,11 @@ The reusable direction across both apps is:
 
 Source docs were copied from:
 
-- `iOS_apps/Jx Scheduler`
-- `iOS_apps/ParkMemoryHub`
+- `Jx Scheduler`
+- `ParkMemoryHub`
 - `edentv/docs`
 
-The polished docs in this folder are the recommended working reference. The files under `source-docs/` are kept as snapshots.
+The polished docs in this folder are the recommended working reference. The original design-system snapshot is kept under `source-docs/jxl-scheduler/` for provenance; app legal/operational source docs (privacy, support, release, setup) were removed as out of scope for a design-system repo.
 
 ## When To Update
 

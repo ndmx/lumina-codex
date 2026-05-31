@@ -1,6 +1,6 @@
 # Cross-App Design Roadmap
 
-> Lumina status: the shared vocabulary in this file has been promoted into `lumina-codex/docs/system/`. Keep this roadmap for mobile-specific implementation history; update Lumina first when naming or tagging rules change.
+> Lumina status: the shared vocabulary in this file has been promoted into `docs/system/`. Keep this roadmap for mobile-specific implementation history; update Lumina first when naming or tagging rules change.
 
 This is the practical next step for turning the current app-specific docs into an actual reusable design system.
 

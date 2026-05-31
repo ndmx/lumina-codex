@@ -48,12 +48,6 @@ The app is documented as privacy-forward:
 - iCloud sharing uses Apple services.
 - There is no app-specific backend, ad tracking, or external account system in the current app.
 
-Current public docs are archived in:
-
-- `../source-docs/edentv-jxl/jxl-scheduler-privacy.html`
-- `../source-docs/edentv-jxl/jxl-scheduler-support.html`
-- `../source-docs/edentv-jxl/jxl-scheduler-compliance.html`
-
 Live URLs used during App Store setup:
 
 - `https://edentv.us/docs/jxl-scheduler-privacy`
@@ -73,8 +67,6 @@ Live URLs used during App Store setup:
 
 ## Source Docs
 
-Original source snapshots live in:
+The original design-system snapshot is kept for provenance:
 
 - `../source-docs/jxl-scheduler/DESIGN_SYSTEM.md`
-- `../source-docs/jxl-scheduler/README.md`
-- `../source-docs/jxl-scheduler/ORGANIZATION_SETUP_GUIDE.md`

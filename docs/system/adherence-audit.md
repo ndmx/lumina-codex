@@ -2,14 +2,13 @@
 
 Date: 2026-05-06
 
-This audit records how the files in `DEV/appDesign` align with the Lumina system.
+This audit records how the project files align with the Lumina system.
 
 ## Scope
 
 Included:
 
 - Markdown product profiles in `lumina-codex/docs/products/`.
-- HTML source snapshots in `lumina-codex/docs/products/mobile-design-systems/source-docs/edentv-jxl/`.
 - Lumina Codex docs, manifest, agent entry points, and source files in `lumina-codex/`.
 - The `lumina-codex/docs/constitution.md` vision document.
 
@@ -18,7 +17,7 @@ Excluded from design-system conformance:
 - `lumina-codex/node_modules/`: installed third-party dependencies.
 - `lumina-codex/.next/`: generated Next.js build output.
 - `lumina-codex/package-lock.json`: generated dependency lockfile.
-- `AppDEVguideS/`: PDFs, icon material, and credential-like JSON files. This folder is a sensitive-material boundary and should not be copied into Lumina docs.
+- `AppDEVguideS/`: out-of-scope reference material. This folder is a boundary and should not be copied into Lumina docs.
 
 ## Current Status
 
@@ -37,8 +36,7 @@ Excluded from design-system conformance:
 | `lumina-codex/docs/products/mobile-design-systems/shared/*.md` | Adheres | Uses `Shared Space` as the canonical concept and product aliases beneath it. |
 | `lumina-codex/docs/products/mobile-design-systems/jxl-scheduler/*.md` | Adheres | Uses `Group` only as JxL Scheduler's user-facing alias for Lumina `Shared Space`. |
 | `lumina-codex/docs/products/mobile-design-systems/park-memory-hub/*.md` | Adheres | Uses `Circle` only as ParkMemory Hub's user-facing alias for Lumina `Shared Space`. |
-| `lumina-codex/docs/products/mobile-design-systems/source-docs/**/*.md` | Adheres as archived snapshots | Each source snapshot is marked archival and points back to current Lumina docs. Legacy implementation terms may remain inside archived/code examples. |
-| `lumina-codex/docs/products/mobile-design-systems/source-docs/edentv-jxl/*.html` | Adheres as archived snapshots | Each HTML snapshot includes Lumina archive metadata. The visible `Uploads and Files` label was corrected to `Uploads`. |
+| `lumina-codex/docs/products/mobile-design-systems/source-docs/jxl-scheduler/DESIGN_SYSTEM.md` | Adheres as archived snapshot | The original design-system snapshot, kept for provenance and pointing back to current Lumina docs. Legacy implementation terms may remain inside code examples. |
 
 ## Approved Alias Rules
 
