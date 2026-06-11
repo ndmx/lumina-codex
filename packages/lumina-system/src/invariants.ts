@@ -30,6 +30,12 @@ export type Invariant = {
  */
 export const invariants: readonly Invariant[] = [
   {
+    kind: "constitution",
+    ref: "core-principles",
+    reason:
+      "The eight constitution principles define the system's ethical and craft contract; changes require human review.",
+  },
+  {
     kind: "concept",
     ref: "Shared Space",
     reason:
@@ -51,6 +57,12 @@ export const invariants: readonly Invariant[] = [
     kind: "scheme",
     ref: "contrast-floor",
     reason: "Text/background contrast minimums must hold in every scheme × era.",
+  },
+  {
+    kind: "platform-rule",
+    ref: "reduced-motion",
+    reason:
+      "Reduced-motion support is an accessibility floor, not a stylistic preference.",
   },
   {
     kind: "grid",
@@ -84,6 +96,7 @@ export function matchInvariant(target: FeedbackTarget): Invariant | undefined {
  */
 export function classifyAutonomy(target: FeedbackTarget): AutonomyTier {
   if (isInvariant(target)) return "human-gated";
+  if (target.kind === "constitution") return "human-gated";
   if (target.kind === "naming" || target.kind === "concept") return "review";
   return "auto";
 }

@@ -11,8 +11,13 @@ describe("invariants", () => {
     expect(isInvariant({ kind: "concept", ref: "Shared Space" })).toBe(true);
   });
 
+  it("protects the constitution principles", () => {
+    expect(isInvariant({ kind: "constitution", ref: "core-principles" })).toBe(true);
+  });
+
   it("protects the accessibility target floor and contrast floor", () => {
     expect(isInvariant({ kind: "platform-rule", ref: "min-target" })).toBe(true);
+    expect(isInvariant({ kind: "platform-rule", ref: "reduced-motion" })).toBe(true);
     expect(isInvariant({ kind: "scheme", ref: "contrast-floor" })).toBe(true);
   });
 
@@ -37,6 +42,7 @@ describe("classifyAutonomy", () => {
   it("invariants are human-gated", () => {
     expect(classifyAutonomy({ kind: "scheme", ref: "contrast-floor" })).toBe("human-gated");
     expect(classifyAutonomy({ kind: "concept", ref: "Shared Space" })).toBe("human-gated");
+    expect(classifyAutonomy({ kind: "constitution", ref: "core-principles" })).toBe("human-gated");
   });
 
   it("naming and non-invariant concepts need review", () => {

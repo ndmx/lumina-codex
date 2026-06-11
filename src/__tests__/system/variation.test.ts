@@ -43,12 +43,12 @@ describe("mulberry32", () => {
 
 describe("createVariation", () => {
   it("is deterministic for a seed", () => {
-    expect(createVariation("park-memory")).toEqual(createVariation("park-memory"));
+    expect(createVariation("design-variation-03")).toEqual(createVariation("design-variation-03"));
   });
 
   it("differs between seeds (not a clone)", () => {
-    const a = createVariation("jxl-scheduler");
-    const b = createVariation("park-memory");
+    const a = createVariation("design-variation-01");
+    const b = createVariation("design-variation-03");
     expect(a).not.toEqual(b);
   });
 

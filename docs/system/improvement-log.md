@@ -1,5 +1,82 @@
 # Lumina Improvement Log
 
+## 2026-06-06 - SwiftUI token bridge and rendered surface ladder
+
+Type: rule
+Scope: system
+Tags: design-system, native, macos, swiftui, design-tokens, surface-ladder, variation-02
+
+Decision:
+- Established the canonical pattern for consuming `@xlumina/system` in a native
+  SwiftUI app, learned while rebuilding the Cosmix audio visualizer on
+  Variation 02 (Smoked Graphite Glass):
+  1. Port token *values* once into a UI-free layer (`LuminaColor`,
+     `LuminaTokens`, `LuminaTreatment`) that mirrors `tokens.ts` / `surface.ts`,
+     and unit-test that layer against the spec so the native copy cannot drift.
+  2. Expose those values to SwiftUI through a thin bridge (`Color(LuminaColor)`,
+     plus `CGFloat`/`Font` accessors re-derived from the same constants). Views
+     read the bridge and never hardcode raw colour, spacing, or radius.
+  3. Render the surface ladder as SwiftUI `ViewModifier`s
+     (`bare → outline → glass → solid-panel`) while keeping the *which-rung*
+     decision inside the ported `recommendContentBlock` logic, not the view.
+
+Reason:
+- The integration guide covers the web / CSS-custom-property path; native apps
+  needed an explicit, repeatable mapping so each new SwiftUI product doesn't
+  reinvent token consumption. This is now the second medium — web and native —
+  to make the same decision, which is the bar for promoting it to the system.
+- Keeping ported tokens in a tested, dependency-free module is what prevents the
+  "native theme file silently diverges from `tokens.ts`" failure mode the
+  appearance/token work has been guarding against.
+
+Files:
+- `docs/system/improvement-log.md` (this entry)
+- Reference implementation (private consuming app, not ingested): Cosmix
+  `CosmixCore/Sources/CosmixCore/DesignSystem/` and `cosmix/DesignSystem/`.
+
+## 2026-06-01 - Design Variation 01 paired appearance backgrounds and user-controlled theme preference
+
+Type: component, rule, design-variation
+Scope: system
+Tags: design-system, mobile, ios-app, swiftui, appearance, dark-mode, background, surface, glass
+
+Decision:
+- Added `packages/lumina-system/src/appearance.ts`: Lumina now has executable names for the `System | Light | Dark` preference pattern, recommended placement, persisted storage key guidance, paired background guidance, and `resolveAppearanceScheme(...)` for root-level scheme resolution.
+- Added `smoked-graphite` as a background material and `graphiteGlass` material tokens. This captures Design Variation 02's dark-mode surface: graphite glass, steel/chrome edges, muted teal glints, translucent charcoal cards, and thin pearl/steel outlines.
+- Added Design Variation 01 and Design Variation 02 as a reusable paired appearance pattern: warm pearl paper/frosted calendar light background, smoked graphite dark background, adaptive tokens, desaturated dark-mode empty-state art, and a Profile/Settings appearance segmented control.
+- Documented the reusable rule: pair light/dark background images by composition rather than literal inversion, keep calm text zones consistent, and default the user preference to `System`.
+
+Reason:
+- A private implementation proved that background-as-surface needs a paired-appearance variant. The best result was not a single background tinted darker, and not a monolithic dark theme. It was a matched light/dark material pair plus a user-controlled override applied at the app root. Encoding that pattern lets Lumina generate reusable appearance variation while still respecting OS-level comfort settings.
+
+Files:
+- `packages/lumina-system/src/{appearance,surface,tokens,registry,index}.ts`, `packages/lumina-system/package.json`, `packages/lumina-system/README.md`
+- `docs/system/{background-as-surface,scheme-grid-variation,registry,source-map,README,improvement-log}.md`, `LUMINA.md`, `lumina.manifest.json`
+- `docs/design-variations/{README.md,design-variation-01.md,design-variation-02.md}`
+- `src/__tests__/system/{appearance,surface,tokens,registry}.test.ts`
+
+## 2026-05-31 - Surface treatments, softened aura, and Design Variation 04
+
+Type: token, rule, design-variation
+Scope: system
+Tags: design-system, mobile, ios-app, swiftui, background, surface, glass, safety, color-roles
+
+Decision:
+- Added `packages/lumina-system/src/surface.ts` and exported it from `@xlumina/system`: Lumina now has executable names for image-led background materials (`chrome-pearl`, `chrome`, `steel`, `marble`, `pearl`, `map`) and content treatments (`bare`, `outline`, `glass`, `solid-panel`). `recommendContentBlock(...)` teaches agents the surface ladder learned from Design Variation 03 and Design Variation 04.
+- Softened the default Lumina `aura` accent from electric teal into calmer teal (`#3c9b91`) and kept the old high-voltage color as `auraElectric`. Reduced the default atelier glow so teal supports UI instead of flooding it.
+- Added material tokens (`materialColors`) and domain role tokens (`roleColors`) so brand accents, content categories, and safety/status roles are not confused.
+- Registered Design Variation 04 in the public registry and manifest. Added Design Variation 04 docs as a map-first safety counterexample: glass overlays on maps, solid panels for forms/dense safety data, and a separate danger/status palette.
+- Rewrote Design Variation 03 as a public reusable profile: screen-specific chrome/pearl/marble/steel backgrounds, transparent or outlined repeated blocks, faint glass where controls need tactility, and no default white cards over designed imagery.
+
+Reason:
+- Private source work proved Lumina needs a reusable rule for background imagery and almost-transparent blocks; Design Variation 04 proved the rule must not become monolithic. Some products should preserve image atmosphere with outline/glass, while safety/map/form products need stronger panels and functional color. Encoding both examples lets Lumina generate variation without forcing one house style.
+
+Files:
+- `packages/lumina-system/src/{tokens,eras,surface,registry,index}.ts`, `packages/lumina-system/package.json`, `packages/lumina-system/README.md`
+- `docs/system/{background-as-surface,registry,source-map,README,improvement-log}.md`, `LUMINA.md`, `lumina.manifest.json`
+- `docs/design-variations/{README.md,design-variation-03.md,design-variation-04.md}`
+- `src/__tests__/system/{tokens,registry,surface}.test.ts`
+
 ## 2026-05-31 - Background-as-surface rule (decorative backgrounds, mobile)
 
 Type: rule
@@ -211,27 +288,27 @@ Files:
 - `docs/system/scheme-grid-variation.md` (new)
 - `docs/system/mobile-vs-web.md` (new)
 
-## 2026-05-06 - Executable Token Layer and Product Registry
+## 2026-05-06 - Executable Token Layer and Public Registry
 
-Type: token, source-boundary, product-profile
+Type: token, source-boundary, registry
 Scope: system
 Tags: design-system, tokens, eras, registry, extensibility
 
 Decision:
 - Introduced `src/system/tokens.ts` as the single canonical source for all design primitives (colors, spacing, typography, motion, radii, breakpoints, z-layers).
 - Introduced `src/system/eras.ts` as the typed era/theme system with full accent, glow, and tone fields per era.
-- Introduced `src/system/registry.ts` as the machine-readable product registry with typed `ProductProfile` entries and lookup helpers.
-- Registered three existing products: lumina-codex, jxl-scheduler, park-memory-hub.
+- Introduced `src/system/registry.ts` as the machine-readable public registry with typed entries and lookup helpers.
+- Registered the reference implementation and early design variations.
 - Refactored `codex-content.ts` to source `EraKey` and `eras` from `src/system/eras.ts`.
-- Updated `lumina.manifest.json` to v0.3.0 with `tokenSource`, `eraSource`, `productRegistry`, and `registeredProducts` fields.
-- Created `docs/system/integration-guide.md` with a step-by-step guide for adding new projects.
+- Updated `lumina.manifest.json` to v0.3.0 with token, era, registry, and reference fields.
+- Created `docs/system/integration-guide.md` with a step-by-step guide for using Lumina.
 - Updated `docs/system/registry.md` to reference the new executable files.
 - Added 82 system-level tests covering tokens, eras, and registry.
 
 Reason:
 - The system had excellent documentation taxonomy but no executable layer. New projects had no programmatic way to consume or extend Lumina values.
 - The TypeScript token file is the canonical source; CSS custom properties and platform-specific theme files (Swift, RN) are downstream artifacts that must mirror it.
-- The product registry enforces that every project that uses Lumina is visible to the system, which enables cross-product consistency checks and alias resolution.
+- The registry keeps public references visible to the system, enabling consistency checks without exposing private app identities.
 
 Files:
 - `src/system/tokens.ts` (new)
@@ -253,19 +330,59 @@ Tags: design-system, agent-entrypoint, continuous-improvement
 
 Decision:
 - Moved the constitution into `docs/constitution.md`.
-- Moved mobile design-system material into `docs/products/mobile-design-systems/`.
+- Moved mobile design-system lessons into the Lumina docs.
 - Added `LUMINA.md`, `AGENTS.md`, `lumina.manifest.json`, `registry.md`, and `continuous-improvement.md`.
 
 Reason:
 - Lumina should be a single portable package that any app or agent can reference.
-- Product profiles, source snapshots, and the creative constitution now live under one root without mixing sensitive app-development material into the design system.
+- Public reusable design lessons and the creative constitution now live under one root without mixing sensitive app-development material into the design system.
 
 Files:
 - `LUMINA.md`
 - `AGENTS.md`
 - `lumina.manifest.json`
 - `docs/constitution.md`
-- `docs/products/mobile-design-systems/`
+- `docs/design-variations/`
 - `docs/system/registry.md`
 - `docs/system/continuous-improvement.md`
+## 2026-06-11 - Lumina Design Constitution Integration
 
+Type: constitution, governance, accessibility
+Scope: system
+Tags: design-system, apple-platforms, governance, accessibility, tokens
+
+Decision:
+- Incorporated the June 2026 Lumina Design Constitution into the public design
+  system as `docs/system/design-constitution.md`.
+- Added `packages/lumina-system/src/constitution.ts` with the eight principles,
+  foundation floors, component spec fields, and governance rules.
+- Exported the constitution from `@xlumina/system` and added a
+  `@xlumina/system/constitution` subpath export.
+- Human-gated constitution targets in the recursive loop and protected the
+  reduced-motion floor.
+- Raised pointer-profile `minTarget` values to the same 44px constitution floor
+  used by touch profiles.
+
+Reason:
+- The new constitution should guide agents, reviews, and consuming apps as an
+  executable contract instead of remaining a detached Markdown draft.
+- Public Lumina docs should preserve the reusable Apple-platform rules while
+  keeping private app names and maintainer-specific provenance out of the
+  package surface.
+
+Files:
+- `docs/system/design-constitution.md` (new)
+- `packages/lumina-system/src/constitution.ts` (new)
+- `packages/lumina-system/src/index.ts`
+- `packages/lumina-system/src/feedback.ts`
+- `packages/lumina-system/src/invariants.ts`
+- `packages/lumina-system/src/platform-rules.ts`
+- `packages/lumina-system/package.json`
+- `packages/lumina-system/README.md`
+- `docs/system/README.md`
+- `docs/system/registry.md`
+- `docs/system/mobile-vs-web.md`
+- `lumina.manifest.json`
+- `src/__tests__/system/constitution.test.ts` (new)
+- `src/__tests__/system/invariants.test.ts`
+- `src/__tests__/system/platform-rules.test.ts`

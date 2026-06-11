@@ -1,14 +1,14 @@
 /**
  * Lumina era/theme system.
  *
- * Eras are the top-level atmosphere modes that every Lumina product can adopt.
+ * Eras are the top-level atmosphere modes that every Lumina variation can adopt.
  * Each era maps to a complete token override set — accent colors, glow tints,
- * and background tone — that shifts the whole product's mood without replacing
+ * and background tone — that shifts the whole interface mood without replacing
  * the underlying primitive palette.
  *
- * New products: pick a defaultEra in your registry entry. If your product needs
- * a tone that doesn't exist here, propose a new era by adding to this file and
- * logging the decision in docs/system/improvement-log.md.
+ * New variations: pick a defaultEra in your registry entry. If a variation
+ * needs a tone that doesn't exist here, propose a new era by adding to this file
+ * and logging the decision in docs/system/improvement-log.md.
  */
 
 import { colorPrimitives } from "./tokens.js";
@@ -46,7 +46,7 @@ export const eras: Record<EraKey, Era> = {
     },
     glow: {
       top: "rgba(255, 244, 232, 0.56)",
-      mid: "rgba(115, 242, 223, 0.18)",
+      mid: "rgba(60, 155, 145, 0.16)",
     },
   },
   memphis: {
@@ -72,7 +72,7 @@ export const eras: Record<EraKey, Era> = {
     descriptor: "Sharper geometry, deeper shadows, and a colder electric pulse.",
     backgroundTone: "cool",
     accent: {
-      primary: colorPrimitives.aura,
+      primary: colorPrimitives.auraElectric,
       secondary: "#d6e3ff",
       onPrimary: "#071010",
     },

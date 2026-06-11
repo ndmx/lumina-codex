@@ -5,9 +5,9 @@
 ### What changed
 - Promoted Lumina from a site-only identity into a cross-medium design-system source of truth.
 - Added canonical docs for platform tags, naming rules, universal element roles, and source mapping.
-- Linked the older mobile design-system folder back to the Lumina system so JxL Scheduler and ParkMemory Hub remain product profiles instead of competing vocabularies.
-- Audited the existing `appDesign` docs and marked archived source snapshots so legacy terms do not override active Lumina naming.
-- Consolidated the constitution and mobile design-system docs into `lumina-codex`, leaving `AppDEVguideS` outside as a sensitive boundary.
+- Linked the older mobile design-system lessons back to the Lumina system as public design variations instead of competing vocabularies.
+- Audited existing design notes and removed private source snapshots from the public system surface.
+- Consolidated the constitution and public design-variation docs into `lumina-codex`, leaving `AppDEVguideS` outside as a sensitive boundary.
 - Added agent-facing entry points and a continuous improvement architecture so apps and agents can point at one root.
 
 ### System-specific upgrades
@@ -16,7 +16,7 @@
 - The element model now covers HTML, React, TypeScript, SwiftUI, native mobile, SVG, canvas, and 3D scene surfaces.
 
 ### Notes
-- Product-specific labels are preserved as aliases: JxL Scheduler keeps `Group`; ParkMemory Hub keeps `Circle`; Lumina uses `Shared Space` as the canonical concept above both.
+- App-specific labels remain private app concerns; Lumina uses generic aliases such as `Group`, `Circle`, or `Team` only as examples beneath the canonical `Shared Space` concept.
 - `AppDEVguideS` is treated as an out-of-scope reference boundary; its contents are never ingested into or published from Lumina.
 - Refreshed package metadata, resolved Next to `16.2.4`, and added a PostCSS override so `npm audit --omit=dev` reports zero vulnerabilities.
 

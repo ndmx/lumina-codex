@@ -39,9 +39,11 @@ describe("interactionProfiles", () => {
     expect(interactionProfiles.desktop.primaryNav).toBe("top-bar");
   });
 
-  it("touch targets meet 44px, pointer targets may be smaller", () => {
+  it("all interactive targets meet the constitution's 44px floor", () => {
     expect(interactionProfiles.mobile.minTarget).toBeGreaterThanOrEqual(44);
-    expect(interactionProfiles.desktop.minTarget).toBeLessThan(44);
+    expect(interactionProfiles.tablet.minTarget).toBeGreaterThanOrEqual(44);
+    expect(interactionProfiles.desktop.minTarget).toBeGreaterThanOrEqual(44);
+    expect(interactionProfiles.wide.minTarget).toBeGreaterThanOrEqual(44);
   });
 
   it("hover ⇒ pointer-proximity, no-hover ⇒ not pointer-proximity (internal consistency)", () => {

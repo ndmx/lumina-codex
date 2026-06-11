@@ -14,7 +14,7 @@
 | Lumina Concept | Definition | Allowed Product Labels |
 |---|---|---|
 | `Workspace` | Private local or personal working area. | Workspace, Local Workspace, My Space |
-| `Shared Space` | Trusted collaboration container. | Group for JxL Scheduler, Circle for ParkMemory Hub, Team when the product is explicitly workplace-first |
+| `Shared Space` | Trusted collaboration container. | Group, Circle, Team when the product is explicitly workplace-first |
 | `Member` | Person or device participating in a Shared Space. | Member, Participant, Teammate |
 | `Invite` | Link, code, or action that lets a person join. | Invite, Invite to Circle, Create Group Invite |
 | `Sync` | Movement of data across devices or shared storage. | Sync, iCloud Sync, Refresh |
@@ -28,7 +28,7 @@
 
 | Thing | Rule | Examples |
 |---|---|---|
-| Product package | lowercase kebab-case | `lumina-codex`, `park-memory-hub` |
+| Package or variation id | lowercase kebab-case | `example-web-app`, `design-variation-03` |
 | React component | PascalCase | `InviteDialog`, `MetricTile` |
 | SwiftUI view | PascalCase with `View` when useful | `ProfileView`, `MemoryGrid` |
 | Props type | Component name + `Props` | `InviteDialogProps` |
@@ -104,11 +104,11 @@ Use these role names across web, iOS, and other UI engines.
 | `Composer` | Multi-field object creation or message entry. |
 | `Inspector` | Side/panel detail editor. |
 
-## Product Alias Registry
+## Generic Alias Examples
 
-| Lumina Concept | JxL Scheduler | ParkMemory Hub | Generic Web App |
+| Lumina Concept | Collaboration App | Personal Memory App | Generic Web App |
 |---|---|---|---|
-| Product | JxL Scheduler | ParkMemory Hub | Product name |
+| Interface name | App name | App name | App name |
 | Workspace | Workspace | My memories / local app state | Workspace |
 | Shared Space | Group | Circle | Workspace, Team, Organization |
 | Member | Member | Member | Member |
@@ -120,8 +120,7 @@ Use these role names across web, iOS, and other UI engines.
 
 - `mobile` as a synonym for `ios`; use both tags when both are true.
 - `web` as a synonym for `web-app`; websites and web apps have different expectations.
-- `group` as the global concept; use `Shared Space` globally and `Group` locally.
+- `group` as the global concept; use `Shared Space` globally and app-specific labels locally.
 - `files` when the product UI uses `Uploads`.
 - `team` when the experience is family, personal, or casual.
 - `publish` unless content becomes visible to a public or broad audience.
-

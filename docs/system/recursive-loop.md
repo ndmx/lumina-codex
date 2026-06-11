@@ -32,7 +32,7 @@ import { recordFeedback } from "@xlumina/system/feedback";
 
 // I had to invent a rule the system doesn't have:
 recordFeedback({
-  productId: "jxl-scheduler",
+  productId: "design-variation-01",
   kind: "gap",
   target: { kind: "concept", ref: "Reminder" },
   detail: "No canonical reminder chip; invented one.",

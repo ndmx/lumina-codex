@@ -25,9 +25,10 @@ describe("grids", () => {
     expect(grids.wide.columns).toBe(12);
   });
 
-  it("touch-first classes meet the 44px minimum target", () => {
-    expect(grids.mobile.minTarget).toBeGreaterThanOrEqual(44);
-    expect(grids.tablet.minTarget).toBeGreaterThanOrEqual(44);
+  it("every device class meets the 44px constitution target floor", () => {
+    for (const d of deviceOrder) {
+      expect(grids[d].minTarget).toBeGreaterThanOrEqual(44);
+    }
   });
 
   it("margins grow with device size", () => {

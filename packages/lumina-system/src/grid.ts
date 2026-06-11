@@ -25,7 +25,7 @@ export type GridSpec = {
   gutter: number;
   /** Max content width the grid is allowed to grow to, in px (null = fluid). */
   maxContentWidth: number | null;
-  /** Minimum comfortable touch/pointer target on this class, in px. */
+  /** Minimum comfortable interactive target on this class, in px. */
   minTarget: number;
   /** Primary input assumption — drives hover vs. press affordances. */
   pointer: "coarse" | "fine";
@@ -50,7 +50,7 @@ export const grids: Record<DeviceClass, GridSpec> = {
     margin: 20,
     gutter: 16,
     maxContentWidth: null,
-    minTarget: 44, // Apple HIG / Material minimum
+    minTarget: 44, // Lumina constitution target floor
     pointer: "coarse",
   },
   tablet: {
@@ -68,7 +68,7 @@ export const grids: Record<DeviceClass, GridSpec> = {
     margin: 48,
     gutter: 24,
     maxContentWidth: 1360,
-    minTarget: 36,
+    minTarget: 44,
     pointer: "fine",
   },
   wide: {
@@ -77,7 +77,7 @@ export const grids: Record<DeviceClass, GridSpec> = {
     margin: 80,
     gutter: 32,
     maxContentWidth: 1360,
-    minTarget: 36,
+    minTarget: 44,
     pointer: "fine",
   },
 };

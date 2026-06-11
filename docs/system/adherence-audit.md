@@ -8,7 +8,7 @@ This audit records how the project files align with the Lumina system.
 
 Included:
 
-- Markdown product profiles in `lumina-codex/docs/products/`.
+- Public design variations in `lumina-codex/docs/design-variations/`.
 - Lumina Codex docs, manifest, agent entry points, and source files in `lumina-codex/`.
 - The `lumina-codex/docs/constitution.md` vision document.
 
@@ -31,21 +31,15 @@ Excluded from design-system conformance:
 | `lumina-codex/docs/*.md` | Adheres | Build and launch docs now reference the Lumina system direction. |
 | `lumina-codex/src/**` | Adheres | Uses existing app/component naming. Three.js `Group` is a framework type, not a product naming term. |
 | `lumina-codex/docs/constitution.md` | Adheres as vision | Marked as a vision document, not the active implementation contract. |
-| `lumina-codex/docs/products/mobile-design-systems/README.md` | Adheres | Product-specific source material under Lumina. |
-| `lumina-codex/docs/products/mobile-design-systems/cross-app-design-roadmap.md` | Adheres | Points to `lumina-codex/docs/system/` as the design-system source. |
-| `lumina-codex/docs/products/mobile-design-systems/shared/*.md` | Adheres | Uses `Shared Space` as the canonical concept and product aliases beneath it. |
-| `lumina-codex/docs/products/mobile-design-systems/jxl-scheduler/*.md` | Adheres | Uses `Group` only as JxL Scheduler's user-facing alias for Lumina `Shared Space`. |
-| `lumina-codex/docs/products/mobile-design-systems/park-memory-hub/*.md` | Adheres | Uses `Circle` only as ParkMemory Hub's user-facing alias for Lumina `Shared Space`. |
-| `lumina-codex/docs/products/mobile-design-systems/source-docs/jxl-scheduler/DESIGN_SYSTEM.md` | Adheres as archived snapshot | The original design-system snapshot, kept for provenance and pointing back to current Lumina docs. Legacy implementation terms may remain inside code examples. |
+| `lumina-codex/docs/design-variations/*.md` | Adheres | Public numbered design types with no private app names or source snapshots. |
 
 ## Approved Alias Rules
 
 - Lumina canonical concept: `Shared Space`.
-- JxL Scheduler user-facing alias: `Group`.
-- ParkMemory Hub user-facing alias: `Circle`.
+- Generic collaboration alias example: `Group`.
+- Generic personal-memory alias example: `Circle`.
 - `Team` is allowed only for Apple Developer signing context or products that are explicitly workplace/team-first.
-- `Organization` remains only inside archived implementation snapshots or code identifiers.
-- `Files`, `Comms`, and `Ops` may appear only as discouraged terms or legacy snapshot content; current JxL copy uses `Uploads`, `Messages`, and route/schedule language.
+- `Organization`, `Files`, `Comms`, and `Ops` may appear only as discouraged terms, generic examples, or implementation-specific copy outside the public design variation docs.
 
 ## Verification Commands
 

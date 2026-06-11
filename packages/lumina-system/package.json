@@ -1,7 +1,7 @@
 {
   "name": "@xlumina/system",
-  "version": "1.0.2",
-  "description": "The portable Lumina design-system brain: tokens, eras, light/dark schemes, responsive grid, seeded variation, and mobile-vs-web interaction rules. Framework-agnostic, zero runtime dependencies.",
+  "version": "1.0.4",
+  "description": "The portable Lumina design-system brain: tokens, eras, light/dark schemes, responsive grid, seeded variation, surface treatments, and mobile-vs-web interaction rules. Framework-agnostic, zero runtime dependencies.",
   "license": "ISC",
   "repository": {
     "type": "git",
@@ -35,6 +35,10 @@
       "types": "./dist/tokens.d.ts",
       "import": "./dist/tokens.js"
     },
+    "./constitution": {
+      "types": "./dist/constitution.d.ts",
+      "import": "./dist/constitution.js"
+    },
     "./eras": {
       "types": "./dist/eras.d.ts",
       "import": "./dist/eras.js"
@@ -47,6 +51,14 @@
       "types": "./dist/scheme.d.ts",
       "import": "./dist/scheme.js"
     },
+    "./appearance": {
+      "types": "./dist/appearance.d.ts",
+      "import": "./dist/appearance.js"
+    },
+    "./design-variations": {
+      "types": "./dist/design-variations.d.ts",
+      "import": "./dist/design-variations.js"
+    },
     "./grid": {
       "types": "./dist/grid.d.ts",
       "import": "./dist/grid.js"
@@ -58,6 +70,10 @@
     "./platform-rules": {
       "types": "./dist/platform-rules.d.ts",
       "import": "./dist/platform-rules.js"
+    },
+    "./surface": {
+      "types": "./dist/surface.d.ts",
+      "import": "./dist/surface.js"
     },
     "./feedback": {
       "types": "./dist/feedback.d.ts",
@@ -98,6 +114,7 @@
     "theme",
     "light-dark",
     "responsive-grid",
+    "surface-treatment",
     "lumina"
   ],
   "publishConfig": {

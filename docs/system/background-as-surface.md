@@ -98,3 +98,64 @@ eras.ts          → accent mood the background should harmonize with
 This rule is additive: it never lowers the contrast floor or shrinks a touch
 target. It only changes *how* a screen reaches legibility — through surface,
 spacing, and washes rather than opaque fills.
+
+## Executable surface treatments
+
+The package exposes this rule as `@xlumina/system/surface`:
+
+- `backgroundMaterials`: stable names for image-led surface families such as
+  `chrome-pearl`, `chrome`, `steel`, `marble`, `pearl`, and `map`.
+- `contentBlockTreatments`: `bare`, `outline`, `glass`, and `solid-panel`.
+- `recommendContentBlock(...)`: a small helper that chooses the lightest content
+  treatment that still fits contrast, density, repetition, and interaction.
+
+The intent is not to force every app into the Design Variation 03 look. It gives
+agents a decision ladder:
+
+```text
+bare text → transparent outline → near-clear glass → solid panel
+```
+
+Use `solid-panel` for dense forms, long reading, tables, or real contrast
+failure. Use `outline` or `glass` for the repeated blocks that should let an
+image-led surface breathe: memories, member rows, plan blocks, stats, map chips,
+and profile rows.
+
+## Design Variation 03 lesson
+
+Design Variation 03 taught Lumina that a background can be the product's emotional
+surface. Chrome, pearl, marble, and steel backgrounds carry the tone; cards
+should not erase them. Its best-performing pattern is:
+
+- screen-specific image backgrounds
+- calm areas of the image behind titles and body copy
+- transparent repeated blocks with a thin outline for separation
+- very faint glass fills for stats and controls that need a tactile surface
+- softened teal accent instead of neon green glow
+
+## Design Variation 04 lesson
+
+Design Variation 04 adds the counterexample: not every surface wants transparency.
+Map-first safety screens use the map as content, not decoration. Floating chips
+and filter controls should use glass, but dense safety panels and reporting
+forms may use solid panels because speed, confidence, and readability matter
+more than showing the map through every row.
+
+## Design Variation 01 lesson
+
+Design Variation 01 adds the paired-appearance variation:
+
+- Light and dark modes may use separate background images when the material
+  mood changes. Pair them by composition, not by inversion: keep the same calm
+  text zones, edge detail, and planner-grid logic.
+- The light background can be warm pearl paper / frosted calendar glass; the
+  dark partner can be smoked graphite glass with steel edges and muted teal
+  glints.
+- Put a local `System | Light | Dark` preference in Profile or Settings and
+  persist it on the device. Apply the resolved scheme at the app root so every
+  screen and background swaps together.
+- In dark mode, glass blocks should be translucent charcoal or smoked glass
+  with thin pearl/steel outlines. Do not replace the light-mode white-card
+  problem with heavy black slabs.
+- Desaturate or dim light empty-state art slightly in dark mode so illustrations
+  support the content instead of becoming the brightest element on screen.

@@ -144,9 +144,9 @@ describe("evaluateCandidate", () => {
 
 describe("gates", () => {
   it("perProductGate fails when any product fails the predicate", () => {
-    const gate = perProductGate("only-browser", (p) => p.platforms.includes("browser"));
+    const gate = perProductGate("only-android", (p) => p.platforms.includes("android"));
     const result = gate.run(baseline());
-    expect(result.passed).toBe(false); // ios products fail
+    expect(result.passed).toBe(false);
     expect(result.detail).toMatch(/failed for/);
   });
 

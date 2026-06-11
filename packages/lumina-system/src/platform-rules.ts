@@ -30,7 +30,7 @@ export type InteractionProfile = {
   proximity: ProximityMode;
   /** Where primary navigation lives on this class. */
   primaryNav: "tab-bar" | "sidebar" | "top-bar";
-  /** Minimum comfortable target, px. */
+  /** Minimum comfortable interactive target, px. */
   minTarget: number;
   /** Whether one-handed thumb reach should drive control placement. */
   thumbReach: boolean;
@@ -71,7 +71,7 @@ export const interactionProfiles: Record<DeviceClass, InteractionProfile> = {
     hover: true,
     proximity: "pointer",
     primaryNav: "top-bar",
-    minTarget: 36,
+    minTarget: 44,
     thumbReach: false,
     gestures: ["click", "hover", "right-click", "wheel", "drag", "keyboard"],
     motionBudget: "rich",
@@ -82,7 +82,7 @@ export const interactionProfiles: Record<DeviceClass, InteractionProfile> = {
     hover: true,
     proximity: "pointer",
     primaryNav: "sidebar",
-    minTarget: 36,
+    minTarget: 44,
     thumbReach: false,
     gestures: ["click", "hover", "right-click", "wheel", "drag", "keyboard"],
     motionBudget: "rich",

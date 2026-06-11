@@ -34,6 +34,7 @@ export const feedbackKinds: readonly FeedbackKind[] = [
 
 /** Which part of the system the signal is about. */
 export type FeedbackTargetKind =
+  | "constitution"
   | "token"
   | "scheme"
   | "grid"

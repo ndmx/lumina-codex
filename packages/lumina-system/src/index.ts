@@ -12,12 +12,16 @@
  */
 
 export * from "./tokens.js";
+export * from "./constitution.js";
 export * from "./eras.js";
 export * from "./registry.js";
 export * from "./scheme.js";
+export * from "./appearance.js";
+export * from "./design-variations.js";
 export * from "./grid.js";
 export * from "./variation.js";
 export * from "./platform-rules.js";
+export * from "./surface.js";
 
 // Recursive improvement loop
 export * from "./feedback.js";

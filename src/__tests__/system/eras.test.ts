@@ -93,8 +93,8 @@ describe("brutalist era", () => {
     expect(eras.brutalist.backgroundTone).toBe("cool");
   });
 
-  it("reuses aura as its primary accent", () => {
-    expect(eras.brutalist.accent.primary).toBe(colorPrimitives.aura);
+  it("uses electric aura for its high-voltage primary accent", () => {
+    expect(eras.brutalist.accent.primary).toBe(colorPrimitives.auraElectric);
   });
 });
 

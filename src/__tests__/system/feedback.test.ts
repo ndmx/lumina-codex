@@ -11,7 +11,7 @@ import {
 describe("recordFeedback", () => {
   it("fills id, at, and severity from a draft", () => {
     const e = recordFeedback({
-      productId: "jxl-scheduler",
+      productId: "design-variation-01",
       kind: "gap",
       target: { kind: "concept", ref: "Reminder" },
       detail: "No canonical reminder chip.",
@@ -19,7 +19,7 @@ describe("recordFeedback", () => {
     expect(e.id).toMatch(/^gap-/);
     expect(e.at).toMatch(/\dT\d/);
     expect(e.severity).toBe("low");
-    expect(e.productId).toBe("jxl-scheduler");
+    expect(e.productId).toBe("design-variation-01");
   });
 
   it("is deterministic for identical content + timestamp", () => {

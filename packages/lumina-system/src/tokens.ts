@@ -5,7 +5,8 @@
  * The CSS custom properties in globals.css must mirror these values.
  *
  * Any project in the Lumina system derives its base from here.
- * To extend: import what you need and override in your product registry entry.
+ * To extend: import what you need and override in a public design variation or
+ * private consuming app.
  */
 
 // ─── Color Primitives ────────────────────────────────────────────────────────
@@ -14,11 +15,17 @@ export const colorPrimitives = {
   void: "#06070a",
   ink: "#101217",
   ivory: "#f5eee5",
-  aura: "#73f2df",
+  aura: "#3c9b91",
+  auraElectric: "#73f2df",
   spark: "#ff7d60",
   mist: "rgba(255, 243, 230, 0.5)",
   cyan: "#8de8ff",
   sand: "#f2d8b4",
+  pearl: "#f8f5ef",
+  chrome: "#cfd6dc",
+  steel: "#8e98a3",
+  marble: "#e7e2da",
+  graphite: "#111619",
 } as const;
 
 // Semantic aliases — describes intent, not appearance
@@ -47,10 +54,65 @@ export const colorSemantic = {
   },
 } as const;
 
+// Material cues for image-led surfaces. These are not a mandate to use literal
+// textures; they are stable names for the families Lumina has learned from
+// shipped apps: chrome/steel/pearl/marble surfaces behind nearly-clear blocks.
+export const materialColors = {
+  pearl: {
+    base: colorPrimitives.pearl,
+    wash: "rgba(248, 245, 239, 0.58)",
+    line: "rgba(55, 62, 68, 0.14)",
+  },
+  chrome: {
+    base: colorPrimitives.chrome,
+    wash: "rgba(255, 255, 255, 0.34)",
+    line: "rgba(80, 92, 104, 0.18)",
+  },
+  steel: {
+    base: colorPrimitives.steel,
+    wash: "rgba(255, 255, 255, 0.24)",
+    line: "rgba(30, 38, 46, 0.22)",
+  },
+  marble: {
+    base: colorPrimitives.marble,
+    wash: "rgba(255, 252, 247, 0.44)",
+    line: "rgba(72, 62, 48, 0.14)",
+  },
+  graphiteGlass: {
+    base: colorPrimitives.graphite,
+    wash: "rgba(255, 255, 255, 0.08)",
+    line: "rgba(239, 248, 248, 0.18)",
+  },
+} as const;
+
+// Functional colors are domain roles, not brand accents. Safety/reporting
+// interfaces need vivid alert/status language while the Lumina brand accent
+// stays calm and non-alarming.
+export const roleColors = {
+  brand: {
+    primary: colorPrimitives.aura,
+    secondary: colorPrimitives.spark,
+    electric: colorPrimitives.auraElectric,
+  },
+  status: {
+    success: "#1e7a4d",
+    warning: "#b07d14",
+    danger: "#c8102e",
+    info: "#2f6f9f",
+  },
+  content: {
+    memory: "#4f75b8",
+    place: colorPrimitives.aura,
+    people: "#8a72b8",
+    plan: "#6f7f9b",
+  },
+} as const;
+
 export const shadows = {
   atmosphere: "0 32px 120px rgba(0, 0, 0, 0.42)",
   glow: {
-    aura: "0 14px 50px rgba(115, 242, 223, 0.24)",
+    aura: "0 14px 42px rgba(60, 155, 145, 0.18)",
+    auraElectric: "0 14px 50px rgba(115, 242, 223, 0.18)",
     spark: "0 14px 50px rgba(255, 125, 96, 0.20)",
   },
 } as const;
@@ -170,7 +232,7 @@ export const layers = {
 // ─── Convenience re-export ────────────────────────────────────────────────────
 
 export const tokens = {
-  color: { ...colorPrimitives, semantic: colorSemantic },
+  color: { ...colorPrimitives, semantic: colorSemantic, material: materialColors, role: roleColors },
   shadows,
   spacing,
   typography,

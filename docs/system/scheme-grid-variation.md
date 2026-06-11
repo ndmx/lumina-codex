@@ -1,12 +1,14 @@
 # Lumina Scheme, Grid, and Variation
 
-Three executable axes that sit on top of the canonical tokens. They answer three
+Three executable axes plus the user-facing appearance preference layer that sit
+on top of the canonical tokens. They answer three
 distinct questions, and they are intentionally independent so they compose
 instead of multiplying.
 
 ```
 tokens.ts      raw primitives (one source of truth)
   ├─ scheme.ts   WHAT CANVAS?   light | dark surface foundation
+  ├─ appearance.ts WHAT DID THE USER CHOOSE? system | light | dark preference
   ├─ eras.ts     WHAT MOOD?     accent + glow atmosphere
   ├─ grid.ts     WHAT SHAPE?    column model per device class
   └─ variation.ts WHAT FINGERPRINT?  seeded, bounded uniqueness
@@ -36,18 +38,38 @@ const vars = resolveSchemeVars("light", "atelier");
 - Era drives `--ls-accent` / `--ls-glow-*`; scheme drives `--ls-bg` / `--ls-text` /
   `--ls-border` / `--ls-surface` / `--ls-shadow`.
 
+## Appearance Preference (system / light / dark)
+
+The scheme axis is internal. The user-facing control should usually be:
+
+```text
+System | Light | Dark
+```
+
+```ts
+import { resolveAppearanceScheme } from "@xlumina/system/appearance";
+
+resolveAppearanceScheme("system", "dark"); // "dark"
+resolveAppearanceScheme("light", "dark");  // "light"
+```
+
+Default to `System`, persist the preference locally, and apply the resolved
+scheme at the app root so all screens, tokens, and paired background assets move
+together. If a product uses image-led backgrounds in both schemes, pair them by
+composition: same calm text zones and edge detail, different material mood.
+
 ## Grid (cross-device consistency)
 
 One column model, mapped per device class. Consistency comes from spans being
 **proportional**, not fixed: a "half" card is 2 of 4 columns on mobile and 6 of
 12 on desktop.
 
-| Device  | Width            | Columns | Margin | Gutter | Pointer |
-|---------|------------------|---------|--------|--------|---------|
-| mobile  | `< 720px`        | 4       | 20px   | 16px   | coarse  |
-| tablet  | `720–959px`      | 8       | 32px   | 20px   | coarse  |
-| desktop | `960–1599px`     | 12      | 48px   | 24px   | fine    |
-| wide    | `≥ 1600px`       | 12      | 80px   | 32px   | fine    |
+| Device  | Width            | Columns | Margin | Gutter | Target | Pointer |
+|---------|------------------|---------|--------|--------|--------|---------|
+| mobile  | `< 720px`        | 4       | 20px   | 16px   | 44px   | coarse  |
+| tablet  | `720–959px`      | 8       | 32px   | 20px   | 44px   | coarse  |
+| desktop | `960–1599px`     | 12      | 48px   | 24px   | 44px   | fine    |
+| wide    | `≥ 1600px`       | 12      | 80px   | 32px   | 44px   | fine    |
 
 Breakpoints are derived from `tokens.ts`, so the JS grid and the CSS media
 queries can never drift.
@@ -72,7 +94,7 @@ range so the brand never breaks.
 ```ts
 import { createVariation } from "@xlumina/system/variation";
 
-createVariation("park-memory"); // stable across reloads, reproducible in tests
+createVariation("design-variation-03"); // stable across reloads, reproducible in tests
 ```
 
 | Field            | Range         | Effect                          |

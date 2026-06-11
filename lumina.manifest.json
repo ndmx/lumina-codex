@@ -6,7 +6,8 @@
   "agentInstructions": "AGENTS.md",
   "canonicalSystemPath": "docs/system",
   "constitution": "docs/constitution.md",
-  "productProfilesPath": "docs/products",
+  "designConstitution": "docs/system/design-constitution.md",
+  "designVariationsPath": "docs/design-variations",
   "sensitiveBoundary": "../AppDEVguideS",
   "package": {
     "name": "@xlumina/system",
@@ -19,16 +20,21 @@
     "published": true,
     "registry": "https://www.npmjs.com/package/@xlumina/system",
     "publishedVersion": "1.0.2",
-    "description": "Framework-agnostic executable brain: tokens, eras, schemes, grid, variation, platform-rules, and the recursive-improvement loop. Zero runtime dependencies. Ships a `lumina` CLI."
+    "localVersion": "1.0.4",
+    "description": "Framework-agnostic executable brain: tokens, eras, schemes, appearance preferences, grid, variation, surface treatments, platform-rules, and the recursive-improvement loop. Zero runtime dependencies. Ships a `lumina` CLI."
   },
   "systemModules": {
+    "constitution": "packages/lumina-system/src/constitution.ts",
     "tokens": "packages/lumina-system/src/tokens.ts",
     "eras": "packages/lumina-system/src/eras.ts",
     "scheme": "packages/lumina-system/src/scheme.ts",
+    "appearance": "packages/lumina-system/src/appearance.ts",
+    "surface": "packages/lumina-system/src/surface.ts",
     "grid": "packages/lumina-system/src/grid.ts",
     "variation": "packages/lumina-system/src/variation.ts",
     "platformRules": "packages/lumina-system/src/platform-rules.ts",
     "registry": "packages/lumina-system/src/registry.ts",
+    "designVariations": "packages/lumina-system/src/design-variations.ts",
     "feedback": "packages/lumina-system/src/feedback.ts",
     "improvementLedger": "packages/lumina-system/src/improvement-ledger.ts",
     "invariants": "packages/lumina-system/src/invariants.ts",
@@ -57,11 +63,13 @@
   },
   "tokenSource": "packages/lumina-system/src/tokens.ts",
   "eraSource": "packages/lumina-system/src/eras.ts",
-  "productRegistry": "packages/lumina-system/src/registry.ts",
+  "publicRegistry": "packages/lumina-system/src/registry.ts",
+  "designVariationRegistry": "packages/lumina-system/src/design-variations.ts",
   "integrationGuide": "docs/system/integration-guide.md",
   "readOrder": [
     "LUMINA.md",
     "docs/system/README.md",
+    "docs/system/design-constitution.md",
     "docs/system/platform-taxonomy.md",
     "docs/system/naming-and-tags.md",
     "docs/system/element-model.md",
@@ -70,7 +78,7 @@
     "docs/system/background-as-surface.md",
     "docs/system/integration-guide.md",
     "docs/system/registry.md",
-    "docs/products",
+    "docs/design-variations",
     "docs/system/continuous-improvement.md",
     "docs/system/recursive-loop.md"
   ],
@@ -78,8 +86,9 @@
     "sharedSpace": {
       "name": "Shared Space",
       "approvedAliases": {
-        "JxL Scheduler": "Group",
-        "ParkMemory Hub": "Circle"
+        "generic collaboration app": "Group",
+        "personal memory app": "Circle",
+        "safety app": "Trusted Contacts"
       }
     }
   },
@@ -99,29 +108,45 @@
     "log": "docs/system/improvement-log.md",
     "registry": "docs/system/registry.md"
   },
-  "registeredProducts": [
+  "designVariations": [
     {
-      "id": "lumina-codex",
-      "name": "Lumina Codex",
-      "platforms": ["browser"],
-      "frameworks": ["nextjs", "react", "threejs"],
-      "defaultEra": "atelier"
+      "id": "design-variation-01",
+      "name": "Design Variation 01: Pearl Planner Glass",
+      "platforms": ["ios", "ipados", "browser", "macos"],
+      "frameworks": ["swiftui", "react", "nextjs", "css"],
+      "defaultEra": "atelier",
+      "surfaceTreatment": "pearl-paper/light with outline-glass controls",
+      "codeSignature": "Lumina Design System · Variation 01 · Created by ndmx",
+      "pairsWith": "design-variation-02"
     },
     {
-      "id": "jxl-scheduler",
-      "name": "JxL Scheduler",
-      "platforms": ["ios", "ipados"],
-      "frameworks": ["swiftui"],
+      "id": "design-variation-02",
+      "name": "Design Variation 02: Smoked Graphite Glass",
+      "platforms": ["ios", "ipados", "browser", "macos"],
+      "frameworks": ["swiftui", "react", "nextjs", "css"],
       "defaultEra": "atelier",
-      "conceptAliases": { "sharedSpace": "Group" }
+      "surfaceTreatment": "smoked-graphite/dark with glass controls",
+      "appearancePreference": "System | Light | Dark",
+      "codeSignature": "Lumina Design System · Variation 02 · Created by ndmx",
+      "pairsWith": "design-variation-01"
     },
     {
-      "id": "park-memory-hub",
-      "name": "ParkMemory Hub",
-      "platforms": ["ios"],
-      "frameworks": ["swiftui"],
+      "id": "design-variation-03",
+      "name": "Design Variation 03: Chrome Pearl Memory Surface",
+      "platforms": ["ios", "ipados", "browser"],
+      "frameworks": ["swiftui", "react", "nextjs", "css"],
       "defaultEra": "atelier",
-      "conceptAliases": { "sharedSpace": "Circle" }
+      "surfaceTreatment": "chrome-pearl/outline-glass",
+      "codeSignature": "Lumina Design System · Variation 03 · Created by ndmx"
+    },
+    {
+      "id": "design-variation-04",
+      "name": "Design Variation 04: Map Safety Glass",
+      "platforms": ["ios", "ipados", "browser", "android"],
+      "frameworks": ["swiftui", "react", "nextjs", "css"],
+      "defaultEra": "atelier",
+      "surfaceTreatment": "map-glass/solid-for-dense-safety-data",
+      "codeSignature": "Lumina Design System · Variation 04 · Created by ndmx"
     }
   ]
 }

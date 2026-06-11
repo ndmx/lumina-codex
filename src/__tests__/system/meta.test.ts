@@ -14,10 +14,10 @@ let n = 0;
 const ev = (d: FeedbackDraft) => recordFeedback({ ...d, at: `2026-05-30T00:00:${String(n++).padStart(2, "0")}.000Z` });
 
 const realWorks = (ref: string) =>
-  ev({ productId: "jxl-scheduler", kind: "works", target: { kind: "component", ref }, detail: "ok" });
+  ev({ productId: "design-variation-01", kind: "works", target: { kind: "component", ref }, detail: "ok" });
 const selfWorks = (ref: string) =>
   ev({ productId: LOOP_PRODUCT_ID, kind: "works", target: { kind: "token", ref }, detail: "auto-resolved" });
-const realGap = (ref: string, productId = "jxl-scheduler") =>
+const realGap = (ref: string, productId = "design-variation-01") =>
   ev({ productId, kind: "gap", target: { kind: "concept", ref }, detail: "real gap" });
 
 describe("holdoutScore", () => {

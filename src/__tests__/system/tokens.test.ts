@@ -2,6 +2,8 @@ import { describe, it, expect } from "vitest";
 import {
   colorPrimitives,
   colorSemantic,
+  materialColors,
+  roleColors,
   shadows,
   spacing,
   typography,
@@ -18,6 +20,7 @@ describe("colorPrimitives", () => {
     expect(colorPrimitives.ink).toMatch(/^#/);
     expect(colorPrimitives.ivory).toMatch(/^#/);
     expect(colorPrimitives.aura).toMatch(/^#/);
+    expect(colorPrimitives.auraElectric).toMatch(/^#/);
     expect(colorPrimitives.spark).toMatch(/^#/);
     expect(colorPrimitives.cyan).toMatch(/^#/);
     expect(colorPrimitives.sand).toMatch(/^#/);
@@ -27,8 +30,12 @@ describe("colorPrimitives", () => {
     expect(colorPrimitives.void).toBe("#06070a");
   });
 
-  it("aura matches the CSS custom property value (#73f2df)", () => {
-    expect(colorPrimitives.aura).toBe("#73f2df");
+  it("aura is the softened teal brand accent", () => {
+    expect(colorPrimitives.aura).toBe("#3c9b91");
+  });
+
+  it("keeps an electric aura for high-energy variants", () => {
+    expect(colorPrimitives.auraElectric).toBe("#73f2df");
   });
 
   it("spark matches the CSS custom property value (#ff7d60)", () => {
@@ -79,7 +86,26 @@ describe("shadows", () => {
 
   it("has glow shadows for primary and secondary accents", () => {
     expect(shadows.glow.aura).toBeTruthy();
+    expect(shadows.glow.auraElectric).toBeTruthy();
     expect(shadows.glow.spark).toBeTruthy();
+  });
+});
+
+describe("materialColors", () => {
+  it("defines the image-led material families learned from mobile apps", () => {
+    expect(materialColors.chrome.base).toBeTruthy();
+    expect(materialColors.pearl.wash).toContain("rgba");
+    expect(materialColors.marble.line).toContain("rgba");
+    expect(materialColors.steel.base).toBeTruthy();
+    expect(materialColors.graphiteGlass.base).toBe(colorPrimitives.graphite);
+  });
+});
+
+describe("roleColors", () => {
+  it("separates brand colors from functional safety/status roles", () => {
+    expect(roleColors.brand.primary).toBe(colorPrimitives.aura);
+    expect(roleColors.status.danger).not.toBe(roleColors.brand.primary);
+    expect(roleColors.status.success).toBeTruthy();
   });
 });
 

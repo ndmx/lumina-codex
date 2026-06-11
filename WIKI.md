@@ -89,7 +89,7 @@ color / radius / columns.**
 | `grid.ts` | What shape per device? | `resolveGrid`, `spanColumns`, `gridTemplate` (proportional spans) |
 | `variation.ts` | What per-instance fingerprint? | `createVariation`, `shiftHue` (seeded, bounded) |
 | `platform-rules.ts` | How does the user touch it? | `resolveInteraction`, `getProximityMode` (touch vs pointer) |
-| `registry.ts` | Which products use Lumina? | `products`, `getProduct`, `resolveConceptAlias` |
+| `registry.ts` | Which public design variations feed Lumina? | `registryEntries`, `products` legacy alias, `getRegistryEntry` |
 
 ---
 
@@ -108,27 +108,27 @@ src/                    # The Next.js + R3F portfolio site (the live showcase)
 src/__tests__/          # ~337 cases across system + components (vitest)
 
 docs/system/            # Canonical design-system docs (naming, taxonomy, element model…)
-docs/products/          # Product profiles (JxL Scheduler, ParkMemory Hub) + shared principles
+docs/design-variations/ # Public numbered UI/UX design types
 docs/constitution.md    # Vision document (inspiration, not the implementation contract)
 ```
 
 ### Canonical read order (for agents)
 `LUMINA.md` → `lumina.manifest.json` → `docs/system/README.md` → platform-taxonomy
 → naming-and-tags → element-model → scheme-grid-variation → mobile-vs-web →
-integration-guide → registry → product profile → constitution (only if needed) →
+integration-guide → registry → design variations → constitution (only if needed) →
 continuous-improvement / recursive-loop (when changing the system).
 
 ---
 
-## Product profiles & the alias rule
+## Design variations & the alias rule
 
-Lumina names one canonical cross-product concept and lets products keep their
-clearer user-facing word:
+Lumina names one canonical cross-product concept and gives public users generic
+alias examples:
 
 ```
 Lumina concept: Shared Space
-  JxL Scheduler  → Group
-  ParkMemory Hub → Circle
+  collaboration app → Group
+  personal memory app → Circle
 ```
 
 `Shared Space` is an **invariant** — renaming it breaks alias resolution

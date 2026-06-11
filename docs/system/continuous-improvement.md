@@ -23,12 +23,12 @@ Do not add to Lumina when the decision is one-off styling, unfinished exploratio
 
 ## Agent Workflow
 
-1. Identify whether the change is system-wide or product-specific.
+1. Identify whether the change is system-wide, a public variation, or private-app-specific.
 2. Update the smallest canonical file that owns the rule.
 3. If the change affects naming, update `naming-and-tags.md`.
 4. If the change affects tags, update `platform-taxonomy.md`.
 5. If the change affects UI structure or framework mapping, update `element-model.md`.
-6. If the change adds a product, profile, or file, update `registry.md`.
+6. If the change adds a design variation, registry entry, or file, update `registry.md`.
 7. Record the decision in `improvement-log.md`.
 8. Run a repo scan for old or conflicting language.
 9. Run project verification if code or package metadata changed.
@@ -40,8 +40,8 @@ Use this format in `improvement-log.md`:
 ```text
 ## YYYY-MM-DD - Short Decision Name
 
-Type: rule | alias | token | component | product-profile | audit | source-boundary
-Scope: system | product | archive
+Type: rule | alias | token | component | design-variation | audit | source-boundary
+Scope: system | design-variation | private-app | archive
 Tags: tag-one, tag-two
 
 Decision:
@@ -57,7 +57,6 @@ Files:
 ## Conflict Rules
 
 - Current system docs beat archived source snapshots.
-- Product profiles beat generic system examples for product-specific wording.
-- Native platform conventions beat custom UI unless the product profile explains why.
+- Private app wording stays private; public variation docs use generic labels.
+- Native platform conventions beat custom UI unless a design variation explains why.
 - Sensitive files in `../AppDEVguideS` must never be copied into Lumina.
-

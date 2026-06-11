@@ -27,7 +27,7 @@ if (profile.hover) {
 | Hover exists? | No | No | Yes |
 | Proximity idiom | scroll-distance | scroll-distance | pointer-distance |
 | Primary nav | tab bar | sidebar | top bar / sidebar |
-| Min target | 44px | 44px | 36px |
+| Min target | 44px | 44px | 44px |
 | Thumb-reach matters | Yes | No | No |
 | Default motion budget | standard | standard | rich |
 | Core gestures | tap, swipe, long-press | tap, swipe, drag | click, hover, right-click, wheel, keyboard |
@@ -52,9 +52,9 @@ finger.** This is the rule the two proximity components embody:
 components already self-skip on the wrong medium, so the flag is the
 belt-and-suspenders source of truth.
 
-**Targets: 44 on touch, 36 on pointer.** 44px is the Apple HIG / Material
-touch minimum (also in `grid.ts`'s `minTarget`). A precise pointer can hit
-smaller, so desktop density is allowed to tighten to 36px.
+**Targets: 44 everywhere.** 44px is the constitution floor for interactive
+targets. Pointer-first desktop surfaces may look visually denser, but the
+interactive hit area still resolves to at least 44px.
 
 **Thumb reach is a mobile-only constraint.** On a phone, primary actions belong
 in the bottom third where a thumb lands; destructive or rare actions go up top.

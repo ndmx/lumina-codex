@@ -1,6 +1,8 @@
 # Lumina Source Map
 
-This map explains how the `lumina-codex` package, neighboring app sources, and out-of-scope reference folders roll up into Lumina. Paths are relative to the repository root.
+This map explains how the `lumina-codex` package, public design variations, and
+out-of-scope private reference folders roll up into Lumina. Paths are relative
+to the repository root.
 
 ## Lumina Root
 
@@ -14,30 +16,28 @@ This map explains how the `lumina-codex` package, neighboring app sources, and o
 | `docs` | Launch, build, and roadmap documentation. |
 | `docs/constitution.md` | Vision document for the immersive Codex site. Treat as inspiration, not the current implementation contract. |
 
-## Product Profiles
+## Design Variations
 
 | Path | Lumina Mapping |
 |---|---|
-| `docs/products/README.md` | Product profile index. |
-| `docs/products/mobile-design-systems/README.md` | Product-specific mobile docs index. |
-| `docs/products/mobile-design-systems/cross-app-design-roadmap.md` | Earlier version of the shared vocabulary; superseded by `docs/system/`. |
-| `docs/products/mobile-design-systems/jxl-scheduler/design-system.md` | Product-specific Lumina profile for JxL Scheduler. |
-| `docs/products/mobile-design-systems/park-memory-hub/design-system.md` | Product-specific Lumina profile for ParkMemory Hub. |
-| `docs/products/mobile-design-systems/shared` | Native iOS and collaboration principles feeding Lumina. |
-| `docs/products/mobile-design-systems/source-docs` | Snapshots only; do not treat as current naming source unless newer product docs are missing. |
+| `docs/design-variations/README.md` | Public index of reusable design types. |
+| `docs/design-variations/design-variation-01.md` | Pearl Planner Glass. |
+| `docs/design-variations/design-variation-02.md` | Smoked Graphite Glass. |
+| `docs/design-variations/design-variation-03.md` | Chrome Pearl Memory Surface. |
+| `docs/design-variations/design-variation-04.md` | Map Safety Glass. |
 
-## Adjacent App Sources
+## Private Source Boundary
 
-These live outside this repository, in the maintainer's local workspace. They are listed by medium so their vocabulary maps to the same element model; the local paths are intentionally omitted.
+Private app sources may teach Lumina new patterns, but public docs must publish
+only distilled design variations. Do not add private app names, launch docs, app
+IDs, URLs, or source snapshots to this repository.
 
-| Source | Medium Tags | Notes |
-|---|---|---|
-| JxL Scheduler (iOS) | `mobile`, `ios-app`, `native-app`, `swiftui` | Uses `Group`, `Member`, `Workspace`, `Uploads`. |
-| ParkMemory Hub (iOS) | `mobile`, `ios-app`, `native-app`, `swiftui` | Uses `Circle`, `Member`, `Memories`, `Radar`, `Planner`. |
-| iOS app sources | `mobile`, `ios-app`, `native-app`, `swiftui`, `location` | Candidates for future Lumina product profiles. |
-| Web app sources | `web`, `web-app`, `website`, `browser` | Multiple React/Vite/static/server-rendered sources should map to the same element model. |
-| Android app sources | `mobile`, `android-app`, `native-app` | Candidate for Android mapping. |
-| macOS app sources | `desktop`, `macos-app`, `native-app` | Candidate for desktop mapping. |
+| Private Source Medium | Public Output |
+|---|---|
+| iOS app source | `docs/design-variations/design-variation-XX.md` plus package tokens/rules. |
+| Web app source | `docs/design-variations/design-variation-XX.md` plus React/CSS guidance. |
+| Android app source | Generic Android platform guidance and reusable variation rules. |
+| macOS app source | Generic desktop/macOS platform guidance and reusable variation rules. |
 
 ## Out-of-Scope Reference Boundary
 

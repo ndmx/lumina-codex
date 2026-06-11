@@ -41,10 +41,12 @@ Set `LUMINA_FEEDBACK_URL` to POST feedback to a central Lumina instead of a loca
 | Design tokens | `@xlumina/system/tokens` | Colors, spacing, typography, motion, layout primitives |
 | Era/theme system | `@xlumina/system/eras` | Three atmosphere modes with full token sets |
 | Light/dark schemes | `@xlumina/system/scheme` | `resolveSchemeVars(scheme, era)` → `--ls-*` custom properties |
+| Appearance preferences | `@xlumina/system/appearance` | `System | Light | Dark` preference options, paired background guidance, and scheme resolution |
+| Design variations | `@xlumina/system/design-variations` | Public numbered UI/UX design types such as Pearl Planner Glass and Map Safety Glass |
 | Responsive grid | `@xlumina/system/grid` | One column model per device; `spanColumns`, `resolveGrid` |
 | Seeded variation | `@xlumina/system/variation` | `createVariation(seed)` — bounded per-instance uniqueness |
 | Interaction rules | `@xlumina/system/platform-rules` | Mobile-vs-web: hover, proximity, nav, targets, gestures |
-| Product registry | `@xlumina/system/registry` | Where your project declares itself |
+| Public registry | `@xlumina/system/registry` | Reference implementation and public variation metadata |
 | Naming rules | `docs/system/naming-and-tags.md` | Naming conventions across all platforms |
 | Platform taxonomy | `docs/system/platform-taxonomy.md` | Medium, platform, framework, surface, and capability tags |
 | Element model | `docs/system/element-model.md` | Cross-platform component role mapping |
@@ -71,31 +73,38 @@ Most projects default to `atelier`. Switch to `memphis` or `brutalist` when the 
 
 ---
 
-## Step 2 — Register your product
+## Step 2 — Choose a design variation
 
-Add a `ProductProfile` entry to `packages/lumina-system/src/registry.ts`:
+Most projects should start from one public design variation, then tune tokens
+inside their own app:
 
 ```typescript
-{
-  id: "your-app-id",              // kebab-case, must be unique
-  name: "Your App Name",
-  description: "One sentence description of what this product does.",
-  mediums: ["web-app"],           // from platform-taxonomy.md
-  platforms: ["browser"],         // from platform-taxonomy.md
-  frameworks: ["nextjs", "react"],
-  defaultEra: "atelier",
-  conceptAliases: {
-    sharedSpace: "Team",          // optional: product-specific name for Lumina concepts
-  },
-  tokenOverrides: {
-    accentPrimary: "#a78bfa",     // optional: override the era's default accent
-  },
-  docsPath: "docs/products/your-app-id",
-  registeredAt: "2026-05-06",    // today's date
-}
+import { getDesignVariation } from "@xlumina/system/design-variations";
+
+const variation = getDesignVariation("design-variation-01");
 ```
 
-Then run `npm run test:run` to verify the entry validates.
+Public Lumina variations are generic and numbered. Do not add private app names,
+app IDs, launch URLs, or source snapshots to the package docs. When a private
+project teaches a reusable lesson, add the next `design-variation-XX` entry.
+
+Every app using a public variation should include the required code signature in
+source code, app metadata, package metadata, or private config:
+
+```text
+Lumina Design System · Variation XX · Created by ndmx
+```
+
+Use the package helper when possible:
+
+```typescript
+import { formatDesignVariationSignature } from "@xlumina/system/design-variations";
+
+const signature = formatDesignVariationSignature("design-variation-01");
+```
+
+Do not render this signature in the user interface. It is implementation
+provenance, not user-facing copy.
 
 ---
 
@@ -108,13 +117,12 @@ Import directly from the system files:
 ```typescript
 import { colorPrimitives, colorSemantic, spacing, typography, motion } from "@xlumina/system/tokens";
 import { eras, defaultEra } from "@xlumina/system/eras";
-import { resolveConceptAlias } from "@xlumina/system/registry";
+import { getDesignVariation } from "@xlumina/system/design-variations";
 
-// Get the era for your product
+// Get the era for your chosen variation
 const myEra = eras["atelier"];
 
-// Resolve a concept alias
-const sharedSpaceLabel = resolveConceptAlias("your-app-id", "sharedSpace", "Shared Space");
+const variation = getDesignVariation("design-variation-01");
 ```
 
 ### CSS / web projects
@@ -147,7 +155,7 @@ extension Color {
 }
 ```
 
-Add a note in your product docs pointing to `packages/lumina-system/src/tokens.ts` as the source of truth. When the TypeScript values change, the Swift file must update to match.
+Add a note in your app docs pointing to `packages/lumina-system/src/tokens.ts` as the source of truth. When the TypeScript values change, the Swift file must update to match.
 
 ### React Native projects
 
@@ -198,27 +206,26 @@ For CSS-only projects, define era classes that swap the custom properties:
 
 ---
 
-## Step 5 — Create your product profile docs
+## Step 5 — Add a public design variation when the lesson is reusable
 
-Create `docs/products/<your-app-id>/README.md` with:
+Create `docs/design-variations/design-variation-XX.md` with:
 
 ```markdown
-# Product: Your App Name
+# Design Variation XX: Variation Name
 
 Tags: mobile, ios-app, swiftui, atelier
 
-## Platform context
-Brief description of the app and its primary use case.
+## Summary
+Brief description of the reusable UI/UX type.
 
-## Lumina concept aliases
-- Shared Space → Team
+## Best For
+- The product categories or workflows this variation suits.
 
-## Token overrides
-- accentPrimary: #a78bfa (reason: matches brand identity)
+## Visual Language
+- Background, surfaces, typography, accent, and motion rules.
 
-## Notes for agents
-Any product-specific naming rules, interaction patterns, or constraints
-that are not covered by the Lumina system docs.
+## UX Rules
+- Interaction, accessibility, navigation, and layout rules.
 ```
 
 ---
@@ -228,20 +235,19 @@ that are not covered by the Lumina system docs.
 Add an entry to `docs/system/improvement-log.md`:
 
 ```markdown
-## YYYY-MM-DD - Add [Your App Name]
+## YYYY-MM-DD - Add Design Variation XX
 
-Type: product-profile
-Scope: product
+Type: design-variation
+Scope: system
 Tags: your-medium-tags, your-platform-tags
 
-Decision: Registered [Your App Name] as a Lumina product. Uses atelier era.
-Aliases sharedSpace to "Team".
+Decision: Added a reusable design variation.
 
-Reason: Consistent token base prevents drift between the iOS app and the web version.
+Reason: The pattern is useful beyond one private app.
 
 Files:
-- `packages/lumina-system/src/registry.ts`
-- `docs/products/your-app-id/README.md`
+- `packages/lumina-system/src/design-variations.ts`
+- `docs/design-variations/design-variation-XX.md`
 ```
 
 ---
@@ -250,16 +256,16 @@ Files:
 
 If your new project surfaces a pattern that should live in the system — a new token category, a new canonical concept, a platform mapping that doesn't exist yet — follow the workflow in `docs/system/continuous-improvement.md`.
 
-The test for whether something belongs in the system: **does it apply to two or more products, or would it prevent a mistake in a future product?** If yes, it goes in the system. If it's product-specific, it stays in your product docs.
+The test for whether something belongs in the system: **does it apply to two or more interfaces, or would it prevent a mistake in a future interface?** If yes, it goes in the system as a generic rule or numbered design variation. If it is specific to one private app, keep it outside the public package.
 
 ---
 
 ## Checklist for a new project
 
 - [ ] Chose a default era
-- [ ] Added `ProductProfile` to `packages/lumina-system/src/registry.ts`
+- [ ] Chose a public design variation
 - [ ] Tests pass (`npm run test:run`)
 - [ ] CSS custom properties or Swift/RN tokens derived from `packages/lumina-system/src/tokens.ts`
-- [ ] Created `docs/products/<id>/README.md`
+- [ ] Created `docs/design-variations/design-variation-XX.md` if adding a new public variation
 - [ ] Logged decision in `docs/system/improvement-log.md`
-- [ ] Updated `lumina.manifest.json` `registeredProducts` list
+- [ ] Updated `lumina.manifest.json` `designVariations` list
